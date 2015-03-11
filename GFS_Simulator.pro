@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,8 +13,33 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    category.cpp \
+    project.cpp \
+    information.cpp \
+    casting.cpp \
+    mold.cpp \
+    entrance.cpp \
+    simulation.cpp \
+    computing.cpp \
+    output.cpp \
+    material.cpp \
+    treeviewcombobox.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    category.h \
+    project.h \
+    information.h \
+    casting.h \
+    mold.h \
+    entrance.h \
+    simulation.h \
+    computing.h \
+    output.h \
+    material.h \
+    treeviewcombobox.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    GFS_Resource.qrc

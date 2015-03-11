@@ -1,1 +1,13 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/">
+        <file>file.png</file>
+        <file>minus.png</file>
+        <file>plus.png</file>
+        <file>uncheck.png</file>
+        <file>yellow-flag.png</file>
+        <file>check.png</file>
+        <file>file-open.png</file>
+        <file>folder.png</file>
+        <file>材料库配置范例_20150303.xml</file>
+    </qresource>
+</RCC>

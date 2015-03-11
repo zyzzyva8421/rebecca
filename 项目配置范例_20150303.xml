@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Project>                       <!-- 一个项目的根节点 -->
+
+    
+    <Information>                <!-- 项目信息 -->
+    
+        <CastingName       value="XYZ铸件"/>             <!-- 铸件名 -->
+        <CastingNumber     value="2"/>                   <!-- 铸件工艺号 -->
+        
+        <CreatedAuthor  value="水沛"/>                 <!-- 创建人 -->
+        <CreatedTime    value="2014-01-18 08:36:30"/>  <!-- 创建时间 -->
+        <ModifiedAuthor value="水沛"/>                 <!-- 修改人 -->
+        <ModifiedTime   value="2014-01-21 16:55:20"/>  <!-- 修改时间 -->
+        
+        <BasedProjectOn   value="1"/>                   <!-- 基于已有项目开关 -->
+        <BasedProjectPath value="D:\公司项目库\XYZ铸件\1\"/>  <!-- 基于已有项目路径 -->
+        
+        <ProjectLibaryPath value="D:\公司项目库\"/>             <!-- 项目库路径 -->
+        <ProjectPath       value="D:\公司项目库\XYZ铸件\2\"/>   <!-- 项目路径 -->
+        
+        <ProjectComment value="公司2015年XYZ铸件按新工艺设计，进行仿真"/>  <!-- 项目描述 -->
+        
+    </Information>
+
+    <Casting>                   <!-- 铸件配置 -->
+        <CastingMaterialId       value="60 Cu - 40 Zn"/>             <!-- 绑定的材料库材料ID -->
+
+        <CastingMaterialInitialTemperature value="600"/>             <!-- 初始温度 -->
+
+        <InjectMethod>  <!-- 铸材浇入方式开关 -->
+            <ConstantVelocityOn   value="0"/>                   <!-- 定速率 开关 -->
+            <VaryingVelocityOn   value="1"/>                   <!-- 变速率 开关 -->
+            <ConstantPressureOn   value="0"/>                   <!-- 定压强 开关 -->
+            <VaryingPressureOn   value="0"/>                   <!-- 变压强 开关 -->
+        </InjectMethod>
+
+        <InjectMethodConstantVelocityOnConf>  <!-- 定速率 开关 详细配置-->
+            <Value value="0.5"/>
+        </InjectMethodConstantVelocityOnConf>
+
+        <InjectMethodVaryingVelocityOnConf>  <!-- 变速率 开关 详细配置-->
+            <Value time="0.0"   speed="0.0"/>
+            <Value time="0.005" speed="0.3048"/>
+            <Value time="0.167" speed="0.405"/>
+        </InjectMethodVaryingVelocityOnConf>
+
+        <InjectMethodConstantPressureOnConf>  <!-- 定压强 开关 详细配置-->
+            <Value value="100"/>
+        </InjectMethodConstantPressureOnConf>
+
+        <InjectMethodVaryingPressureOnConf>  <!-- 变压强 开关 详细配置-->
+            <Value time="0.0"   pressure="0.0"/>
+            <Value time="0.005" pressure="34.2"/>
+            <Value time="0.167" pressure="55.9"/>
+        </InjectMethodVaryingPressureOnConf>
+
+        <CastingComment value="新工艺中按照设计采用改材质，详情可咨询张工程师"/>  <!-- 铸件说明 -->
+
+    </Casting>
+
+    <Mold>                      <!-- 模具配置 -->
+
+        <Stl id="Mold.stl">            <!-- 每个STL一组配置，ID是STL被复制到项目中后的名称 -->
+
+            <OriginalStlPath value="D:\公司设计CAD\XYZ铸件\模具最新版.stl"/>    <!-- 导入前STL文件路径 -->
+
+            <MoldMaterialId       value="60 Cu - 40 Zn"/>             <!-- 绑定的材料库材料ID -->
+            <MoldMaterialInitialTemperature value="35"/>             <!-- 初始温度 -->
+            <MoldHeatExchangeCoefficient value="0.05"/>              <!--界面换热系数 -->
+
+            <MoldSurfaceRoughness>      <!-- 壁面粗糙度开关 -->
+                <NoSlipOn value="1"/>                 <!-- 不滑动 -->
+                <FreeSlipOn value="0"/>                 <!-- 自由滑移 -->
+            </MoldSurfaceRoughness>
+
+            <MoldFunction>      <!-- 模具功能开关 -->
+                <CoverOn value="1"/>    <!-- 定模 -->
+                <MovingOn value="0"/>    <!-- 动模 -->
+                <SprueOn value="0"/>    <!-- 浇口 -->
+                <RiserOn value="0"/>    <!-- 冒口 -->
+                <CoreOn value="0"/>    <!-- 型芯 -->
+            </MoldFunction>
+
+            <MoldComment value="Mold.stl文件是更新后的模具设计图"/>  <!-- 模具说明 -->
+
+        </Stl>
+
+        <Stl id="Mold2.stl">            <!-- 每个STL一组配置，ID是STL被复制到项目中后的名称 -->
+
+            <OriginalStlPath value="D:\公司设计CAD\XYZ铸件\模具最新版.stl"/>    <!-- 导入前STL文件路径 -->
+
+            <MoldMaterialId       value="60 Cu - 40 Zn"/>             <!-- 绑定的材料库材料ID -->
+            <MoldMaterialInitialTemperature value="40"/>             <!-- 初始温度 -->
+            <MoldHeatExchangeCoefficient value="0.06"/>              <!--界面换热系数 -->
+
+            <MoldSurfaceRoughness>      <!-- 壁面粗糙度开关 -->
+                <NoSlipOn value="0"/>                 <!-- 不滑动 -->
+                <FreeSlipOn value="1"/>                 <!-- 自由滑移 -->
+            </MoldSurfaceRoughness>
+
+            <MoldFunction>      <!-- 模具功能开关 -->
+                <CoverOn value="0"/>    <!-- 定模 -->
+                <MovingOn value="0"/>    <!-- 动模 -->
+                <SprueOn value="1"/>    <!-- 浇口 -->
+                <RiserOn value="0"/>    <!-- 冒口 -->
+                <CoreOn value="0"/>    <!-- 型芯 -->
+            </MoldFunction>
+
+            <MoldComment value="Mold.stl文件是更新后的模具设计图"/>  <!-- 模具说明 -->
+
+        </Stl>
+
+    </Mold>
+
+    <Entrance>                  <!-- 出入口配置 -->
+
+        <OutletCoordinates>  <!-- 出口坐标-->
+            <Value x="0.0" y="3.0" z="4.5"/>
+            <Value x="2.0" y="0.0" z="4.3"/>
+            <Value x="0.0" y="5.0" z="11"/>
+        </OutletCoordinates>
+
+        <InletCoordinates>  <!-- 入口坐标-->
+            <Value x="0.0" y="3.0" z="4.5"/>
+            <Value x="2.0" y="0.0" z="4.3"/>
+            <Value x="0.0" y="5.0" z="11"/>
+        </InletCoordinates>
+
+        <EntranceComment value="Mold.stl文件是更新后的模具设计图"/>  <!-- 出入口说明 -->
+
+    </Entrance>
+
+    <Simulation>                <!-- 模拟配置 -->
+
+        <HeatTransferOn value="1"/>  <!-- 传热模拟 开关 -->
+
+        <PhaseChangeOn value="1"/>   <!-- 相变模拟 开关 -->
+
+        <FluidOn value="1"/>         <!-- 流动模拟 开关 -->
+        <FluidOnConf>               <!-- 流动模拟 子开关组 -->
+            <LaminarOn value="1"/>           <!-- 流动模拟采用 层流模型 开关 -->
+            <SaTurbulenceOn value="0"/>      <!-- 流动模拟采用 湍流SA模型 开关 -->
+            <KeTurbulenceOn value="0"/>      <!-- 流动模拟采用 湍流KE模型 开关 -->
+            <LesTurbulenceOn value="0"/>     <!-- 流动模拟采用 湍流LES模型 开关 -->
+        </FluidOnConf>
+
+        <!-- 文本框那些配置去掉 -->
+
+        <SimulationComment value="开启所有模拟，其中流动模拟采用简单的层流模型"/>  <!-- 模拟说明 -->
+
+    </Simulation>
+
+    <Computing>                 <!-- 求解配置 -->
+
+        <TimeStepMethod>        <!-- 时间步长设置方式 -->
+            <TimeStepAdaptedOn value="0"/>  <!-- 自适应时间步长 开关 -->
+            <TimeStepFixedOn value="1"/>    <!-- 固定时间步长 开关 -->
+        </TimeStepMethod>
+        <TimeStepFixedOnConf>
+            <Value value="0.001"/>          <!-- 固定时间步长 配置 -->
+        </TimeStepFixedOnConf>
+
+        <IterationMaximumRelativeError value="0.0001"/> <!-- 最大相对误差 -->
+        <IterationMaximumStepCount value="100"/>    <!-- 最大迭代步数 -->
+
+        <TerminationCondition>        <!-- 终止条件 -->
+            <TerminationEndTimeOn value="1"/>  <!-- 指定结束时间 开关 -->
+            <TerminationFillingRateOn value="0"/>    <!-- 指定填充率 开关 -->
+            <TerminationMaximumStepOn value="0"/>    <!-- 指定最大步数 开关 -->
+        </TerminationCondition>
+        <TerminationEndTimeOnConf>
+            <Value value="2"/>          <!-- 指定结束时间 配置 -->
+        </TerminationEndTimeOnConf>
+        <TerminationFillingRateOnConf>
+            <Value value="0.97"/>          <!-- 指定填充率 配置 -->
+        </TerminationFillingRateOnConf>
+        <TerminationMaximumStepOnConf>
+            <Value value="2000"/>          <!-- 指定最大步数 配置 -->
+        </TerminationMaximumStepOnConf>
+
+        <ParallelMethod>        <!--  并行计算控制 -->
+            <ParallelAdaptedOn value="1"/>  <!-- 自适应并行核数 开关 -->
+            <ParallelFixedOn value="0"/>    <!-- 指定并行核数 开关 -->
+        </ParallelMethod>
+        <ParallelFixedOnConf>
+            <Value value="2000"/>          <!-- 指定并行核数 配置 -->
+        </ParallelFixedOnConf>
+
+        <ComputingComment value="求解配置采用默认，注意是2秒内压铸完成"/>  <!-- 计算说明 -->
+
+    </Computing>
+
+    <Output>                    <!-- 输出配置 -->
+
+        <OutputMethod>        <!-- 输出数据方式 -->
+            <OutputIntervalTimeOn value="1"/>  <!-- 指定间隔时间 开关 -->
+            <OutputIntervalStepOn value="0"/>    <!-- 指定间隔步数 开关 -->
+        </OutputMethod>
+        <OutputIntervalTimeOnConf>
+            <Value value="0.01"/>          <!-- 指定间隔时间 配置 -->
+        </OutputIntervalTimeOnConf>
+        <OutputIntervalStepOnConf>
+            <Value value="10"/>          <!-- 指定间隔步数 配置 -->
+        </OutputIntervalStepOnConf>
+
+        <LoggingCurrentStepOn value="1"/> <!-- 日志显示当前步数 开关 -->
+        <LoggingCurrentTimeOn value="1"/> <!-- 日志显示当前时间 开关 -->
+        <LoggingCurrentFillingRateOn value="1"/> <!-- 日志显示当前填充率 开关 -->
+        <LoggingCurrentTemperatureOn value="1"/> <!-- 日志显示当前温度 开关 -->
+        <LoggingFrequency value="20"/> <!-- 日志显示频率（步数/记录） -->
+
+        <OutputComment value="为了节约硬盘空间，数据基本上10步一保存，20步一日志"/>  <!-- 输出说明 -->
+
+    </Output>
+
+</Project>
