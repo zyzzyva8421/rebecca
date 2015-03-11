@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<materialgroup id="材料库">  <!-- materialgroup 是目录 id 是目录名 id全局目录不能重名 -->
+    <materialgroup id="固体">
+    </materialgroup>
+    <materialgroup id="金属">
+        <materialgroup id="铝合金">
+        </materialgroup>
+        <materialgroup id="铜合金">
+        
+            <material id="60 Cu - 40 Zn">                       <!-- material 是材料 理解为叶子节点 id 是材料名 id全局叶子节点不能重名 -->
+                
+                <MaterialComment value="铜60% 锌40% 合金" />    <!-- 材料备注 -->
+                
+                <SolidDensity value="2702"/>                    <!-- 固态参数：密度 -->
+                <SolidSpecificHeat value="950"/>                <!-- 固态参数：比热容 -->
+                <SolidThermalConductivity value="240"/>         <!-- 固态参数：导热率 -->
+                <SolidThermalExpansionCoefficient value="0"/>   <!-- 固态参数：热膨胀系数 -->
+                
+                <FluidDensity value="2702"/>                    <!-- 液态参数：密度 -->
+                <FluidSpecificHeat value="1050"/>               <!-- 液态参数：比热容 -->
+                <FluidThermalConductivity value="230"/>         <!-- 液态参数：导热率 -->
+                <FluidThermalExpansionCoefficent value="0"/>    <!-- 液态参数：热膨胀系数 -->
+                <FluidDynamicViscosity value="0.033"/>          <!-- 液态参数：动力粘度 -->
+                <FluidSurfaceTensionCoefficent value="0"/>      <!-- 液态参数：表面张力系数 -->
+                <FluidContactAngleForWallAdhesion value="-90"/> <!-- 液态参数：润湿角 -->
+                
+                <SolidLiquidusTemperature value="540"/>         <!-- 相变参数：液相线温度 -->
+                <SolidSolidusTemperature value="539.8"/>        <!-- 相变参数：固相线温度 -->
+                <FluidCoherencyPoint value="0"/>                <!-- 相变参数： 凝聚固相率-->
+                <FluidCriticalPoint value="1"/>                 <!-- 相变参数： 临界固相率-->
+                <SolidificationDragCoefficent value="1"/>       <!-- 相变参数：凝固拖曳力系数 -->
+                
+            </material>
+            
+        </materialgroup>
+    </materialgroup>
+    <materialgroup id="泡面">
+    </materialgroup>
+    <materialgroup id="其它">
+    </materialgroup>
+</materialgroup>
