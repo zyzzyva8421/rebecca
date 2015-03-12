@@ -8,18 +8,19 @@ using namespace std;
 class Category
 {
 public:
-    Category(const string &name);
+    Category(const wstring &name);
     virtual ~Category();
 
     virtual void loadValue(const QDomElement& element) = 0;
     virtual void updateGui(void) = 0;
     virtual void updateValue(void) = 0;
+    virtual void clearValue(void) = 0;
 
-    void setName(const string& _name) {name = _name;}
-    string getName(void) const {return name;}
+    void setName(const wstring& _name) {name = _name;}
+    wstring getName(void) const {return name;}
 
     void* getUi();
 private:
-    string name;
+    wstring name;
 };
 #endif // CATEGORY_H

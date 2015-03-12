@@ -1,11 +1,28 @@
 #include "information.h"
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
+#include "dialog.h"
+#include "ui_dialog.h"
 
-Information::Information(const string& _name) : Category(_name)
+Information::Information(const wstring& _name) : Category(_name)
 {
+    clearValue();
+}
+
+void Information::clearValue()
+{
+    castingName = L"";
     castingNumber = 0;
+    createdAuthor = L"";
+    createdTime = QDateTime::currentDateTime().toString().toStdString();
+    modifiedAuthor = L"";
+    modifiedTime = QDateTime::currentDateTime().toString().toStdString();
     basedProjectOn = false;
+    basedProjectPath = L"";
+    projectLibaryPath = L"";
+    projectPath = L"";
+    projectComment = L"";
+
 }
 
 void Information::loadValue(const QDomElement& element)
@@ -40,6 +57,62 @@ void Information::loadValue(const QDomElement& element)
         child = child.nextSibling();
     }
 }
+
+void* Information::getDialogUi()
+{
+    if (Dialog::CurrentDialog) return Dialog::CurrentDialog->getUi();
+    else return NULL;
+}
+
+void Information::updateDialogGui(void) {
+    Ui::Dialog *ui = (Ui::Dialog*)getDialogUi();
+    if (ui == NULL) return;
+    QString text;
+    QDateTime time;
+
+    text = QString::fromStdWString(castingName);
+    ui->lineEdit_CastingName->setText(text);
+
+    ui->spinBox_CastingNumber->setValue(castingNumber);
+
+    text = QString::fromStdWString(createdAuthor);
+    ui->lineEdit_CreatedAuthor->setText(text);
+
+    text = QString::fromStdString(createdTime);
+    time = QDateTime::fromString(text, Qt::ISODate);
+    ui->timeEdit_CreatedTime->setDateTime(time);
+
+    text = QString::fromStdWString(modifiedAuthor);
+    ui->lineEdit_ModifiedAuthor->setText(text);
+
+    text = QString::fromStdString(modifiedTime);
+    time = QDateTime::fromString(text, Qt::ISODate);
+    ui->timeEdit_ModifiedTime->setDateTime(time);
+
+    text = QString::fromStdWString(projectComment);
+    ui->plainTextEdit_ProjectComment->setPlainText(text);
+}
+
+void Information::updateValueFromDialog(void) {
+    QDateTime time;
+    Ui::Dialog *ui = (Ui::Dialog*)getDialogUi();
+    if (ui == NULL) return;
+
+    castingName = ui->lineEdit_CastingName->text().toStdWString();
+    castingNumber = ui->spinBox_CastingNumber->value();
+    createdAuthor = ui->lineEdit_CreatedAuthor->text().toStdWString();
+    time = ui->timeEdit_CreatedTime->dateTime();
+    createdTime = time.toString(Qt::ISODate).toStdString();
+    modifiedAuthor = ui->lineEdit_ModifiedAuthor->text().toStdWString();
+    time = ui->timeEdit_ModifiedTime->dateTime();
+    modifiedTime = time.toString(Qt::ISODate).toStdString();
+    basedProjectOn = ui->checkBox_BasedProjectOn->checkState();
+    basedProjectPath =  ui->lineEdit_BasedProjectPath->text().toStdWString();
+    projectLibaryPath = ui->lineEdit_ProjectLibaryPath->text().toStdWString();
+    projectPath = ui->lineEdit_ProjectPath->text().toStdWString();
+    projectComment = ui->plainTextEdit_ProjectComment->toPlainText().toStdWString();
+}
+
 void Information::updateGui(void)
 {
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();

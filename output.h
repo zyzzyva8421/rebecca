@@ -9,10 +9,11 @@ public:
         OutputIntervalTimeOn,
         OutputIntervalStepOn
     };
-    Output(const string& name);
+    Output(const wstring& name);
     virtual void loadValue(const QDomElement& element);
     virtual void updateGui(void);
     virtual void updateValue(void);
+    virtual void clearValue();
 private:
     OutputMethod outputMethod;
     double outputIntervalTimeOnConf;

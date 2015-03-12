@@ -5,10 +5,13 @@
 class Entrance : public Category
 {
 public:
-    Entrance(const string& name);
+    Entrance(const wstring& name);
     virtual void loadValue(const QDomElement& element);
     virtual void updateGui(void);
     virtual void updateValue(void);
+    virtual void clearValue(void);
+    vector< vector<double> >& getOutletCoordinates(void) {return outletCoordinates;}
+    vector< vector<double> >& getInletCoordinates(void) {return inletCoordinates;}
 private:
     vector< vector<double> > outletCoordinates;
     vector< vector<double> > inletCoordinates;

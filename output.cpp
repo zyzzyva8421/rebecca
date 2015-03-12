@@ -2,7 +2,12 @@
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
 
-Output::Output(const string& _name) : Category(_name)
+Output::Output(const wstring& _name) : Category(_name)
+{
+    clearValue();
+}
+
+void Output::clearValue()
 {
     outputMethod = OutputIntervalTimeOn;
     outputIntervalTimeOnConf = 0.0;
@@ -12,6 +17,7 @@ Output::Output(const string& _name) : Category(_name)
     loggingCurrentFillingRateOn = false;
     loggingCurrentTemperatureOn = false;
     loggingFrequency = 0;
+    outputComment = L"";
 }
 
 void Output::loadValue(const QDomElement& element)

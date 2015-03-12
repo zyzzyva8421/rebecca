@@ -1,8 +1,15 @@
 #include "material.h"
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
+#include <QFile>
+#include <iostream>
 
-Material::Material(const string& _name) : Category(_name)
+Material::Material(const wstring& _name) : Category(_name)
+{
+    clearValue();
+}
+
+void Material::clearValue()
 {
     group = NULL;
     solidDensity = 0.0;
@@ -21,6 +28,7 @@ Material::Material(const string& _name) : Category(_name)
     fluidCoherencyPoint = 0.0;
     fluidCriticalPoint = 0.0;
     solidificationDragCoefficent = 0.0;
+    materialComment = L"";
 }
 
 void Material::loadValue(const QDomElement &element)
@@ -153,11 +161,18 @@ void Material::updateValue(void)
     materialComment = ui->plainTextEdit_MaterialComment->toPlainText().toStdWString();
 }
 
-MaterialGroup::MaterialGroup(const string &_name) : Category(_name){
-    group = NULL;
+MaterialGroup::MaterialGroup(const wstring &_name) : Category(_name){
+    clearValue();
 }
 
 MaterialGroup::~MaterialGroup() {
+    clearValue();
+}
+
+void MaterialGroup::clearValue()
+{
+    id = L"";
+    group = NULL;
     for (vector<Material*>::iterator it = materials.begin(); it != materials.end(); it++) {
         Material *material = (*it);
         delete material;
@@ -172,6 +187,37 @@ MaterialGroup::~MaterialGroup() {
     groups.clear();
 }
 
+bool MaterialGroup::loadMaterialFile(const QString &filename)
+{
+    QFile file(filename);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        std::cerr << "Error: Can not read file" << qPrintable(filename)
+                     << "; " << qPrintable(file.errorString())
+                        << std::endl;
+
+    }
+    QString errorStr;
+    int errorLine;
+    int errorColumn;
+
+    QDomDocument doc;
+    if (!doc.setContent(&file, false, &errorStr, &errorLine, &errorColumn)) {
+        std::cerr << "Error: Parse error at line " << errorLine << ", "
+                     << "column " << errorColumn << ": "
+                        << qPrintable(errorStr) << std::endl;
+        return false;
+    }
+    QDomElement root = doc.documentElement();
+    if (root.tagName() != "materialgroup") {
+        std::cerr << "Error: Not a material file" << std::endl;
+        return false;
+    }
+
+    loadValue(root);
+    file.close();
+    return true;
+}
+
 void MaterialGroup::loadValue(const QDomElement& element)
 {
     id = element.attribute("id").toStdWString();
@@ -181,11 +227,11 @@ void MaterialGroup::loadValue(const QDomElement& element)
         Material* _material = NULL;
         string tagName = child.toElement().tagName().toStdString();
         if (tagName == "materialgroup") {
-            _group = new MaterialGroup("materialgroup");
+            _group = new MaterialGroup(L"materialgroup");
             _group->loadValue(child.toElement());
             addGroup(_group);
         } else if (tagName == "material") {
-            _material = new Material("material");
+            _material = new Material(L"material");
             _material->loadValue(child.toElement());
             addMaterial(_material);
         }

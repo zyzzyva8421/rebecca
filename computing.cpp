@@ -2,8 +2,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-Computing::Computing(const string& _name) : Category(_name)
+Computing::Computing(const wstring& _name) : Category(_name)
 {
+    clearValue();
+}
+
+void Computing::clearValue() {
     timeStepMethod = TimeStepAdaptedOn;
     timeStepFixedOnConf = 0.0;
     iterationMaximumRelativeError = 0.0;
@@ -15,6 +19,7 @@ Computing::Computing(const string& _name) : Category(_name)
     terminationMaximumStepOnConf = 0;
     parallelMethod = ParallelAdaptedOn;
     parallelFixedOnConf = 0;
+    computingComment = L"";
 }
 
 void Computing::loadValue(const QDomElement &element)

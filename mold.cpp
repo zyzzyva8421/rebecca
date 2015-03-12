@@ -2,12 +2,17 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-Mold::Mold(const string &_name) : Category(_name)
+Mold::Mold(const wstring &_name) : Category(_name)
 {
-
+    clearValue();
 }
 
 Mold::~Mold() {
+    clearValue();
+}
+
+void Mold::clearValue()
+{
     vector<MoldConfiguration*>::iterator it;
     for (it = molds.begin(); it != molds.end(); it++) {
         MoldConfiguration *conf = (*it);
@@ -25,7 +30,7 @@ void Mold::loadValue(const QDomElement& element)
     while (!child.isNull()) {
         tagName = child.toElement().tagName().toStdString();
         if (tagName == "Stl") {
-            conf = new MoldConfiguration("Stl");
+            conf = new MoldConfiguration(L"Stl");
             molds.push_back(conf);
             conf->loadValue(child.toElement());
         }
@@ -37,15 +42,17 @@ void Mold::updateGui(void)
 {
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
+    int index= ui->listWidget_addedStlMolds->currentRow();
     ui->listWidget_addedStlMolds->clear();
     vector<MoldConfiguration*>::iterator it;
     MoldConfiguration *conf = NULL;
     for (it = molds.begin(); it != molds.end(); it++) {
         conf = (*it);
-        QString str = QString::fromStdString(conf->getName());
+        QString str = QString::fromStdWString(conf->getName());
         ui->listWidget_addedStlMolds->addItem(str);
     }
-    ui->listWidget_addedStlMolds->setCurrentItem(ui->listWidget_addedStlMolds->item(0));
+    if (index < 0 || index >= (int)molds.size()) index = 0;
+    ui->listWidget_addedStlMolds->setCurrentRow(index);
 
 }
 
@@ -53,7 +60,43 @@ void Mold::updateValue(void)
 {
 }
 
-MoldConfiguration *Mold::getMoldConfiguration(const string& stl)
+void Mold::deleteConfiguration(const wstring &name)
+{
+    vector<MoldConfiguration*>::iterator it;
+    MoldConfiguration *conf = NULL;
+    for (it = molds.begin(); it != molds.end(); it++) {
+        conf = (*it);
+        if (conf && conf->getName() == name) {
+            break;
+        }
+    }
+    if (it != molds.end()) {
+        molds.erase(it);
+        delete conf;
+        conf = NULL;
+        updateGui();
+    }
+}
+
+void Mold::modifyConfiguration(const wstring &name)
+{
+    MoldConfiguration *config = getMoldConfiguration(name);
+    config->updateValue();
+    updateGui();
+}
+
+void Mold::addConfiguration(const wstring &name)
+{
+    Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
+    if (ui == NULL) return;
+    MoldConfiguration *config = new MoldConfiguration(name);
+    molds.push_back(config);
+    updateGui();
+    ui->listWidget_addedStlMolds->setCurrentRow((int)molds.size()-1);
+    config->updateGui();
+}
+
+MoldConfiguration *Mold::getMoldConfiguration(const wstring& stl)
 {
     vector<MoldConfiguration*>::iterator it;
     MoldConfiguration *conf = NULL;
@@ -66,17 +109,25 @@ MoldConfiguration *Mold::getMoldConfiguration(const string& stl)
     return NULL;
 }
 
-MoldConfiguration::MoldConfiguration(const string& _name) : Category(_name)
+MoldConfiguration::MoldConfiguration(const wstring& _name) : Category(_name)
 {
+    clearValue();
+}
+
+void MoldConfiguration::clearValue()
+{
+    originalStlPath = L"";
+    moldMaterialId = "";
     moldMaterialInitialTemperature = 0.0;
     moldHeatExchangeCoefficient = 0.0;
     moldSurfaceRoughness = NoSlipOn;
     moldFunction = CoverOn;
+    moldComment = L"";
 }
 
 void MoldConfiguration::loadValue(const QDomElement& element)
 {
-    string name = element.attribute("id").toStdString();
+    wstring name = element.attribute("id").toStdWString();
     setName(name);
     QDomNode child = element.firstChild();
     QDomNode child1;
@@ -144,14 +195,16 @@ void MoldConfiguration::updateGui(void)
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
 
-    text = QString::fromStdString(getName());
+    text = QString::fromStdWString(getName());
     ui->lineEdit_inProjectName->setText(text);
 
     text = QString::fromStdWString(originalStlPath);
     ui->lineEdit_originalStlPath->setText(text);
 
     text = QString::fromStdString(moldMaterialId);
-    ui->lineEdit_moldMaterialId->setText(text);
+    ui->comboBox_MoldMaterialId->clear();
+    ui->comboBox_MoldMaterialId->addItem(text);
+    ui->comboBox_MoldMaterialId->setCurrentIndex(0);
 
     text = QString::number(moldMaterialInitialTemperature);
     ui->lineEdit_moldMaterialInitialTemperature->setText(text);
@@ -182,12 +235,12 @@ void MoldConfiguration::updateValue(void)
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
 
-    string name = ui->lineEdit_inProjectName->text().toStdString();
+    wstring name = ui->lineEdit_inProjectName->text().toStdWString();
     setName(name);
 
     originalStlPath = ui->lineEdit_originalStlPath->text().toStdWString();
 
-    moldMaterialId = ui->lineEdit_moldMaterialId->text().toStdString();
+    moldMaterialId = ui->comboBox_MoldMaterialId->currentText().toStdString();
 
     moldMaterialInitialTemperature = ui->lineEdit_moldMaterialInitialTemperature->text().toDouble();
 

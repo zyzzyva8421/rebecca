@@ -33,7 +33,7 @@
        <locale language="Chinese" country="China"/>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_projectInfomation">
        <property name="sizePolicy">
@@ -446,10 +446,17 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="lineEdit_existingProjectPath"/>
+                  <widget class="QLineEdit" name="lineEdit_existingProjectPath">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
                  </item>
                  <item>
                   <widget class="QToolButton" name="toolButton_existingProjectPath">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="text">
                     <string>...</string>
                    </property>
@@ -721,19 +728,7 @@
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_12">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
+          <layout class="QVBoxLayout" name="verticalLayout_11">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <item>
@@ -760,83 +755,99 @@
             </layout>
            </item>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_11">
-             <item>
-              <widget class="QLabel" name="label_7">
-               <property name="text">
-                <string>变速率</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QTableWidget" name="tableWidget_varyingVelocity">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>50</height>
-                </size>
-               </property>
-               <column>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>变速率</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTableWidget" name="tableWidget_varyingVelocity">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>50</height>
+              </size>
+             </property>
+             <column>
+              <property name="text">
+               <string>时间 (s)</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>速率 (m/s)</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="frame_varyingVelocity">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QToolButton" name="toolButton_varyingVelocityAdd">
                 <property name="text">
-                 <string>时间 (s)</string>
+                 <string>...</string>
                 </property>
-               </column>
-               <column>
+                <property name="icon">
+                 <iconset resource="GFS_Resource.qrc">
+                  <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton_varyingVelocityDelete">
                 <property name="text">
-                 <string>速率 (m/s)</string>
+                 <string>...</string>
                 </property>
-               </column>
-              </widget>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_6">
-               <item>
-                <widget class="QToolButton" name="toolButton_varyingVelocityAdd">
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="GFS_Resource.qrc">
-                   <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_varyingVelocityDelete">
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="GFS_Resource.qrc">
-                   <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_4">
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="GFS_Resource.qrc">
-                   <normaloff>:/check.png</normaloff>:/check.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_5">
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="GFS_Resource.qrc">
-                   <normaloff>:/uncheck.png</normaloff>:/uncheck.png</iconset>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
+                <property name="icon">
+                 <iconset resource="GFS_Resource.qrc">
+                  <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton_varyingVelocityOK">
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="GFS_Resource.qrc">
+                  <normaloff>:/check.png</normaloff>:/check.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton_varyingVelocityCancel">
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="GFS_Resource.qrc">
+                  <normaloff>:/uncheck.png</normaloff>:/uncheck.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -849,19 +860,7 @@
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_15">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
+          <layout class="QVBoxLayout" name="verticalLayout_12">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
@@ -888,83 +887,99 @@
             </layout>
            </item>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_14">
-             <item>
-              <widget class="QLabel" name="label_11">
-               <property name="text">
-                <string>变压强</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QTableWidget" name="tableWidget_varyingPressure">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>50</height>
-                </size>
-               </property>
-               <column>
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>变压强</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTableWidget" name="tableWidget_varyingPressure">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>50</height>
+              </size>
+             </property>
+             <column>
+              <property name="text">
+               <string>时间 (s)</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>压强 (MPa)</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="frame_varyingPressure">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QToolButton" name="toolButton_varyingPressureAdd">
                 <property name="text">
-                 <string>时间 (s)</string>
+                 <string>...</string>
                 </property>
-               </column>
-               <column>
+                <property name="icon">
+                 <iconset resource="GFS_Resource.qrc">
+                  <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton_varyingPressureDelete">
                 <property name="text">
-                 <string>压强 (MPa)</string>
+                 <string>...</string>
                 </property>
-               </column>
-              </widget>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_8">
-               <item>
-                <widget class="QToolButton" name="toolButton_varyingPressureAdd">
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="GFS_Resource.qrc">
-                   <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_varyingPressureDelete">
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="GFS_Resource.qrc">
-                   <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_8">
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="GFS_Resource.qrc">
-                   <normaloff>:/check.png</normaloff>:/check.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="toolButton_9">
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="GFS_Resource.qrc">
-                   <normaloff>:/uncheck.png</normaloff>:/uncheck.png</iconset>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
+                <property name="icon">
+                 <iconset resource="GFS_Resource.qrc">
+                  <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton_varyingPressureOK">
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="GFS_Resource.qrc">
+                  <normaloff>:/check.png</normaloff>:/check.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton_varyingPressCancel">
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="GFS_Resource.qrc">
+                  <normaloff>:/uncheck.png</normaloff>:/uncheck.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -1186,6 +1201,12 @@
                        </property>
                        <item>
                         <widget class="QFrame" name="frame_29">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="frameShape">
                           <enum>QFrame::NoFrame</enum>
                          </property>
@@ -1219,12 +1240,18 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="lineEdit_moldMaterialId"/>
-                          </item>
-                          <item>
-                           <widget class="QToolButton" name="toolButton_2">
-                            <property name="text">
-                             <string>...</string>
+                           <widget class="TreeViewComboBox" name="comboBox_MoldMaterialId">
+                            <property name="minimumSize">
+                             <size>
+                              <width>200</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>100</width>
+                              <height>16777215</height>
+                             </size>
                             </property>
                            </widget>
                           </item>
@@ -1630,35 +1657,38 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QPushButton" name="pushButton_delete">
+               <widget class="QPushButton" name="pushButton_deleteMold">
                 <property name="text">
                  <string>删除</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_reload">
+               <widget class="QPushButton" name="pushButton_reloadMold">
                 <property name="text">
                  <string>重导入</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_modify">
+               <widget class="QPushButton" name="pushButton_modifyMold">
                 <property name="text">
                  <string>修改</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_preview">
+               <widget class="QPushButton" name="pushButton_previewMold">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
                  <string>预览</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_add">
+               <widget class="QPushButton" name="pushButton_addMold">
                 <property name="text">
                  <string>新增</string>
                 </property>
@@ -1780,7 +1810,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QToolButton" name="toolButton_6">
+               <widget class="QToolButton" name="toolButton_outletOK">
                 <property name="text">
                  <string>...</string>
                 </property>
@@ -1791,7 +1821,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QToolButton" name="toolButton_7">
+               <widget class="QToolButton" name="toolButton_outletCancel">
                 <property name="text">
                  <string>...</string>
                 </property>
@@ -1803,6 +1833,9 @@
               </item>
               <item>
                <widget class="QToolButton" name="toolButton_10">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
                  <string>...</string>
                 </property>
@@ -1921,7 +1954,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QToolButton" name="toolButton_13">
+               <widget class="QToolButton" name="toolButton_inletOK">
                 <property name="text">
                  <string>...</string>
                 </property>
@@ -1932,7 +1965,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QToolButton" name="toolButton_14">
+               <widget class="QToolButton" name="toolButton_inletCancel">
                 <property name="text">
                  <string>...</string>
                 </property>
@@ -1944,6 +1977,9 @@
               </item>
               <item>
                <widget class="QToolButton" name="toolButton_15">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
                  <string>...</string>
                 </property>
@@ -2711,7 +2747,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="tab_output">
        <attribute name="title">
         <string>输出配置</string>
        </attribute>
@@ -3040,8 +3076,6 @@
     <property name="title">
      <string>Project</string>
     </property>
-    <addaction name="actionOpen_Project"/>
-    <addaction name="actionMaterial_Group"/>
    </widget>
    <widget class="QMenu" name="menuSimulate">
     <property name="title">
@@ -3071,6 +3105,11 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="action_project"/>
+   <addaction name="action_open"/>
+   <addaction name="action_save"/>
+   <addaction name="action_material"/>
+   <addaction name="action_simulate"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget_log">
@@ -3078,7 +3117,7 @@
     <bool>false</bool>
    </property>
    <property name="windowTitle">
-    <string>输出</string>
+    <string>仿真引擎</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>4</number>
@@ -3099,6 +3138,12 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget_material">
+   <property name="minimumSize">
+    <size>
+     <width>895</width>
+     <height>356</height>
+    </size>
+   </property>
    <property name="locale">
     <locale language="Chinese" country="China"/>
    </property>
@@ -4313,18 +4358,61 @@
     </layout>
    </widget>
   </widget>
-  <action name="actionOpen_Project">
+  <action name="action_project">
    <property name="icon">
     <iconset resource="GFS_Resource.qrc">
      <normaloff>:/file.png</normaloff>:/file.png</iconset>
    </property>
    <property name="text">
-    <string>Open Project...</string>
+    <string>打开项目</string>
    </property>
   </action>
-  <action name="actionMaterial_Group">
+  <action name="action_material">
+   <property name="icon">
+    <iconset resource="GFS_Resource.qrc">
+     <normaloff>:/library.png</normaloff>:/library.png</iconset>
+   </property>
    <property name="text">
-    <string>Material Group...</string>
+    <string>材料库</string>
+   </property>
+   <property name="toolTip">
+    <string>材料库</string>
+   </property>
+  </action>
+  <action name="action_simulate">
+   <property name="icon">
+    <iconset resource="GFS_Resource.qrc">
+     <normaloff>:/run.png</normaloff>:/run.png</iconset>
+   </property>
+   <property name="text">
+    <string>仿真引擎</string>
+   </property>
+   <property name="toolTip">
+    <string>仿真引擎</string>
+   </property>
+  </action>
+  <action name="action_open">
+   <property name="icon">
+    <iconset resource="GFS_Resource.qrc">
+     <normaloff>:/open-file.png</normaloff>:/open-file.png</iconset>
+   </property>
+   <property name="text">
+    <string>打开项目</string>
+   </property>
+   <property name="toolTip">
+    <string>打开项目</string>
+   </property>
+  </action>
+  <action name="action_save">
+   <property name="icon">
+    <iconset resource="GFS_Resource.qrc">
+     <normaloff>:/save-file.png</normaloff>:/save-file.png</iconset>
+   </property>
+   <property name="text">
+    <string>保存项目</string>
+   </property>
+   <property name="toolTip">
+    <string>保存项目</string>
    </property>
   </action>
  </widget>

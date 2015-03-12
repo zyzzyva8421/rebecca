@@ -18,10 +18,11 @@ public:
         ParallelAdaptedOn,
         ParallelFixedOn
     };
-    Computing(const string& name);
+    Computing(const wstring& name);
     virtual void loadValue(const QDomElement& element);
     virtual void updateGui(void);
     virtual void updateValue(void);
+    virtual void clearValue(void);
 private:
     TimeStepMethod timeStepMethod;
     double timeStepFixedOnConf;

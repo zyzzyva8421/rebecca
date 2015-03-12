@@ -7,10 +7,11 @@ class MaterialGroup;
 class Material : public Category
 {
 public:
-    Material(const string& name);
+    Material(const wstring& name);
     virtual void loadValue(const QDomElement& element);
     virtual void updateGui(void);
     virtual void updateValue(void);
+    virtual void clearValue();
 
     void setGroup(MaterialGroup *_group) {group = _group;}
     MaterialGroup *getGroup(void) {return group;}
@@ -46,11 +47,13 @@ private:
 class MaterialGroup : public Category
 {
 public:
-    MaterialGroup(const string& name);
+    MaterialGroup(const wstring& name);
     ~MaterialGroup();
     virtual void loadValue(const QDomElement& element);
     virtual void updateGui(void);
     virtual void updateValue(void);
+    virtual void clearValue();
+    bool loadMaterialFile(const QString& filename);
 
     void addMaterial(Material *material) {
         materials.push_back(material);

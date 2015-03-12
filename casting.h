@@ -13,10 +13,14 @@ public:
         ConstantPressureOn,
         VaryingPressureOn
     };
-    Casting(const string& name);
+    Casting(const wstring& name);
     virtual void loadValue(const QDomElement& element);
     virtual void updateGui(void);
     virtual void updateValue(void);
+    virtual void clearValue(void);
+    vector< vector<double> >& getInjectMethodVaryingVelocityOnConf(void) {return injectMethodVaryingVelocityOnConf;}
+    vector< vector<double> >& getInjectMethodVaryingPressureOnConf(void) {return injectMethodVaryingPressureOnConf;}
+
 private:
     string castingMaterialId;
     double castingMaterialInitialTemperature;

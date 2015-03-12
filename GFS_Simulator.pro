@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     computing.cpp \
     output.cpp \
     material.cpp \
-    treeviewcombobox.cpp
+    treeviewcombobox.cpp \
+    dialog.cpp
 
 HEADERS  += mainwindow.h \
     category.h \
@@ -37,9 +38,11 @@ HEADERS  += mainwindow.h \
     computing.h \
     output.h \
     material.h \
-    treeviewcombobox.h
+    treeviewcombobox.h \
+    dialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    dialog.ui
 
 RESOURCES += \
     GFS_Resource.qrc

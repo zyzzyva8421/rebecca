@@ -2,8 +2,16 @@
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
 
-Casting::Casting(const string&_name) : Category(_name)
+Casting::Casting(const wstring&_name) : Category(_name)
 {
+    clearValue();
+}
+
+void Casting::clearValue() {
+    castingMaterialId = "";
+    injectMethodVaryingVelocityOnConf.clear();
+    injectMethodVaryingPressureOnConf.clear();
+    castingComment = L"";
     castingMaterialInitialTemperature = 0.0;
     injectMethod = ConstantVelocityOn;
     injectMethodConstantVelocityOnConf = 0.0;

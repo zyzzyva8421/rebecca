@@ -9,5 +9,10 @@
         <file>file-open.png</file>
         <file>folder.png</file>
         <file>材料库配置范例_20150303.xml</file>
+        <file>library.png</file>
+        <file>run.png</file>
+        <file>open-file.png</file>
+        <file>save-as.png</file>
+        <file>save-file.png</file>
     </qresource>
 </RCC>

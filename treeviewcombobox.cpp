@@ -11,9 +11,11 @@ TreeViewComboBox::TreeViewComboBox(QWidget *parent) :
     QComboBox(parent)
 {
     treeview = new QTreeView(this);
-    treeview->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
+    treeview->setWindowFlags(Qt::Popup);
     treeview->setSelectionMode(QAbstractItemView::SingleSelection);
     connect(treeview, SIGNAL(clicked(QModelIndex)), this, SLOT(on_treeview_clicked(QModelIndex)));
+    treeview->setAttribute(Qt::WA_WindowPropagation);
+    treeview->setAttribute(Qt::WA_X11NetWmWindowTypeCombo);
 }
 
 void TreeViewComboBox::setModel(QStandardItemModel *model)
@@ -46,7 +48,6 @@ void TreeViewComboBox::showPopup()
         QRect rect = geometry();
         treeview->move(mapToGlobal(QPoint(0, rect.height())));
         treeview->show();
-        treeview->setFocus();
     } else {
         QComboBox::showPopup();
     }

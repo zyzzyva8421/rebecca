@@ -11,10 +11,11 @@ public:
         KeTurbulenceOn,
         LesTurbulenceOn
     };
-    Simulation(const string& name);
+    Simulation(const wstring& name);
     virtual void loadValue(const QDomElement& element);
     virtual void updateGui(void);
     virtual void updateValue(void);
+    virtual void clearValue();
 private:
     bool heatTransferOn;
     bool phaseChangeOn;

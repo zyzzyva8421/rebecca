@@ -1,7 +1,7 @@
 #include "category.h"
 #include "mainwindow.h"
 #include <map>
-Category::Category(const string& _name) : name(_name)
+Category::Category(const wstring& _name) : name(_name)
 {
 }
 

@@ -2,12 +2,18 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-Simulation::Simulation(const string& _name) : Category(_name)
+Simulation::Simulation(const wstring& _name) : Category(_name)
+{
+    clearValue();
+}
+
+void Simulation::clearValue()
 {
     heatTransferOn = false;
     phaseChangeOn = false;
     fluidOn = false;
     fluidOnConf = LaminarOn;
+    simulationComment = L"";
 }
 
 void Simulation::loadValue(const QDomElement& element)

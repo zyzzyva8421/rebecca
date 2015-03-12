@@ -6,18 +6,76 @@
 #include "simulation.h"
 #include "computing.h"
 #include "output.h"
-Project::Project(const string& _name) : Category(_name)
+#include <QFile>
+#include <iostream>
+Project::Project(const wstring& _name) : Category(_name)
 {
+    information = new Information(L"Information");
+    casting = new Casting(L"Casting");
+    mold = new Mold(L"Mold");
+    entrance = new Entrance(L"Entrance");
+    simulation = new Simulation(L"Simulation");
+    computing = new Computing(L"Computing");
+    output = new Output(L"Output");
 }
 
 Project::~Project()
 {
-    for (vector<Category*>::iterator it = categories.begin(); it != categories.end(); it++) {
-        Category *category = (*it);
-        delete category;
-        category = NULL;
+    if (information) delete information;
+    if (casting) delete casting;
+    casting = NULL;
+    if (mold) delete mold;
+    mold = NULL;
+    if (entrance) delete entrance;
+    entrance = NULL;
+    if (simulation) delete simulation;
+    simulation = NULL;
+    if (computing) delete computing;
+    computing = NULL;
+    if (output) delete output;
+    output = NULL;
+}
+
+bool Project::loadConfigFile(const QString& filename)
+{
+    QFile file(filename);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        std::cerr << "Error: Can not read file" << qPrintable(filename)
+                     << "; " << qPrintable(file.errorString())
+                        << std::endl;
+
     }
-    categories.clear();
+    QString errorStr;
+    int errorLine;
+    int errorColumn;
+
+    QDomDocument doc;
+    if (!doc.setContent(&file, false, &errorStr, &errorLine, &errorColumn)) {
+        std::cerr << "Error: Parse error at line " << errorLine << ", "
+                     << "column " << errorColumn << ": "
+                        << qPrintable(errorStr) << std::endl;
+        return false;
+    }
+    QDomElement root = doc.documentElement();
+    if (root.tagName() != "Project") {
+        std::cerr << "Error: Not a project file" << std::endl;
+        return false;
+    }
+    string name = filename.toStdString();
+    loadValue(root);
+    file.close();
+    return true;
+}
+
+void Project::clearValue()
+{
+    if (information) information->clearValue();
+    if (casting) casting->clearValue();
+    if (mold) mold->clearValue();
+    if (entrance) entrance->clearValue();
+    if (simulation) simulation->clearValue();
+    if (computing) computing->clearValue();
+    if (output) output->clearValue();
 }
 
 void
@@ -28,23 +86,19 @@ Project::loadValue(const QDomElement &element)
         Category *category = NULL;
         string tagName = child.toElement().tagName().toStdString();
         if (tagName == "Information") {
-            category = new Information("Information");
+            information->loadValue(child.toElement());
         } else if (tagName == "Casting") {
-            category = new Casting("Casting");
+            casting->loadValue(child.toElement());
         } else if (tagName == "Mold") {
-            category = new Mold("Mold");
+            mold->loadValue(child.toElement());
         } else if (tagName == "Entrance") {
-            category = new Entrance("Entrance");
+            entrance->loadValue(child.toElement());
         } else if (tagName == "Simulation") {
-            category = new Simulation("Simulation");
+            simulation->loadValue(child.toElement());
         } else if (tagName == "Computing") {
-            category = new Computing("Computing");
+            computing->loadValue(child.toElement());
         } else if (tagName == "Output") {
-            category = new Output("Output");
-        }
-        if (category) {
-            addCategory(category);
-            category->loadValue(child.toElement());
+            output->loadValue(child.toElement());
         }
         child = child.nextSibling();
     }
@@ -52,29 +106,22 @@ Project::loadValue(const QDomElement &element)
 
 void Project::updateGui()
 {
-    for (vector<Category*>::iterator cat_it = categories.begin(); cat_it != categories.end(); cat_it++) {
-        Category *cat = (*cat_it);
-        if (cat) cat->updateGui();
-    }
+    information->updateGui();
+    casting->updateGui();
+    mold->updateGui();
+    entrance->updateGui();
+    simulation->updateGui();
+    computing->updateGui();
+    output->updateGui();
 }
 
 void Project::updateValue()
 {
-    for (vector<Category*>::iterator cat_it = categories.begin(); cat_it != categories.end(); cat_it++) {
-        Category *cat = (*cat_it);
-        if (cat) cat->updateValue();
-    }
-}
-
-Category *Project::getCategory(const string &name)
-{
-    vector<Category*>::iterator it;
-    Category *category = NULL;
-    for (it = categories.begin(); it != categories.end(); it++) {
-        category = (*it);
-        if (category && category->getName() == name) {
-            return category;
-        }
-    }
-    return NULL;
+    information->updateValue();
+    casting->updateValue();
+    mold->updateValue();
+    entrance->updateValue();
+    simulation->updateValue();
+    computing->updateValue();
+    output->updateValue();
 }

@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QTextCodec>
 #include <QModelIndex>
+#include <QMessageBox>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
@@ -11,8 +12,10 @@
 #include "mold.h"
 #include "simulation.h"
 #include "computing.h"
+#include "entrance.h"
 #include "output.h"
 #include "material.h"
+#include "dialog.h"
 MainWindow *MainWindow::CurrentWindow = NULL;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,13 +23,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     project = NULL;
-    materialgroup = NULL;
+    materialgroup = new MaterialGroup(L"MaterialGroup");
     materialgroupModel = new QStandardItemModel(ui->treeView_materials);
     ui->treeView_materials->setModel(materialgroupModel);
     ui->treeView_materials->setSelectionMode(QAbstractItemView::SingleSelection);
     connect(ui->treeView_materials->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             this, SLOT(on_treeView_materials_currentRowChanged(QModelIndex,QModelIndex)));
     ui->comboBox_material->setModel(materialgroupModel);
+    ui->comboBox_MoldMaterialId->setModel(materialgroupModel);
+    tabifyDockWidget(ui->dockWidget_log, ui->dockWidget_material);
+
     CurrentWindow = this;
 
     QTextCodec *codec = QTextCodec::codecForName("UTF8");
@@ -81,8 +87,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(buttonGroup_outputMethod, SIGNAL(buttonClicked(int)), this, SLOT(on_buttonGroup_outputMethod_clicked(int)));
 
     // action
-    connect(ui->actionOpen_Project, SIGNAL(triggered()), this, SLOT(on_actionOpen_Project_triggered()));
-    connect(ui->actionMaterial_Group, SIGNAL(triggered()), this, SLOT(on_actionMaterial_Group_triggered()));
+    connect(ui->action_project, SIGNAL(triggered()), this, SLOT(on_action_project_triggered()));
+    connect(ui->action_material, SIGNAL(triggered()), this, SLOT(on_action_material_triggered()));
+    connect(ui->action_simulate, SIGNAL(triggered()), this, SLOT(on_action_log_triggered()));
+    connect(ui->action_open, SIGNAL(triggered()), this, SLOT(on_action_open_triggered()));
+    connect(ui->action_save, SIGNAL(triggered()), this, SLOT(on_action_save_triggered()));
 
     // initilization
     ui->checkBox_basedOnExistingProject->setChecked(false);
@@ -101,6 +110,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->radioButton_OutputIntervalTimeOn->click();
 
+    wstring filename = L"/Developer/Applications/Qt/GFS_Simulator/casting_materials.xml";
+    QString materialfile = QString::fromStdWString(filename);
+    if (materialgroup) {
+        materialgroup->loadMaterialFile(materialfile);
+        materialgroup->updateGui();
+    }
+}
+
+void MainWindow::setProject(Project *_project) {
+    if (project == _project) return;
+    if (project) delete project;
+    project = _project;
+    project->updateGui();
 }
 
 void MainWindow::UpdateTable(const vector< vector<double> >&data, QTableWidget *table)
@@ -111,6 +133,7 @@ void MainWindow::UpdateTable(const vector< vector<double> >&data, QTableWidget *
     for (it = data.begin(); it != data.end(); it++) {
         p = (*it);
         table->insertRow(table->rowCount());
+        table->setRowHeight(table->rowCount()-1, table->fontMetrics().height());
         vector<double>::iterator it2;
         QString text;
         QTableWidgetItem *item = NULL;
@@ -130,30 +153,29 @@ void MainWindow::UpdateData(QTableWidget *table, vector< vector<double> >&data)
     QTableWidgetItem *w = NULL;
     for (int i = 0; i < table->rowCount(); i++) {
         vector<double> p;
-        for (int col = 0; col < table->colorCount(); i++) {
+        for (int col = 0; col < table->columnCount(); col++) {
             w = table->item(i, col);
             p.push_back(w->text().toDouble());
-            data.push_back(p);
         }
+        data.push_back(p);
     }
 }
 
-void MainWindow::on_actionOpen_Project_triggered()
+void MainWindow::on_action_project_triggered()
 {
-    QString filename = openFileDialog(this, "Open Project", xmlPath, "XML files (*.xml)");
-    if (!filename.isEmpty()) {
-        loadConfigFile(filename);
-    }
-    if (project) project->updateGui();
+    Dialog *dialog = new Dialog(this);
+    dialog->show();
 }
 
-void MainWindow::on_actionMaterial_Group_triggered()
+void MainWindow::on_action_log_triggered() {
+    ui->dockWidget_log->setVisible(true);
+    ui->dockWidget_log->raise();
+}
+
+void MainWindow::on_action_material_triggered()
 {
-    QString filename = openFileDialog(this, "Material Group", xmlPath, "XML files (*.xml)");
-    if (!filename.isEmpty()) {
-        loadMaterialFile(filename);
-    }
-    if (materialgroup) materialgroup->updateGui();
+    ui->dockWidget_material->setVisible(true);
+    ui->dockWidget_material->raise();
 }
 
 void MainWindow::on_buttonGroup_timeStepMethod_clicked(int id)
@@ -206,11 +228,9 @@ void MainWindow::on_buttonGroup_injectionMethod_clicked(int id)
     ui->lineEdit_constantPressure->setDisabled(true);
     ui->lineEdit_constantVelocity->setDisabled(true);
     ui->tableWidget_varyingPressure->setDisabled(true);
-    ui->toolButton_varyingPressureAdd->setDisabled(true);
-    ui->toolButton_varyingPressureDelete->setDisabled(true);
+    ui->frame_varyingPressure->setDisabled(true);
     ui->tableWidget_varyingVelocity->setDisabled(true);
-    ui->toolButton_varyingVelocityAdd->setDisabled(true);
-    ui->toolButton_varyingVelocityDelete->setDisabled(true);
+    ui->frame_varyingVelocity->setDisabled(true);
     switch (id) {
     case Casting::ConstantPressureOn: {
         ui->lineEdit_constantPressure->setDisabled(false);
@@ -222,14 +242,12 @@ void MainWindow::on_buttonGroup_injectionMethod_clicked(int id)
     }
     case Casting::VaryingPressureOn: {
         ui->tableWidget_varyingPressure->setDisabled(false);
-        ui->toolButton_varyingPressureAdd->setDisabled(false);
-        ui->toolButton_varyingPressureDelete->setDisabled(false);
+        ui->frame_varyingPressure->setDisabled(false);
         break;
     }
     case Casting::VaryingVelocityOn: {
         ui->tableWidget_varyingVelocity->setDisabled(false);
-        ui->toolButton_varyingVelocityAdd->setDisabled(false);
-        ui->toolButton_varyingVelocityDelete->setDisabled(false);
+        ui->frame_varyingVelocity->setDisabled(false);
         break;
     }
     default: break;
@@ -257,6 +275,7 @@ void MainWindow::on_buttonGroup_outputMethod_clicked(int id)
 MainWindow::~MainWindow()
 {
     delete ui;
+    CurrentWindow = NULL;
 }
 
 
@@ -313,10 +332,12 @@ void MainWindow::tableInsertRow(QTableWidget *table, int row_num)
     if (cur_row == -1) {
         for (int i = 0; i < row_num; i++) {
             table->insertRow(table->rowCount());
+            table->setRowHeight(table->rowCount()-1, table->fontMetrics().height());
         }
     } else {
         for (int i = 0; i < row_num; i++) {
             table->insertRow(cur_row);
+            table->setRowHeight(cur_row+i+1, table->fontMetrics().height());
         }
     }
 }
@@ -356,78 +377,12 @@ void MainWindow::on_toolButton_varyingPressureDelete_clicked()
     tableDeleteRow(ui->tableWidget_varyingPressure);
 }
 
-bool MainWindow::loadMaterialFile(const QString &filename)
-{
-    QFile file(filename);
-    if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        std::cerr << "Error: Can not read file" << qPrintable(filename)
-                     << "; " << qPrintable(file.errorString())
-                        << std::endl;
-
-    }
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
-
-    QDomDocument doc;
-    if (!doc.setContent(&file, false, &errorStr, &errorLine, &errorColumn)) {
-        std::cerr << "Error: Parse error at line " << errorLine << ", "
-                     << "column " << errorColumn << ": "
-                        << qPrintable(errorStr) << std::endl;
-        return false;
-    }
-    QDomElement root = doc.documentElement();
-    if (root.tagName() != "materialgroup") {
-        std::cerr << "Error: Not a material file" << std::endl;
-        return false;
-    }
-
-    materialgroup = new MaterialGroup("materialgroup");
-    materialgroup->loadValue(root);
-    materialgroup->updateGui();
-    file.close();
-    return true;
-}
-
-bool MainWindow::loadConfigFile(const QString& filename)
-{
-    QFile file(filename);
-    if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        std::cerr << "Error: Can not read file" << qPrintable(filename)
-                     << "; " << qPrintable(file.errorString())
-                        << std::endl;
-
-    }
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
-
-    QDomDocument doc;
-    if (!doc.setContent(&file, false, &errorStr, &errorLine, &errorColumn)) {
-        std::cerr << "Error: Parse error at line " << errorLine << ", "
-                     << "column " << errorColumn << ": "
-                        << qPrintable(errorStr) << std::endl;
-        return false;
-    }
-    xmlPath = filename;
-    QDomElement root = doc.documentElement();
-    if (root.tagName() != "Project") {
-        std::cerr << "Error: Not a project file" << std::endl;
-        return false;
-    }
-    string name = filename.toStdString();
-    project = new Project(name);
-    project->loadValue(root);
-    file.close();
-    return true;
-}
-
 void MainWindow::on_listWidget_addedStlMolds_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
-    Mold *mold = dynamic_cast<Mold*>(project->getCategory("Mold"));
+    Mold *mold = dynamic_cast<Mold*>(project->getMold());
     if (mold) {
         if (current) {
-            string str = current->text().toStdString();
+            wstring str = current->text().toStdWString();
             MoldConfiguration *conf = mold->getMoldConfiguration(str);
             if (conf) conf->updateGui();
         }
@@ -473,5 +428,125 @@ void MainWindow::on_checkBox_fluidModel_stateChanged(int arg1)
         ui->frame_fluidModel->setDisabled(true);
     } else {
         ui->frame_fluidModel->setDisabled(false);
+    }
+}
+
+void MainWindow::on_action_open_triggered()
+{
+    wstring title = L"项目路径";
+    QString dir = MainWindow::openDirDialog(this, QString::fromStdWString(title), "./");
+    Project *_project = new Project(L"Project");
+    QString filename = dir+"/project.xml";
+    if (_project->loadConfigFile(filename)) {
+        if (project) {
+            delete project;
+        }
+        project = _project;
+        project->updateGui();
+    } else {
+        delete _project;
+        _project = NULL;
+    }
+}
+
+void MainWindow::on_action_save_triggered()
+{
+
+}
+
+void MainWindow::on_toolButton_varyingVelocityOK_clicked()
+{
+    if (project) {
+        UpdateData(ui->tableWidget_varyingVelocity,
+                   project->getCasting()->getInjectMethodVaryingVelocityOnConf());
+    }
+}
+
+void MainWindow::on_toolButton_varyingVelocityCancel_clicked()
+{
+    if (project) {
+        UpdateTable(project->getCasting()->getInjectMethodVaryingVelocityOnConf(),
+                    ui->tableWidget_varyingVelocity);
+    }
+}
+
+void MainWindow::on_toolButton_varyingPressureOK_clicked()
+{
+    if (project) {
+        UpdateData(ui->tableWidget_varyingPressure,
+                   project->getCasting()->getInjectMethodVaryingPressureOnConf());
+    }
+}
+
+void MainWindow::on_toolButton_varyingPressCancel_clicked()
+{
+    if (project) {
+        UpdateTable(project->getCasting()->getInjectMethodVaryingPressureOnConf(),
+                    ui->tableWidget_varyingPressure);
+    }
+}
+
+void MainWindow::on_toolButton_outletOK_clicked()
+{
+    if (project) {
+        UpdateData(ui->tableWidget_outletCoordinates,
+                   project->getEntrance()->getOutletCoordinates());
+    }
+}
+
+void MainWindow::on_toolButton_outletCancel_clicked()
+{
+    if (project) {
+        UpdateTable(project->getEntrance()->getOutletCoordinates(),
+                    ui->tableWidget_outletCoordinates);
+    }
+}
+
+void MainWindow::on_toolButton_inletOK_clicked()
+{
+    if (project) {
+        UpdateData(ui->tableWidget_inletCoordinates,
+                   project->getEntrance()->getInletCoordinates());
+    }
+}
+
+void MainWindow::on_toolButton_inletCancel_clicked()
+{
+    if (project) {
+        UpdateTable(project->getEntrance()->getInletCoordinates(),
+                    ui->tableWidget_inletCoordinates);
+    }
+}
+
+void MainWindow::on_pushButton_addMold_clicked()
+{
+    if (project) {
+        project->getMold()->addConfiguration(L"");
+    }
+}
+
+void MainWindow::on_pushButton_reloadMold_clicked()
+{
+
+}
+
+void MainWindow::on_pushButton_deleteMold_clicked()
+{
+    QString title = QString::fromStdWString(L"删除当前模具配置");
+    QString text = QString::fromStdWString(L"是否删除当前模具配置？");
+    int clickedButton = QMessageBox::question(this, title, text,
+                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+    if (clickedButton == QMessageBox::No) return;
+    wstring mold = ui->listWidget_addedStlMolds->currentItem()->text().toStdWString();
+    if (project) {
+        project->getMold()->deleteConfiguration(mold);
+    }
+}
+
+void MainWindow::on_pushButton_modifyMold_clicked()
+{
+    wstring mold = ui->listWidget_addedStlMolds->currentItem()->text().toStdWString();
+    if (project) {
+        project->getMold()->modifyConfiguration(mold);
     }
 }

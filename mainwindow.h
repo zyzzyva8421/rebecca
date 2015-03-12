@@ -30,6 +30,8 @@ public:
 
     static void UpdateTable(const vector< vector<double> >&data, QTableWidget *table);
     static void UpdateData(QTableWidget *table, vector< vector<double> >&data);
+    static QString openFileDialog(QWidget *parent, const QString &caption, const QString &dir, const QString &filter);
+    static QString openDirDialog(QWidget *parent, const QString &caption, const QString &dir);
 
     QButtonGroup *get_buttonGroup_injectionMethod(void) {return buttonGroup_injectionMethod;}
     QButtonGroup *get_buttonGroup_moldSurfaceRoughness(void) {return buttonGroup_moldSurfaceRoughness;}
@@ -41,6 +43,8 @@ public:
     QStandardItemModel *getMaterialGroupModel(void) {return materialgroupModel;}
 
     static MainWindow *CurrentWindow;
+
+    void setProject(Project *_project);
 
 private slots:
 
@@ -62,8 +66,11 @@ private slots:
 
     void on_toolButton_varyingPressureDelete_clicked();
 
-    void on_actionOpen_Project_triggered();
-    void on_actionMaterial_Group_triggered();
+    void on_action_project_triggered();
+    void on_action_material_triggered();
+    void on_action_log_triggered();
+    void on_action_open_triggered();
+    void on_action_save_triggered();
 
     void on_listWidget_addedStlMolds_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void on_treeView_materials_currentRowChanged(QModelIndex current, QModelIndex previous);
@@ -86,15 +93,34 @@ private slots:
 
     void on_buttonGroup_outputMethod_clicked(int id);
 
+    void on_toolButton_varyingVelocityOK_clicked();
+
+    void on_toolButton_varyingVelocityCancel_clicked();
+
+    void on_toolButton_varyingPressureOK_clicked();
+
+    void on_toolButton_varyingPressCancel_clicked();
+
+    void on_toolButton_outletOK_clicked();
+
+    void on_toolButton_outletCancel_clicked();
+
+    void on_toolButton_inletOK_clicked();
+
+    void on_toolButton_inletCancel_clicked();
+
+    void on_pushButton_addMold_clicked();
+
+    void on_pushButton_reloadMold_clicked();
+
+    void on_pushButton_deleteMold_clicked();
+
+    void on_pushButton_modifyMold_clicked();
+
 private:
 
-    QString xmlPath;
-    QString openFileDialog(QWidget *parent, const QString &caption, const QString &dir, const QString &filter);
-    QString openDirDialog(QWidget *parent, const QString &caption, const QString &dir);
     void tableInsertRow(QTableWidget *table, int row_num = 1);
     void tableDeleteRow(QTableWidget *table, int row_num = 1);
-    bool loadConfigFile(const QString& filename);
-    bool loadMaterialFile(const QString& filename);
 
     Ui::MainWindow *ui;
     QButtonGroup *buttonGroup_injectionMethod;

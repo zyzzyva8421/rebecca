@@ -6,13 +6,16 @@ class MoldConfiguration;
 class Mold : public Category
 {
 public:
-    Mold(const string& name);
+    Mold(const wstring& name);
     ~Mold();
     virtual void loadValue(const QDomElement& element);
     virtual void updateGui(void);
     virtual void updateValue(void);
-
-    MoldConfiguration *getMoldConfiguration(const string& stl);
+    virtual void clearValue();
+    void deleteConfiguration(const wstring &name);
+    void modifyConfiguration(const wstring &name);
+    void addConfiguration(const wstring &name);
+    MoldConfiguration *getMoldConfiguration(const wstring& stl);
 
 private:
     vector<MoldConfiguration*> molds;
@@ -31,10 +34,11 @@ public:
         RiserOn,
         CoreOn
     };
-    MoldConfiguration(const string& name);
+    MoldConfiguration(const wstring& name);
     virtual void loadValue(const QDomElement& element);
     virtual void updateGui(void);
     virtual void updateValue(void);
+    virtual void clearValue();
 
 private:
     wstring originalStlPath;

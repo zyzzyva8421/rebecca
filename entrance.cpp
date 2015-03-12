@@ -2,8 +2,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-Entrance::Entrance(const string& _name) : Category(_name)
+Entrance::Entrance(const wstring& _name) : Category(_name)
 {
+    clearValue();
+}
+
+void Entrance::clearValue() {
+    outletCoordinates.clear();
+    inletCoordinates.clear();
+    entranceComment = L"";
 }
 
 void Entrance::loadValue(const QDomElement& element) {

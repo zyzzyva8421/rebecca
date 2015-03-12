@@ -5,10 +5,16 @@
 class Information : public Category
 {
 public:
-    Information(const string& name);
+    Information(const wstring& name);
     virtual void loadValue(const QDomElement& element);
     virtual void updateGui(void);
     virtual void updateValue(void);
+    virtual void clearValue(void);
+
+    void* getDialogUi();
+    void updateDialogGui(void);
+    void updateValueFromDialog(void);
+
 private:
     wstring castingName;
     int castingNumber;
