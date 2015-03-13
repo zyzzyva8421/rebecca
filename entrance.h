@@ -7,6 +7,7 @@ class Entrance : public Category
 public:
     Entrance(const wstring& name);
     virtual void loadValue(const QDomElement& element);
+    virtual void writeValue(QXmlStreamWriter& writer);
     virtual void updateGui(void);
     virtual void updateValue(void);
     virtual void clearValue(void);

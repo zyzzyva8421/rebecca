@@ -8,6 +8,7 @@
 #include "ui_mainwindow.h"
 #include <iostream>
 #include "project.h"
+#include "information.h"
 #include "category.h"
 #include "casting.h"
 #include "mold.h"
@@ -507,6 +508,28 @@ void MainWindow::on_action_open_triggered()
 
 void MainWindow::on_action_save_triggered()
 {
+    if (project == NULL) return;
+    wstring projectpath = project->getInformation()->getProjectPath();
+    if (projectpath.empty()) return;
+    QString path = QString::fromStdWString(projectpath);
+    QDir dir(path);
+    if (!dir.exists()) {
+        if (!dir.mkpath(dir.absolutePath())) {
+            std::cerr << "Error: Cannnot open dir "
+                         << qPrintable(dir.absolutePath()) << std::endl;
+            return;
+        }
+    }
+    QString filename = QString::fromStdWString(projectpath)+"/project.xml";
+    if (!project->writeConfigFile(filename)) {
+        // TODO: popup an error message
+    }
+    QString materialfile = QDir::homePath()+"/.ifcfd/casting_materials.xml";
+    if (materialgroup) {
+        if (!materialgroup->saveMaterialFile(materialfile)) {
+            // TODO:popup an error message
+        }
+    }
 
 }
 

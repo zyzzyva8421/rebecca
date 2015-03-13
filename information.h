@@ -7,6 +7,7 @@ class Information : public Category
 public:
     Information(const wstring& name);
     virtual void loadValue(const QDomElement& element);
+    virtual void writeValue(QXmlStreamWriter& writer);
     virtual void updateGui(void);
     virtual void updateValue(void);
     virtual void clearValue(void);
@@ -14,6 +15,8 @@ public:
     void* getDialogUi();
     void updateDialogGui(void);
     void updateValueFromDialog(void);
+
+    wstring getProjectPath(void) {return projectPath;}
 
 private:
     wstring castingName;

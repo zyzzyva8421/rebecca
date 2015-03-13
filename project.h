@@ -16,10 +16,12 @@ public:
     ~Project();
 
     void virtual loadValue(const QDomElement &element);
+    virtual void writeValue(QXmlStreamWriter& writer);
     void virtual updateGui(void);
     void virtual updateValue(void);
     void virtual clearValue();
     bool loadConfigFile(const QString& filename);
+    bool writeConfigFile(const QString& filename);
 
     Mold *getMold(void) {return mold;}
     Information *getInformation(void) {return information;}

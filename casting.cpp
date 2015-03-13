@@ -18,6 +18,69 @@ void Casting::clearValue() {
     injectMethodConstantPressureOnConf = 0.0;
 }
 
+void Casting::writeValue(QXmlStreamWriter &writer)
+{
+    updateValue();
+    writer.writeStartElement("Casting");
+        writer.writeStartElement("CastingMaterialId");
+        writer.writeAttribute("value", QString::fromStdString(castingMaterialId));
+        writer.writeEndElement();
+        writer.writeStartElement("CastingMaterialInitialTemperature");
+        writer.writeAttribute("value", QString::number(castingMaterialInitialTemperature));
+        writer.writeEndElement();
+
+        writer.writeStartElement("InjectMethod");
+            writer.writeStartElement("ConstantVelocityOn");
+            writer.writeAttribute("value", QString::number((injectMethod==ConstantVelocityOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("VaryingVelocityOn");
+            writer.writeAttribute("value", QString::number((injectMethod==VaryingVelocityOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("ConstantPressureOn");
+            writer.writeAttribute("value", QString::number((injectMethod==ConstantPressureOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("VaryingPressureOn");
+            writer.writeAttribute("value", QString::number((injectMethod==VaryingPressureOn)?1:0));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("InjectMethodConstantVelocityOnConf");
+            writer.writeStartElement("Value");
+            writer.writeAttribute("value", QString::number(injectMethodConstantVelocityOnConf));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("InjectMethodVaryingVelocityOnConf");
+            for (vector< vector<double> >::iterator it = injectMethodVaryingVelocityOnConf.begin();
+                 it != injectMethodVaryingVelocityOnConf.end(); it++) {
+                double time = (*it).at(0);
+                double speed = (*it).at(1);
+                writer.writeStartElement("Value");
+                writer.writeAttribute("time", QString::number(time));
+                writer.writeAttribute("speed", QString::number(speed));
+                writer.writeEndElement();
+            }
+        writer.writeEndElement();
+        writer.writeStartElement("InjectMethodConstantPressureOnConf");
+            writer.writeStartElement("Value");
+            writer.writeAttribute("value", QString::number(injectMethodConstantPressureOnConf));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("InjectMethodVaryingPressureOnConf");
+            for (vector< vector<double> >::iterator it = injectMethodVaryingPressureOnConf.begin();
+                 it != injectMethodVaryingPressureOnConf.end(); it++) {
+                double time = (*it).at(0);
+                double pressure = (*it).at(1);
+                writer.writeStartElement("Value");
+                writer.writeAttribute("time", QString::number(time));
+                writer.writeAttribute("pressure", QString::number(pressure));
+                writer.writeEndElement();
+            }
+        writer.writeEndElement();
+        writer.writeStartElement("CastingComment");
+        writer.writeAttribute("value", QString::fromStdWString(castingComment));
+        writer.writeEndElement();
+    writer.writeEndElement();
+}
+
 void Casting::loadValue(const QDomElement& element) {
     QDomNode child = element.firstChild();
     QDomNode child1;

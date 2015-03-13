@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <QDomDocument>
+#include <QXmlStreamWriter>
 
 using namespace std;
 class Category
@@ -12,6 +13,7 @@ public:
     virtual ~Category();
 
     virtual void loadValue(const QDomElement& element) = 0;
+    virtual void writeValue(QXmlStreamWriter& writer) = 0;
     virtual void updateGui(void) = 0;
     virtual void updateValue(void) = 0;
     virtual void clearValue(void) = 0;

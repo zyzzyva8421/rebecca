@@ -22,6 +22,16 @@ void Mold::clearValue()
     molds.clear();
 }
 
+void Mold::writeValue(QXmlStreamWriter &writer)
+{
+    updateValue();
+    writer.writeStartElement("Mold");
+    for (vector<MoldConfiguration*>::iterator it = molds.begin(); it != molds.end(); it++) {
+        (*it)->writeValue(writer);
+    }
+    writer.writeEndElement();
+}
+
 void Mold::loadValue(const QDomElement& element)
 {
     QDomNode child = element.firstChild();
@@ -123,6 +133,53 @@ void MoldConfiguration::clearValue()
     moldSurfaceRoughness = NoSlipOn;
     moldFunction = CoverOn;
     moldComment = L"";
+}
+
+void MoldConfiguration::writeValue(QXmlStreamWriter &writer)
+{
+    writer.writeStartElement("Stl");
+    writer.writeAttribute("id", QString::fromStdWString(getName()));
+        writer.writeStartElement("OriginalStlPath");
+        writer.writeAttribute("value", QString::fromStdWString(originalStlPath));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldMaterialId");
+        writer.writeAttribute("value", QString::fromStdString(moldMaterialId));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldMaterialInitialTemperature");
+        writer.writeAttribute("value", QString::number(moldMaterialInitialTemperature));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldHeatExchangeCoefficient");
+        writer.writeAttribute("value", QString::number(moldHeatExchangeCoefficient));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldSurfaceRoughness");
+            writer.writeStartElement("NoSlipOn");
+            writer.writeAttribute("value", QString::number((moldSurfaceRoughness==NoSlipOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("FreeSlipOn");
+            writer.writeAttribute("value", QString::number((moldSurfaceRoughness==FreeSlipOn)?1:0));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("MoldFunction");
+            writer.writeStartElement("CoverOn");
+            writer.writeAttribute("value", QString::number((moldFunction==CoverOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("MovingOn");
+            writer.writeAttribute("value", QString::number((moldFunction==MovingOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("SprueOn");
+            writer.writeAttribute("value", QString::number((moldFunction==SprueOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("RiserOn");
+            writer.writeAttribute("value", QString::number((moldFunction==RiserOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("CoreOn");
+            writer.writeAttribute("value", QString::number((moldFunction==CoreOn)?1:0));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("MoldComment");
+        writer.writeAttribute("value", QString::fromStdWString(moldComment));
+        writer.writeEndElement();
+    writer.writeEndElement();
 }
 
 void MoldConfiguration::loadValue(const QDomElement& element)

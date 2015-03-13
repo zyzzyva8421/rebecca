@@ -13,6 +13,42 @@ void Entrance::clearValue() {
     entranceComment = L"";
 }
 
+void Entrance::writeValue(QXmlStreamWriter &writer)
+{
+    updateValue();
+    writer.writeStartElement("Entrance");
+        writer.writeStartElement("OutletCoordinates");
+        for (vector< vector<double> >::iterator it = outletCoordinates.begin();
+             it != outletCoordinates.end(); it++) {
+            double x = (*it).at(0);
+            double y = (*it).at(1);
+            double z = (*it).at(2);
+            writer.writeStartElement("Value");
+            writer.writeAttribute("x", QString::number(x));
+            writer.writeAttribute("y", QString::number(y));
+            writer.writeAttribute("z", QString::number(z));
+            writer.writeEndElement();
+        }
+        writer.writeEndElement();
+        writer.writeStartElement("InletCoordinates");
+        for (vector< vector<double> >::iterator it = inletCoordinates.begin();
+             it != inletCoordinates.end(); it++) {
+            double x = (*it).at(0);
+            double y = (*it).at(1);
+            double z = (*it).at(2);
+            writer.writeStartElement("Value");
+            writer.writeAttribute("x", QString::number(x));
+            writer.writeAttribute("y", QString::number(y));
+            writer.writeAttribute("z", QString::number(z));
+            writer.writeEndElement();
+        }
+        writer.writeEndElement();
+        writer.writeStartElement("EntranceComment");
+        writer.writeAttribute("value", QString::fromStdWString(entranceComment));
+        writer.writeEndElement();
+    writer.writeEndElement();
+}
+
 void Entrance::loadValue(const QDomElement& element) {
     QDomNode child = element.firstChild();
     QDomNode child1;

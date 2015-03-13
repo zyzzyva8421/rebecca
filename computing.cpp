@@ -22,6 +22,76 @@ void Computing::clearValue() {
     computingComment = L"";
 }
 
+void Computing::writeValue(QXmlStreamWriter &writer)
+{
+    updateValue();
+    writer.writeStartElement("Computing");
+        writer.writeStartElement("TimeStepMethod");
+            writer.writeStartElement("TimeStepAdaptedOn");
+            writer.writeAttribute("value", QString::number((timeStepMethod==TimeStepAdaptedOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("TimeStepFixedOn");
+            writer.writeAttribute("value", QString::number((timeStepMethod==TimeStepFixedOn)?1:0));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("TimeStepFixedOnConf");
+            writer.writeStartElement("Value");
+            writer.writeAttribute("value", QString::number(timeStepFixedOnConf));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("IterationMaximumRelativeError");
+        writer.writeAttribute("value", QString::number(iterationMaximumRelativeError));
+        writer.writeEndElement();
+        writer.writeStartElement("IterationMaximumStepCount");
+        writer.writeAttribute("value", QString::number(iterationMaximumStepCount));
+        writer.writeEndElement();
+        writer.writeStartElement("IterationMinimumStepCount");
+        writer.writeAttribute("value", QString::number(iterationMinimumStepCount));
+        writer.writeEndElement();
+        writer.writeStartElement("TerminationCondition");
+            writer.writeStartElement("TerminationEndTimeOn");
+            writer.writeAttribute("value", QString::number((terminationCondition==TerminationEndTimeOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("TerminationFillingRateOn");
+            writer.writeAttribute("value", QString::number((terminationCondition==TerminationFillingRateOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("TerminationMaximumStepOn");
+            writer.writeAttribute("value", QString::number((terminationCondition==TerminationMaximumStepOn)?1:0));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("TerminationEndTimeOnConf");
+            writer.writeStartElement("Value");
+            writer.writeAttribute("value", QString::number(terminationEndTimeOnConf));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("TerminationFillingRateOnConf");
+            writer.writeStartElement("Value");
+            writer.writeAttribute("value", QString::number(terminationFillingRateOnConf));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("TerminationMaximumStepOnConf");
+            writer.writeStartElement("Value");
+            writer.writeAttribute("value", QString::number(terminationMaximumStepOnConf));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("ParallelMethod");
+            writer.writeStartElement("ParallelAdaptedOn");
+            writer.writeAttribute("value", QString::number((parallelMethod==ParallelAdaptedOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("ParallelFixedOn");
+            writer.writeAttribute("value", QString::number((parallelMethod==ParallelFixedOn)?1:0));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("ParallelFixedOnConf");
+            writer.writeStartElement("Value");
+            writer.writeAttribute("value", QString::number(parallelFixedOnConf));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("ComputingComment");
+        writer.writeAttribute("value", QString::fromStdWString(computingComment));
+        writer.writeEndElement();
+    writer.writeEndElement();
+}
 void Computing::loadValue(const QDomElement &element)
 {
     QDomNode child = element.firstChild();

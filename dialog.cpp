@@ -4,6 +4,7 @@
 #include "project.h"
 #include "information.h"
 #include <iostream>
+#include <QDir>
 
 Dialog *Dialog::CurrentDialog = NULL;
 Dialog::Dialog(QWidget *parent) :
@@ -124,6 +125,16 @@ void Dialog::on_buttonBox_accepted()
     if (main) {
         project->getInformation()->updateValueFromDialog();
         main->setProject(project);
+        wstring projectpath = project->getInformation()->getProjectPath();
+        QString path = QString::fromStdWString(projectpath);
+        QDir dir(path);
+        if (!dir.exists()) {
+            if (!dir.mkpath(dir.absolutePath())) {
+                std::cerr << "Error: Cannnot open dir "
+                             << qPrintable(dir.absolutePath()) << std::endl;
+                return;
+            }
+        }
     }
     close();
 }

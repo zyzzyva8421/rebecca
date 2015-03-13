@@ -16,6 +16,39 @@ void Simulation::clearValue()
     simulationComment = L"";
 }
 
+void Simulation::writeValue(QXmlStreamWriter &writer)
+{
+    updateValue();
+    writer.writeStartElement("Simulation");
+        writer.writeStartElement("HeatTransferOn");
+        writer.writeAttribute("value", QString::number((heatTransferOn)?1:0));
+        writer.writeEndElement();
+        writer.writeStartElement("PhaseChangeOn");
+        writer.writeAttribute("value", QString::number((phaseChangeOn)?1:0));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidOn");
+        writer.writeAttribute("value", QString::number((fluidOn)?1:0));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidOnConf");
+            writer.writeStartElement("LaminarOn");
+            writer.writeAttribute("value", QString::number((fluidOnConf==LaminarOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("SaTurbulenceOn");
+            writer.writeAttribute("value", QString::number((fluidOnConf==SaTurbulenceOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("KeTurbulenceOn");
+            writer.writeAttribute("value", QString::number((fluidOnConf==KeTurbulenceOn)?1:0));
+            writer.writeEndElement();
+            writer.writeStartElement("LesTurbulenceOn");
+            writer.writeAttribute("value", QString::number((fluidOnConf==LesTurbulenceOn)?1:0));
+            writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("SimulationComment");
+        writer.writeAttribute("value", QString::fromStdWString(simulationComment));
+        writer.writeEndElement();
+    writer.writeEndElement();
+}
+
 void Simulation::loadValue(const QDomElement& element)
 {
     QDomNode child = element.firstChild();

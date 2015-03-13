@@ -20,6 +20,49 @@ void Output::clearValue()
     outputComment = L"";
 }
 
+void Output::writeValue(QXmlStreamWriter &writer)
+{
+    updateValue();
+    writer.writeStartElement("Output");
+    writer.writeStartElement("OutputMethod");
+        writer.writeStartElement("OutputIntervalTimeOn");
+        writer.writeAttribute("value", QString::number((outputMethod==OutputIntervalTimeOn)?1:0));
+        writer.writeEndElement();
+        writer.writeStartElement("OutputIntervalStepOn");
+        writer.writeAttribute("value", QString::number((outputMethod==OutputIntervalStepOn)?1:0));
+        writer.writeEndElement();
+    writer.writeEndElement();
+    writer.writeStartElement("OutputIntervalTimeOnConf");
+        writer.writeStartElement("Value");
+        writer.writeAttribute("value", QString::number(outputIntervalTimeOnConf));
+        writer.writeEndElement();
+    writer.writeEndElement();
+    writer.writeStartElement("OutputIntervalStepOnConf");
+        writer.writeStartElement("Value");
+        writer.writeAttribute("value", QString::number(outputIntervalStepOnConf));
+        writer.writeEndElement();
+    writer.writeEndElement();
+    writer.writeStartElement("LoggingCurrentStepOn");
+    writer.writeAttribute("value", QString::number((loggingCurrentStepOn)?1:0));
+    writer.writeEndElement();
+    writer.writeStartElement("LoggingCurrentTimeOn");
+    writer.writeAttribute("value", QString::number((loggingCurrentTimeOn)?1:0));
+    writer.writeEndElement();
+    writer.writeStartElement("LoggingCurrentFillingRateOn");
+    writer.writeAttribute("value", QString::number((loggingCurrentFillingRateOn)?1:0));
+    writer.writeEndElement();
+    writer.writeStartElement("LoggingCurrentTemperatureOn");
+    writer.writeAttribute("value", QString::number((loggingCurrentTemperatureOn)?1:0));
+    writer.writeEndElement();
+    writer.writeStartElement("LoggingFrequency");
+    writer.writeAttribute("value", QString::number(loggingFrequency));
+    writer.writeEndElement();
+    writer.writeStartElement("OutputComment");
+    writer.writeAttribute("value", QString::fromStdWString(outputComment));
+    writer.writeEndElement();
+    writer.writeEndElement();
+}
+
 void Output::loadValue(const QDomElement& element)
 {
     QDomNode child = element.firstChild();

@@ -11,6 +11,7 @@ public:
     Material(const wstring& name, Material *material);
 
     virtual void loadValue(const QDomElement& element);
+    virtual void writeValue(QXmlStreamWriter& writer);
     virtual void updateGui(void);
     virtual void updateValue(void);
     virtual void clearValue();
@@ -69,10 +70,12 @@ public:
     MaterialGroup(const wstring& name);
     ~MaterialGroup();
     virtual void loadValue(const QDomElement& element);
+    virtual void writeValue(QXmlStreamWriter& writer);
     virtual void updateGui(void);
     virtual void updateValue(void);
     virtual void clearValue();
     bool loadMaterialFile(const QString& filename);
+    bool saveMaterialFile(const QString& filename);
 
     void addMaterial(Material *material) {
         materials.push_back(material);

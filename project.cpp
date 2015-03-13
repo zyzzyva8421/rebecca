@@ -8,6 +8,7 @@
 #include "output.h"
 #include <QFile>
 #include <iostream>
+#include <QXmlStreamWriter>
 Project::Project(const wstring& _name) : Category(_name)
 {
     information = new Information(L"Information");
@@ -34,6 +35,44 @@ Project::~Project()
     computing = NULL;
     if (output) delete output;
     output = NULL;
+}
+
+void Project::writeValue(QXmlStreamWriter &writer)
+{
+    writer.writeStartElement("Project");
+    information->writeValue(writer);
+    casting->writeValue(writer);
+    mold->writeValue(writer);
+    entrance->writeValue(writer);
+    simulation->writeValue(writer);
+    computing->writeValue(writer);
+    output->writeValue(writer);
+    writer.writeEndElement();
+}
+
+bool Project::writeConfigFile(const QString &filename)
+{
+    QFile file(filename);
+
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+        std::cerr << "Error: Cannot write file "
+                     << qPrintable(filename) << ": "
+                        << qPrintable(file.errorString()) << std::endl;
+        return false;
+    }
+    QXmlStreamWriter xmlWriter(&file);
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.writeStartDocument();
+    writeValue(xmlWriter);
+    xmlWriter.writeEndDocument();
+    file.close();
+    if (file.error()) {
+        std::cerr << "Error: Cannot write file "
+                     << qPrintable(filename) << ": "
+                        << qPrintable(file.errorString()) << std::endl;
+        return false;
+    }
+    return true;
 }
 
 bool Project::loadConfigFile(const QString& filename)

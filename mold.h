@@ -9,6 +9,7 @@ public:
     Mold(const wstring& name);
     ~Mold();
     virtual void loadValue(const QDomElement& element);
+    virtual void writeValue(QXmlStreamWriter& writer);
     virtual void updateGui(void);
     virtual void updateValue(void);
     virtual void clearValue();
@@ -36,6 +37,7 @@ public:
     };
     MoldConfiguration(const wstring& name);
     virtual void loadValue(const QDomElement& element);
+    virtual void writeValue(QXmlStreamWriter& writer);
     virtual void updateGui(void);
     virtual void updateValue(void);
     virtual void clearValue();

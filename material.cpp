@@ -57,6 +57,64 @@ void Material::clearValue()
     materialComment = L"";
 }
 
+void Material::writeValue(QXmlStreamWriter &writer)
+{
+    writer.writeStartElement("material");
+    writer.writeAttribute("id", QString::fromStdWString(getId()));
+        writer.writeStartElement("MaterialComment");
+        writer.writeAttribute("value", QString::fromStdWString(materialComment));
+        writer.writeEndElement();
+        writer.writeStartElement("SolidDensity");
+        writer.writeAttribute("value", QString::number(solidDensity));
+        writer.writeEndElement();
+        writer.writeStartElement("SolidSpecificHeat");
+        writer.writeAttribute("value", QString::number(solidSpecificHeat));
+        writer.writeEndElement();
+        writer.writeStartElement("SolidThermalConductivity");
+        writer.writeAttribute("value", QString::number(solidThermalConductivity));
+        writer.writeEndElement();
+        writer.writeStartElement("SolidThermalExpansionCoefficient");
+        writer.writeAttribute("value", QString::number(solidThermalExpansionCoefficient));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidDensity");
+        writer.writeAttribute("value", QString::number(fluidDensity));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidSpecificHeat");
+        writer.writeAttribute("value", QString::number(fluidSpecificHeat));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidThermalConductivity");
+        writer.writeAttribute("value", QString::number(fluidThermalConductivity));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidThermalExpansionCoefficent");
+        writer.writeAttribute("value", QString::number(fluidThermalExpansionCoefficent));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidDynamicViscosity");
+        writer.writeAttribute("value", QString::number(fluidDynamicViscosity));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidSurfaceTensionCoefficent");
+        writer.writeAttribute("value", QString::number(fluidSurfaceTensionCoefficent));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidContactAngleForWallAdhesion");
+        writer.writeAttribute("value", QString::number(fluidContactAngleForWallAdhesion));
+        writer.writeEndElement();
+        writer.writeStartElement("SolidLiquidusTemperature");
+        writer.writeAttribute("value", QString::number(solidLiquidusTemperature));
+        writer.writeEndElement();
+        writer.writeStartElement("SolidSolidusTemperature");
+        writer.writeAttribute("value", QString::number(solidSolidusTemperature));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidCoherencyPoint");
+        writer.writeAttribute("value", QString::number(fluidCoherencyPoint));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidCriticalPoint");
+        writer.writeAttribute("value", QString::number(fluidCriticalPoint));
+        writer.writeEndElement();
+        writer.writeStartElement("SolidificationDragCoefficent");
+        writer.writeAttribute("value", QString::number(solidificationDragCoefficent));
+        writer.writeEndElement();
+    writer.writeEndElement();
+}
+
 void Material::loadValue(const QDomElement &element)
 {
     id = element.attribute("id").toStdWString();
@@ -276,6 +334,44 @@ void MaterialGroup::deleteMaterial(const wstring &id)
         delete material;
         material = NULL;
     }
+}
+
+void MaterialGroup::writeValue(QXmlStreamWriter &writer)
+{
+    writer.writeStartElement("materialgroup");
+    writer.writeAttribute("id", QString::fromStdWString(getId()));
+    for (vector<MaterialGroup*>::iterator it = groups.begin(); it != groups.end(); it++) {
+        (*it)->writeValue(writer);
+    }
+    for (vector<Material*>::iterator it = materials.begin(); it != materials.end(); it++) {
+        (*it)->writeValue(writer);
+    }
+    writer.writeEndElement();
+}
+
+bool MaterialGroup::saveMaterialFile(const QString &filename)
+{
+    QFile file(filename);
+
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+        std::cerr << "Error: Cannot write file "
+                     << qPrintable(filename) << ": "
+                        << qPrintable(file.errorString()) << std::endl;
+        return false;
+    }
+    QXmlStreamWriter xmlWriter(&file);
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.writeStartDocument();
+    writeValue(xmlWriter);
+    xmlWriter.writeEndDocument();
+    file.close();
+    if (file.error()) {
+        std::cerr << "Error: Cannot write file "
+                     << qPrintable(filename) << ": "
+                        << qPrintable(file.errorString()) << std::endl;
+        return false;
+    }
+    return true;
 }
 
 void MaterialGroup::loadValue(const QDomElement& element)

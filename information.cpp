@@ -25,6 +25,47 @@ void Information::clearValue()
 
 }
 
+void Information::writeValue(QXmlStreamWriter &writer)
+{
+    updateValue();
+    writer.writeStartElement("Information");
+        writer.writeStartElement("CastingName");
+        writer.writeAttribute("value", QString::fromStdWString(castingName));
+        writer.writeEndElement();
+        writer.writeStartElement("CastingNumber");
+        writer.writeAttribute("value", QString::number(castingNumber));
+        writer.writeEndElement();
+        writer.writeStartElement("CreatedAuthor");
+        writer.writeAttribute("value", QString::fromStdWString(createdAuthor));
+        writer.writeEndElement();
+        writer.writeStartElement("CreatedTime");
+        writer.writeAttribute("value", QString::fromStdString(createdTime));
+        writer.writeEndElement();
+        writer.writeStartElement("ModifiedAuthor");
+        writer.writeAttribute("value", QString::fromStdWString(modifiedAuthor));
+        writer.writeEndElement();
+        writer.writeStartElement("ModifiedTime");
+        writer.writeAttribute("value", QString::fromStdString(modifiedTime));
+        writer.writeEndElement();
+        writer.writeStartElement("BasedProjectOn");
+        int i = (basedProjectOn)?1:0;
+        writer.writeAttribute("value", QString::number(i));
+        writer.writeEndElement();
+        writer.writeStartElement("BasedProjectPath");
+        writer.writeAttribute("value", QString::fromStdWString(basedProjectPath));
+        writer.writeEndElement();
+        writer.writeStartElement("ProjectLibaryPath");
+        writer.writeAttribute("value", QString::fromStdWString(projectLibaryPath));
+        writer.writeEndElement();
+        writer.writeStartElement("ProjectPath");
+        writer.writeAttribute("value", QString::fromStdWString(projectPath));
+        writer.writeEndElement();
+        writer.writeStartElement("ProjectComment");
+        writer.writeAttribute("value", QString::fromStdWString(projectComment));
+        writer.writeEndElement();
+    writer.writeEndElement();
+}
+
 void Information::loadValue(const QDomElement& element)
 {
     QDomNode child = element.firstChild();

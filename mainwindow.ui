@@ -33,7 +33,7 @@
        <locale language="Chinese" country="China"/>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_projectInfomation">
        <property name="sizePolicy">
