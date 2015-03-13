@@ -16,6 +16,9 @@
 #include "output.h"
 #include "material.h"
 #include "dialog.h"
+#include "addmaterial.h"
+#include "copymaterial.h"
+
 MainWindow *MainWindow::CurrentWindow = NULL;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,7 +26,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     project = NULL;
-    materialgroup = new MaterialGroup(L"MaterialGroup");
+    dialog = NULL;
+    addmaterial = NULL;
+    copymaterial = NULL;
+    currentMaterial = NULL;
+
+    materialgroup = new MaterialGroup(L"materialgroup");
     materialgroupModel = new QStandardItemModel(ui->treeView_materials);
     ui->treeView_materials->setModel(materialgroupModel);
     ui->treeView_materials->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -31,6 +39,13 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(on_treeView_materials_currentRowChanged(QModelIndex,QModelIndex)));
     ui->comboBox_material->setModel(materialgroupModel);
     ui->comboBox_MoldMaterialId->setModel(materialgroupModel);
+
+    ui->pushButton_materialNew->setDisabled(true);
+    ui->pushButton_materialUpdate->setDisabled(true);
+    ui->pushButton_materialCancel->setDisabled(true);
+    ui->pushButton_materialCopy->setDisabled(true);
+    ui->pushButton_materialDelete->setDisabled(true);
+
     tabifyDockWidget(ui->dockWidget_log, ui->dockWidget_material);
 
     CurrentWindow = this;
@@ -110,8 +125,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->radioButton_OutputIntervalTimeOn->click();
 
-    wstring filename = L"/Developer/Applications/Qt/GFS_Simulator/casting_materials.xml";
-    QString materialfile = QString::fromStdWString(filename);
+    QString materialfile = QDir::homePath()+"/.ifcfd/casting_materials.xml";
     if (materialgroup) {
         materialgroup->loadMaterialFile(materialfile);
         materialgroup->updateGui();
@@ -163,7 +177,8 @@ void MainWindow::UpdateData(QTableWidget *table, vector< vector<double> >&data)
 
 void MainWindow::on_action_project_triggered()
 {
-    Dialog *dialog = new Dialog(this);
+    if (dialog == NULL)
+        dialog = new Dialog(this);
     dialog->show();
 }
 
@@ -394,11 +409,31 @@ void MainWindow::on_treeView_materials_currentRowChanged(QModelIndex current, QM
 
     QStandardItem *item = materialgroupModel->itemFromIndex(current);
     if (item) {
+        ui->pushButton_materialNew->setDisabled(false);
+        ui->pushButton_materialDelete->setDisabled(false);
         QVariant v = item->data();
         if (v.isValid()) {
-            Material *material = (Material*)(v.value<void*>());
-            if (material) material->updateGui();
+            Category *category = static_cast<Category*>(v.value<void*>());
+            if (category) {
+                if (category->getName() == L"material") {
+                    currentMaterial = (Material*)category;
+                    ui->pushButton_materialUpdate->setDisabled(false);
+                    ui->pushButton_materialCopy->setDisabled(true);
+                    ui->pushButton_materialCancel->setDisabled(false);
+                    currentMaterial->updateGui();
+                } else {
+                    ui->pushButton_materialUpdate->setDisabled(true);
+                    ui->pushButton_materialCopy->setDisabled(false);
+                    ui->pushButton_materialCancel->setDisabled(true);
+                }
+            }
         }
+    } else {
+        ui->pushButton_materialNew->setDisabled(true);
+        ui->pushButton_materialUpdate->setDisabled(true);
+        ui->pushButton_materialCancel->setDisabled(true);
+        ui->pushButton_materialCopy->setDisabled(true);
+        ui->pushButton_materialDelete->setDisabled(true);
     }
 }
 
@@ -435,6 +470,7 @@ void MainWindow::on_action_open_triggered()
 {
     wstring title = L"项目路径";
     QString dir = MainWindow::openDirDialog(this, QString::fromStdWString(title), "./");
+    if (dir.isEmpty()) return;
     Project *_project = new Project(L"Project");
     QString filename = dir+"/project.xml";
     if (_project->loadConfigFile(filename)) {
@@ -549,4 +585,83 @@ void MainWindow::on_pushButton_modifyMold_clicked()
     if (project) {
         project->getMold()->modifyConfiguration(mold);
     }
+}
+
+void MainWindow::on_pushButton_materialNew_clicked()
+{
+    if (addmaterial == NULL)
+        addmaterial = new AddMaterial(this);
+    addmaterial->updateGui();
+    addmaterial->show();
+}
+
+void MainWindow::on_pushButton_materialUpdate_clicked()
+{
+    QModelIndex current = ui->treeView_materials->currentIndex();
+    QStandardItem *item = materialgroupModel->itemFromIndex(current);
+    if (item) {
+        ui->pushButton_materialUpdate->setDisabled(false);
+        QVariant v = item->data();
+        if (v.isValid()) {
+            Category *category = static_cast<Category*>(v.value<void*>());
+            if (category) {
+                if (category->getName() == L"material") {
+                    category->updateValue();
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::on_pushButton_materialCancel_clicked()
+{
+    QModelIndex current = ui->treeView_materials->currentIndex();
+    QStandardItem *item = materialgroupModel->itemFromIndex(current);
+    if (item) {
+        ui->pushButton_materialUpdate->setDisabled(false);
+        QVariant v = item->data();
+        if (v.isValid()) {
+            Category *category = static_cast<Category*>(v.value<void*>());
+            if (category) {
+                if (category->getName() == L"material") {
+                    category->updateGui();
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::on_pushButton_materialDelete_clicked()
+{
+    QModelIndex current = ui->treeView_materials->currentIndex();
+    QStandardItem *item = materialgroupModel->itemFromIndex(current);
+    if (item) {
+        ui->pushButton_materialUpdate->setDisabled(false);
+        QVariant v = item->data();
+        if (v.isValid()) {
+            Category *category = static_cast<Category*>(v.value<void*>());
+            if (category) {
+                if (category->getName() == L"material") {
+                    MaterialGroup *group = ((Material*)category)->getGroup();
+                    if (group) {
+                        group->deleteMaterial(((Material*)category)->getId());
+                        item->parent()->removeRow(current.row());
+                    }
+                } else {
+                    MaterialGroup *group = ((MaterialGroup*)category)->getGroup();
+                    if (group) {
+                        group->deleteGroup(((MaterialGroup*)category)->getId());
+                        item->parent()->removeRow(current.row());
+                    }
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::on_pushButton_materialCopy_clicked()
+{
+    if (copymaterial == NULL)
+        copymaterial = new CopyMaterial(this);
+    copymaterial->show();
 }

@@ -13,6 +13,10 @@
 
 class Project;
 class MaterialGroup;
+class Dialog;
+class AddMaterial;
+class Material;
+class CopyMaterial;
 
 using namespace std;
 namespace Ui {
@@ -27,6 +31,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     Ui::MainWindow *getUi(void) {return ui;}
+    Material *getCurrentMaterial(void) {return currentMaterial;}
 
     static void UpdateTable(const vector< vector<double> >&data, QTableWidget *table);
     static void UpdateData(QTableWidget *table, vector< vector<double> >&data);
@@ -117,6 +122,16 @@ private slots:
 
     void on_pushButton_modifyMold_clicked();
 
+    void on_pushButton_materialNew_clicked();
+
+    void on_pushButton_materialUpdate_clicked();
+
+    void on_pushButton_materialCancel_clicked();
+
+    void on_pushButton_materialDelete_clicked();
+
+    void on_pushButton_materialCopy_clicked();
+
 private:
 
     void tableInsertRow(QTableWidget *table, int row_num = 1);
@@ -133,6 +148,10 @@ private:
     Project *project;
     MaterialGroup *materialgroup;
     QStandardItemModel *materialgroupModel;
+    Dialog *dialog;
+    AddMaterial *addmaterial;
+    Material *currentMaterial;
+    CopyMaterial *copymaterial;
 
 };
 

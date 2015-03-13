@@ -45,9 +45,12 @@ void TreeViewComboBox::on_treeview_clicked(QModelIndex index)
 void TreeViewComboBox::showPopup()
 {
     if (treeview) {
-        QRect rect = geometry();
-        treeview->move(mapToGlobal(QPoint(0, rect.height())));
-        treeview->show();
+        QStandardItemModel *model = static_cast<QStandardItemModel*>(treeview->model());
+        if (model) {
+          QRect rect = geometry();
+          treeview->move(mapToGlobal(QPoint(0, rect.height())));
+          treeview->show();
+        }
     } else {
         QComboBox::showPopup();
     }

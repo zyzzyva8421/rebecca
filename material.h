@@ -8,6 +8,8 @@ class Material : public Category
 {
 public:
     Material(const wstring& name);
+    Material(const wstring& name, Material *material);
+
     virtual void loadValue(const QDomElement& element);
     virtual void updateGui(void);
     virtual void updateValue(void);
@@ -15,6 +17,23 @@ public:
 
     void setGroup(MaterialGroup *_group) {group = _group;}
     MaterialGroup *getGroup(void) {return group;}
+    wstring getMaterialComment() {return materialComment;}
+    double getSolidDensity() {return solidDensity;}
+    double getSolidSpecificHeat() {return solidSpecificHeat;}
+    double getSolidThermalConductivity() {return solidThermalConductivity;}
+    double getSolidThermalExpansionCoefficient() {return solidThermalExpansionCoefficient;}
+    double getFluidDensity() {return fluidDensity;}
+    double getFluidSpecificHeat() {return fluidSpecificHeat;}
+    double getFluidThermalConductivity() {return fluidThermalConductivity;}
+    double getFluidThermalExpansionCoefficent() {return fluidThermalExpansionCoefficent;}
+    double getFluidDynamicViscosity() {return fluidDynamicViscosity;}
+    double getFluidSurfaceTensionCoefficent() {return fluidSurfaceTensionCoefficent;}
+    double getFluidContactAngleForWallAdhesion() {return fluidContactAngleForWallAdhesion;}
+    double getSolidLiquidusTemperature() {return solidLiquidusTemperature;}
+    double getSolidSolidusTemperature() {return solidSolidusTemperature;}
+    double getFluidCoherencyPoint() {return fluidCoherencyPoint;}
+    double getFluidCriticalPoint() {return fluidCoherencyPoint;}
+    double getSolidificationDragCoefficent() {return solidificationDragCoefficent;}
 
     void setId(const wstring& _id) {id = _id;}
     wstring getId(void) {return id;}
@@ -64,6 +83,10 @@ public:
         groups.push_back(group);
         group->setGroup(this);
     }
+
+    void deleteMaterial(const wstring& id);
+    void deleteGroup(const wstring& id);
+
     void setGroup(MaterialGroup *_group) {group = _group;}
     MaterialGroup *getGroup(void) {return group;}
 

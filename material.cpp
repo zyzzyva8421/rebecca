@@ -9,6 +9,32 @@ Material::Material(const wstring& _name) : Category(_name)
     clearValue();
 }
 
+Material::Material(const wstring &_name, Material *material) : Category(_name)
+{
+    if (material) {
+        group = material->getGroup();
+        solidDensity = material->getSolidDensity();
+        solidSpecificHeat = material->getSolidSpecificHeat();
+        solidThermalConductivity = material->getSolidThermalConductivity();
+        solidThermalExpansionCoefficient = material->getSolidThermalExpansionCoefficient();
+        fluidDensity = material->getFluidDensity();
+        fluidSpecificHeat = material->getFluidSpecificHeat();
+        fluidThermalConductivity = material->getFluidThermalConductivity();
+        fluidThermalExpansionCoefficent = material->getFluidThermalExpansionCoefficent();
+        fluidDynamicViscosity = material->getFluidDynamicViscosity();
+        fluidSurfaceTensionCoefficent = material->getFluidSurfaceTensionCoefficent();
+        fluidContactAngleForWallAdhesion = material->getFluidContactAngleForWallAdhesion();
+        solidLiquidusTemperature = material->getSolidLiquidusTemperature();
+        solidSolidusTemperature = material->getSolidSolidusTemperature();
+        fluidCoherencyPoint = material->getFluidCoherencyPoint();
+        fluidCriticalPoint = material->getFluidCriticalPoint();
+        solidificationDragCoefficent = material->getSolidificationDragCoefficent();
+        materialComment = material->getMaterialComment();
+    } else {
+        clearValue();
+    }
+}
+
 void Material::clearValue()
 {
     group = NULL;
@@ -218,6 +244,40 @@ bool MaterialGroup::loadMaterialFile(const QString &filename)
     return true;
 }
 
+void MaterialGroup::deleteGroup(const wstring &id)
+{
+    vector<MaterialGroup*>::iterator it;
+    MaterialGroup *group = NULL;
+    for (it = groups.begin(); it != groups.end(); it++) {
+        group = (*it);
+        if (group && group->getId() == id) {
+            break;
+        }
+    }
+    if (it != groups.end()) {
+        groups.erase(it);
+        delete group;
+        group = NULL;
+    }
+}
+
+void MaterialGroup::deleteMaterial(const wstring &id)
+{
+    vector<Material*>::iterator it;
+    Material*material = NULL;
+    for (it = materials.begin(); it != materials.end(); it++) {
+        material = (*it);
+        if (material && material->getId() == id) {
+            break;
+        }
+    }
+    if (it != materials.end()) {
+        materials.erase(it);
+        delete material;
+        material = NULL;
+    }
+}
+
 void MaterialGroup::loadValue(const QDomElement& element)
 {
     id = element.attribute("id").toStdWString();
@@ -251,11 +311,15 @@ void Material::updateModel(QStandardItem *item)
 
 void Material::updateModel(QStandardItemModel *model)
 {
+    model->clear();
     QString id = QString::fromStdWString(getId());
+    model->setHorizontalHeaderLabels(QStringList()<<id);
     QIcon icon(":/file.png");
     QStandardItem *parent = new QStandardItem(icon, id);
-
+    QVariant v = QVariant::fromValue((void *) this);
+    parent->setData(v);
     model->appendRow(parent);
+    parent->setSelectable(false);
 }
 
 void MaterialGroup::updateModel(QStandardItem *item)
@@ -263,6 +327,8 @@ void MaterialGroup::updateModel(QStandardItem *item)
     QString id = QString::fromStdWString(getId());
     QIcon icon(":/folder.png");
     QStandardItem *parent = new QStandardItem(icon, id);
+    QVariant v = QVariant::fromValue((void *) this);
+    parent->setData(v);
     item->appendRow(parent);
     for (vector<MaterialGroup*>::iterator it = groups.begin(); it != groups.end(); it++) {
         MaterialGroup *child = (*it);
@@ -280,10 +346,15 @@ void MaterialGroup::updateModel(QStandardItem *item)
 
 void MaterialGroup::updateModel(QStandardItemModel *model)
 {
+    model->clear();
     QString id = QString::fromStdWString(getId());
+    model->setHorizontalHeaderLabels(QStringList()<<id);
     QIcon icon(":/folder.png");
     QStandardItem *parent = new QStandardItem(icon, id);
+    QVariant v = QVariant::fromValue((void *) this);
+    parent->setData(v);
     model->appendRow(parent);
+    parent->setSelectable(false);
     for (vector<MaterialGroup*>::iterator it = groups.begin(); it != groups.end(); it++) {
         MaterialGroup *child = (*it);
         if (child) {
@@ -303,9 +374,6 @@ void MaterialGroup::updateGui(void)
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
     QStandardItemModel *model = MainWindow::CurrentWindow->getMaterialGroupModel();
-    model->clear();
-    QString id = QString::fromStdWString(getId());
-    model->setHorizontalHeaderLabels(QStringList()<<id);
     updateModel(model);
 }
 
