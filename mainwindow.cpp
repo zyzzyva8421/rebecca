@@ -3,6 +3,7 @@
 #include <QTextCodec>
 #include <QModelIndex>
 #include <QMessageBox>
+#include <QProcess>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
@@ -30,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     addmaterial = NULL;
     copymaterial = NULL;
     currentMaterial = NULL;
+    process = NULL;
 
     materialgroup = new MaterialGroup(L"materialgroup");
     materialgroupModel = new QStandardItemModel(ui->treeView_materials);
@@ -130,6 +132,8 @@ MainWindow::MainWindow(QWidget *parent) :
         materialgroup->loadMaterialFile(materialfile);
         materialgroup->updateGui();
     }
+
+    // TODO: set input mask
 }
 
 void MainWindow::setProject(Project *_project) {
@@ -185,6 +189,22 @@ void MainWindow::on_action_project_triggered()
 void MainWindow::on_action_log_triggered() {
     ui->dockWidget_log->setVisible(true);
     ui->dockWidget_log->raise();
+    if (process == NULL) {
+        process = new QProcess(this);
+        process->setEnvironment(QProcess::systemEnvironment());
+        process->setProcessChannelMode(QProcess::MergedChannels);
+        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_stdoupt_update()));
+    }
+    process->start("/Developer/Applications/Qt/build-testprocesser-Desktop-Debug/testprocesser");
+    process->waitForStarted();
+}
+
+void MainWindow::on_stdoupt_update()
+{
+    QProcess *p = dynamic_cast<QProcess*>(sender());
+    if (p) {
+        ui->textEdit_simuEngine->append(p->readAllStandardOutput());
+    }
 }
 
 void MainWindow::on_action_material_triggered()

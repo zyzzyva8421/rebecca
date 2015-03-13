@@ -3126,11 +3126,17 @@
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QTextEdit" name="textEdit_simuEngine">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>100</width>
          <height>200</height>
         </size>
+       </property>
+       <property name="locale">
+        <locale language="Chinese" country="China"/>
        </property>
       </widget>
      </item>

@@ -7,6 +7,7 @@
 #include <QDomDocument>
 #include <QListWidgetItem>
 #include <QStandardItemModel>
+#include <QProcess>
 #include <QVariant>
 #include <vector>
 #include <utility>
@@ -132,6 +133,8 @@ private slots:
 
     void on_pushButton_materialCopy_clicked();
 
+    void on_stdoupt_update();
+
 private:
 
     void tableInsertRow(QTableWidget *table, int row_num = 1);
@@ -152,6 +155,7 @@ private:
     AddMaterial *addmaterial;
     Material *currentMaterial;
     CopyMaterial *copymaterial;
+    QProcess *process;
 
 };
 
