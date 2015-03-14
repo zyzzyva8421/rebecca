@@ -43,10 +43,17 @@ public:
     virtual void clearValue();
 
 private:
-    wstring originalStlPath;
     string moldMaterialId;
     double moldMaterialInitialTemperature;
     double moldHeatExchangeCoefficient;
+    int moldSolidMeshLevel;
+    double moldAdjustCoordinateX;
+    double moldAdjustCoordinateY;
+    double moldAdjustCoordinateZ;
+    double moldAdjustDegreeX;
+    double moldAdjustDegreeY;
+    double moldAdjustDegreeZ;
+    double moldAdjustScale;
     MoldSurfaceRoughness moldSurfaceRoughness;
     MoldFunction moldFunction;
     wstring moldComment;

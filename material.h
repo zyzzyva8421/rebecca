@@ -76,6 +76,7 @@ public:
     virtual void clearValue();
     bool loadMaterialFile(const QString& filename);
     bool saveMaterialFile(const QString& filename);
+    bool checkMaterialId(const wstring& id);
 
     void addMaterial(Material *material) {
         materials.push_back(material);

@@ -126,9 +126,16 @@ MoldConfiguration::MoldConfiguration(const wstring& _name) : Category(_name)
 
 void MoldConfiguration::clearValue()
 {
-    originalStlPath = L"";
     moldMaterialId = "";
     moldMaterialInitialTemperature = 0.0;
+    moldSolidMeshLevel = 0;
+    moldAdjustCoordinateX = 0.0;
+    moldAdjustCoordinateY = 0.0;
+    moldAdjustCoordinateZ = 0.0;
+    moldAdjustDegreeX = 0.0;
+    moldAdjustDegreeY = 0.0;
+    moldAdjustDegreeZ = 0.0;
+    moldAdjustScale = 0.0;
     moldHeatExchangeCoefficient = 0.0;
     moldSurfaceRoughness = NoSlipOn;
     moldFunction = CoverOn;
@@ -139,9 +146,6 @@ void MoldConfiguration::writeValue(QXmlStreamWriter &writer)
 {
     writer.writeStartElement("Stl");
     writer.writeAttribute("id", QString::fromStdWString(getName()));
-        writer.writeStartElement("OriginalStlPath");
-        writer.writeAttribute("value", QString::fromStdWString(originalStlPath));
-        writer.writeEndElement();
         writer.writeStartElement("MoldMaterialId");
         writer.writeAttribute("value", QString::fromStdString(moldMaterialId));
         writer.writeEndElement();
@@ -150,6 +154,30 @@ void MoldConfiguration::writeValue(QXmlStreamWriter &writer)
         writer.writeEndElement();
         writer.writeStartElement("MoldHeatExchangeCoefficient");
         writer.writeAttribute("value", QString::number(moldHeatExchangeCoefficient));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldSolidMeshLevel");
+        writer.writeAttribute("value", QString::number(moldSolidMeshLevel));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldAdjustCoordinateX");
+        writer.writeAttribute("value", QString::number(moldAdjustCoordinateX));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldAdjustCoordinateY");
+        writer.writeAttribute("value", QString::number(moldAdjustCoordinateY));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldAdjustCoordinateZ");
+        writer.writeAttribute("value", QString::number(moldAdjustCoordinateZ));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldAdjustDegreeX");
+        writer.writeAttribute("value", QString::number(moldAdjustDegreeX));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldAdjustDegreeY");
+        writer.writeAttribute("value", QString::number(moldAdjustDegreeY));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldAdjustDegreeZ");
+        writer.writeAttribute("value", QString::number(moldAdjustDegreeZ));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldAdjustScale");
+        writer.writeAttribute("value", QString::number(moldAdjustScale));
         writer.writeEndElement();
         writer.writeStartElement("MoldSurfaceRoughness");
             writer.writeStartElement("NoSlipOn");
@@ -192,14 +220,28 @@ void MoldConfiguration::loadValue(const QDomElement& element)
     string tagName1;
     while (!child.isNull()) {
         tagName = child.toElement().tagName().toStdString();
-        if (tagName == "OriginalStlPath") {
-            originalStlPath = child.toElement().attribute("value").toStdWString();
-        } else if (tagName == "MoldMaterialId") {
+        if (tagName == "MoldMaterialId") {
             moldMaterialId = child.toElement().attribute("value").toStdString();
         } else if (tagName == "MoldMaterialInitialTemperature") {
             moldMaterialInitialTemperature = child.toElement().attribute("value").toDouble();
         } else if (tagName == "MoldHeatExchangeCoefficient") {
             moldHeatExchangeCoefficient = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "MoldSolidMeshLevel") {
+            moldSolidMeshLevel = child.toElement().attribute("value").toInt();
+        } else if (tagName == "MoldAdjustCoordinateX") {
+            moldAdjustCoordinateX = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "MoldAdjustCoordinateY") {
+            moldAdjustCoordinateY = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "MoldAdjustCoordinateZ") {
+            moldAdjustCoordinateZ = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "MoldAdjustDegreeX") {
+            moldAdjustDegreeX = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "MoldAdjustDegreeY") {
+            moldAdjustDegreeY = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "MoldAdjustDegreeZ") {
+            moldAdjustDegreeZ = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "MoldAdjustScale") {
+            moldAdjustScale = child.toElement().attribute("value").toDouble();
         } else if (tagName == "MoldSurfaceRoughness") {
             child1 = child.toElement().firstChild();
             while (!child1.isNull()) {
@@ -252,12 +294,6 @@ void MoldConfiguration::updateGui(void)
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
 
-    text = QString::fromStdWString(getName());
-    ui->lineEdit_inProjectName->setText(text);
-
-    text = QString::fromStdWString(originalStlPath);
-    ui->lineEdit_originalStlPath->setText(text);
-
     text = QString::fromStdString(moldMaterialId);
     ui->comboBox_MoldMaterialId->clear();
     ui->comboBox_MoldMaterialId->addItem(text);
@@ -269,6 +305,22 @@ void MoldConfiguration::updateGui(void)
     text = QString::number(moldHeatExchangeCoefficient);
     ui->lineEdit_moldHeatExchangeCoefficient->setText(text);
 
+    text = QString::number(moldSolidMeshLevel);
+    ui->lineEdit_MoldSolidMeshLevel->setText(text);
+    text = QString::number(moldAdjustCoordinateX);
+    ui->lineEdit_MoldAdjustCoordinateX->setText(text);
+    text = QString::number(moldAdjustCoordinateY);
+    ui->lineEdit_MoldAdjustCoordinateY->setText(text);
+    text = QString::number(moldAdjustCoordinateZ);
+    ui->lineEdit_MoldAdjustCoordinateZ->setText(text);
+    text = QString::number(moldAdjustDegreeX);
+    ui->lineEdit_MoldAdjustDegreeX->setText(text);
+    text = QString::number(moldAdjustDegreeY);
+    ui->lineEdit_MoldAdjustDegreeY->setText(text);
+    text = QString::number(moldAdjustDegreeZ);
+    ui->lineEdit_MoldAdjustDegreeZ->setText(text);
+    text = QString::number(moldAdjustScale);
+    ui->lineEdit_MoldAdjustScale->setText(text);
     switch (moldSurfaceRoughness) {
     case NoSlipOn: {
         ui->radioButton_noSlipOn->click();
@@ -292,16 +344,19 @@ void MoldConfiguration::updateValue(void)
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
 
-    wstring name = ui->lineEdit_inProjectName->text().toStdWString();
-    setName(name);
-
-    originalStlPath = ui->lineEdit_originalStlPath->text().toStdWString();
-
     moldMaterialId = ui->comboBox_MoldMaterialId->currentText().toStdString();
 
     moldMaterialInitialTemperature = ui->lineEdit_moldMaterialInitialTemperature->text().toDouble();
 
     moldHeatExchangeCoefficient = ui->lineEdit_moldHeatExchangeCoefficient->text().toDouble();
+    moldSolidMeshLevel = ui->lineEdit_MoldSolidMeshLevel->text().toInt();
+    moldAdjustCoordinateX = ui->lineEdit_MoldAdjustCoordinateX->text().toDouble();
+    moldAdjustCoordinateY = ui->lineEdit_MoldAdjustCoordinateY->text().toDouble();
+    moldAdjustCoordinateZ = ui->lineEdit_MoldAdjustCoordinateZ->text().toDouble();
+    moldAdjustDegreeX = ui->lineEdit_MoldAdjustDegreeX->text().toDouble();
+    moldAdjustDegreeY = ui->lineEdit_MoldAdjustDegreeY->text().toDouble();
+    moldAdjustDegreeZ = ui->lineEdit_MoldAdjustDegreeZ->text().toDouble();
+    moldAdjustScale = ui->lineEdit_MoldAdjustScale->text().toDouble();
 
     QButtonGroup *group = MainWindow::CurrentWindow->get_buttonGroup_moldSurfaceRoughness();
     moldSurfaceRoughness = (MoldSurfaceRoughness)(group->checkedId());

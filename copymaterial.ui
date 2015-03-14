@@ -7,13 +7,23 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>79</height>
+    <height>207</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>复制材料</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>材料库</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTreeView" name="treeView_materialGroup"/>
+   </item>
    <item>
     <widget class="QFrame" name="frame">
      <property name="frameShape">

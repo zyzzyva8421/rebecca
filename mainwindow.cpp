@@ -20,6 +20,7 @@
 #include "dialog.h"
 #include "addmaterial.h"
 #include "copymaterial.h"
+#include "addstl.h"
 
 MainWindow *MainWindow::CurrentWindow = NULL;
 MainWindow::MainWindow(QWidget *parent) :
@@ -31,8 +32,11 @@ MainWindow::MainWindow(QWidget *parent) :
     dialog = NULL;
     addmaterial = NULL;
     copymaterial = NULL;
+    addstl = NULL;
     currentMaterial = NULL;
     process = NULL;
+    isMaterialGroupChanged = false;
+    ui->pushButton_saveMaterialGroup->setDisabled(true);
 
     materialgroup = new MaterialGroup(L"materialgroup");
     materialgroupModel = new QStandardItemModel(ui->treeView_materials);
@@ -172,11 +176,17 @@ void MainWindow::UpdateData(QTableWidget *table, vector< vector<double> >&data)
     QTableWidgetItem *w = NULL;
     for (int i = 0; i < table->rowCount(); i++) {
         vector<double> p;
+        bool isValid = true;
         for (int col = 0; col < table->columnCount(); col++) {
             w = table->item(i, col);
+            if (!w) {
+                isValid = false;
+                break;
+            }
             p.push_back(w->text().toDouble());
         }
-        data.push_back(p);
+        if (isValid)
+            data.push_back(p);
     }
 }
 
@@ -343,7 +353,7 @@ QString MainWindow::openDirDialog(QWidget *parent,
 
 void MainWindow::on_toolButton_projectLibrary_clicked()
 {
-    QString dir = openDirDialog(this, "Project Library", "./");
+    QString dir = openDirDialog(this, QString::fromStdWString(L"项目路径"), "./");
     ui->lineEdit_projectLibrary->setText(dir);
 }
 
@@ -351,13 +361,13 @@ void MainWindow::on_toolButton_projectLibrary_clicked()
 
 void MainWindow::on_toolButton_projectPath_clicked()
 {
-    QString dir = openDirDialog(this, "Project Path", "./");
+    QString dir = openDirDialog(this, QString::fromStdWString(L"项目路径"), "./");
     ui->lineEdit_projectPath->setText(dir);
 }
 
 void MainWindow::on_toolButton_existingProjectPath_clicked()
 {
-    QString dir = openDirDialog(this, "Project Path", "./");
+    QString dir = openDirDialog(this, QString::fromStdWString(L"项目路径"), "./");
     ui->lineEdit_existingProjectPath->setText(dir);
 }
 
@@ -372,7 +382,7 @@ void MainWindow::tableInsertRow(QTableWidget *table, int row_num)
         }
     } else {
         for (int i = 0; i < row_num; i++) {
-            table->insertRow(cur_row);
+            table->insertRow(cur_row+1);
             table->setRowHeight(cur_row+i+1, table->fontMetrics().height());
         }
     }
@@ -439,12 +449,12 @@ void MainWindow::on_treeView_materials_currentRowChanged(QModelIndex current, QM
                 if (category->getName() == L"material") {
                     currentMaterial = (Material*)category;
                     ui->pushButton_materialUpdate->setDisabled(false);
-                    ui->pushButton_materialCopy->setDisabled(true);
+                    ui->pushButton_materialCopy->setDisabled(false);
                     ui->pushButton_materialCancel->setDisabled(false);
                     currentMaterial->updateGui();
                 } else {
                     ui->pushButton_materialUpdate->setDisabled(true);
-                    ui->pushButton_materialCopy->setDisabled(false);
+                    ui->pushButton_materialCopy->setDisabled(true);
                     ui->pushButton_materialCancel->setDisabled(true);
                 }
             }
@@ -524,18 +534,12 @@ void MainWindow::on_action_save_triggered()
     if (!project->writeConfigFile(filename)) {
         // TODO: popup an error message
     }
-    QString materialfile = QDir::homePath()+"/.ifcfd/casting_materials.xml";
-    if (materialgroup) {
-        if (!materialgroup->saveMaterialFile(materialfile)) {
-            // TODO:popup an error message
-        }
-    }
-
 }
 
 void MainWindow::on_toolButton_varyingVelocityOK_clicked()
 {
     if (project) {
+        ui->tableWidget_varyingVelocity->setCurrentItem(NULL);
         UpdateData(ui->tableWidget_varyingVelocity,
                    project->getCasting()->getInjectMethodVaryingVelocityOnConf());
     }
@@ -552,6 +556,7 @@ void MainWindow::on_toolButton_varyingVelocityCancel_clicked()
 void MainWindow::on_toolButton_varyingPressureOK_clicked()
 {
     if (project) {
+        ui->tableWidget_varyingPressure->setCurrentItem(NULL);
         UpdateData(ui->tableWidget_varyingPressure,
                    project->getCasting()->getInjectMethodVaryingPressureOnConf());
     }
@@ -584,6 +589,7 @@ void MainWindow::on_toolButton_outletCancel_clicked()
 void MainWindow::on_toolButton_inletOK_clicked()
 {
     if (project) {
+        ui->tableWidget_inletCoordinates->setCurrentItem(NULL);
         UpdateData(ui->tableWidget_inletCoordinates,
                    project->getEntrance()->getInletCoordinates());
     }
@@ -592,6 +598,7 @@ void MainWindow::on_toolButton_inletOK_clicked()
 void MainWindow::on_toolButton_inletCancel_clicked()
 {
     if (project) {
+        ui->tableWidget_outletCoordinates->setCurrentItem(NULL);
         UpdateTable(project->getEntrance()->getInletCoordinates(),
                     ui->tableWidget_inletCoordinates);
     }
@@ -599,14 +606,33 @@ void MainWindow::on_toolButton_inletCancel_clicked()
 
 void MainWindow::on_pushButton_addMold_clicked()
 {
-    if (project) {
-        project->getMold()->addConfiguration(L"");
+    if (!addstl) {
+        addstl = new AddStl(this);
     }
+    addstl->show();
 }
 
 void MainWindow::on_pushButton_reloadMold_clicked()
 {
-
+    QString originalfile = openFileDialog(this, QString::fromStdWString(L"导入前STL文件"), "./", tr("stl file (*.stl)"));
+    if (originalfile.isEmpty()) return;
+    wstring mold = ui->listWidget_addedStlMolds->currentItem()->text().toStdWString();
+    if (project) {
+        QString path = QString::fromStdWString(project->getInformation()->getProjectPath()+L"/geometries");
+        QDir dir(path);
+        if (!dir.exists()) {
+            if (!dir.mkpath(dir.absolutePath())) {
+                std::cerr << "Error: Cannnot open dir "
+                             << qPrintable(dir.absolutePath()) << std::endl;
+                return;
+            }
+        }
+        QString newfile = path+QString::fromStdWString(mold);
+        if (QFile::exists(newfile)) {
+            QFile::remove(newfile);
+        }
+        QFile::copy(originalfile, newfile);
+    }
 }
 
 void MainWindow::on_pushButton_deleteMold_clicked()
@@ -650,6 +676,8 @@ void MainWindow::on_pushButton_materialUpdate_clicked()
             if (category) {
                 if (category->getName() == L"material") {
                     category->updateValue();
+                    isMaterialGroupChanged = true;
+                    ui->pushButton_saveMaterialGroup->setDisabled(false);
                 }
             }
         }
@@ -689,16 +717,21 @@ void MainWindow::on_pushButton_materialDelete_clicked()
                     if (group) {
                         group->deleteMaterial(((Material*)category)->getId());
                         item->parent()->removeRow(current.row());
+                        isMaterialGroupChanged = true;
                     }
                 } else {
                     MaterialGroup *group = ((MaterialGroup*)category)->getGroup();
                     if (group) {
                         group->deleteGroup(((MaterialGroup*)category)->getId());
                         item->parent()->removeRow(current.row());
+                        isMaterialGroupChanged = true;
                     }
                 }
             }
         }
+    }
+    if (isMaterialGroupChanged) {
+        ui->pushButton_saveMaterialGroup->setDisabled(false);
     }
 }
 
@@ -707,4 +740,27 @@ void MainWindow::on_pushButton_materialCopy_clicked()
     if (copymaterial == NULL)
         copymaterial = new CopyMaterial(this);
     copymaterial->show();
+}
+
+void MainWindow::on_pushButton_saveMaterialGroup_clicked()
+{
+    QString materialfile = QDir::homePath()+"/.ifcfd/casting_materials.xml";
+    if (materialgroup) {
+        if (!materialgroup->saveMaterialFile(materialfile)) {
+            // TODO:popup an error message
+        }
+    }
+    isMaterialGroupChanged = false;
+    ui->pushButton_saveMaterialGroup->setDisabled(true);
+}
+
+void MainWindow::on_pushButton_moldCancel_clicked()
+{
+    wstring mold = ui->listWidget_addedStlMolds->currentItem()->text().toStdWString();
+    if (project) {
+        MoldConfiguration* config = project->getMold()->getMoldConfiguration(mold);
+        if (config) {
+            config->updateGui();
+        }
+    }
 }

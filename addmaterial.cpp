@@ -4,6 +4,7 @@
 #include "ui_mainwindow.h"
 #include "material.h"
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include <QTreeView>
 #include <iostream>
 
@@ -65,8 +66,12 @@ void AddMaterial::on_buttonBox_accepted()
     if (name.empty()) {
         return;
     }
-    // TODO: check unique
+
     MainWindow *main = (MainWindow*)(parentWidget());
+    if (ui->radioButton_material->isChecked() && main->getMaterialGroup()->checkMaterialId(name)) {
+        QMessageBox::critical(this, QString::fromStdWString(L"新建材料"), QString::fromStdWString(L"材料重名，请重新命名材料"));
+        return;
+    }
     QModelIndex index = main->getUi()->treeView_materials->currentIndex();
     QStandardItem *item = main->getMaterialGroupModel()->itemFromIndex(index);
     if (item) {

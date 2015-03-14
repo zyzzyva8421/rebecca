@@ -18,6 +18,7 @@ class Dialog;
 class AddMaterial;
 class Material;
 class CopyMaterial;
+class AddStl;
 
 using namespace std;
 namespace Ui {
@@ -47,10 +48,14 @@ public:
     QButtonGroup *get_buttonGroup_parallelMethod(void) {return buttonGroup_parallelMethod;}
     QButtonGroup *get_buttonGroup_outputMethod(void) {return buttonGroup_outputMethod;}
     QStandardItemModel *getMaterialGroupModel(void) {return materialgroupModel;}
+    MaterialGroup *getMaterialGroup(void) {return materialgroup;}
 
     static MainWindow *CurrentWindow;
 
     void setProject(Project *_project);
+    void setIsMaterialGroupChanged(bool isChanged) {isMaterialGroupChanged = isChanged;}
+    bool getIsMaterialGroupChanged(void) {return isMaterialGroupChanged;}
+    Project *getProject(void) {return project;}
 
 private slots:
 
@@ -135,6 +140,10 @@ private slots:
 
     void on_stdoupt_update();
 
+    void on_pushButton_saveMaterialGroup_clicked();
+
+    void on_pushButton_moldCancel_clicked();
+
 private:
 
     void tableInsertRow(QTableWidget *table, int row_num = 1);
@@ -155,7 +164,9 @@ private:
     AddMaterial *addmaterial;
     Material *currentMaterial;
     CopyMaterial *copymaterial;
+    AddStl *addstl;
     QProcess *process;
+    bool isMaterialGroupChanged;
 
 };
 

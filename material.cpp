@@ -479,3 +479,18 @@ void MaterialGroup::updateValue(void)
     if (ui == NULL) return;
 }
 
+bool MaterialGroup::checkMaterialId(const wstring &_id) {
+    for (vector<MaterialGroup*>::iterator it = groups.begin(); it != groups.end(); it++) {
+        if ((*it)->checkMaterialId(_id)) {
+            return true;
+        }
+    }
+    for (vector<Material*>::iterator it = materials.begin(); it != materials.end(); it++) {
+        if ((*it)->getId() == _id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
