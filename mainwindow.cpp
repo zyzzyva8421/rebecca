@@ -209,15 +209,78 @@ void MainWindow::on_action_log_triggered() {
 }
 
 void MainWindow::on_action_result_triggered() {
-
+    if (!project) return;
+    if (process == NULL) {
+        process = new QProcess(this);
+        process->setEnvironment(QProcess::systemEnvironment());
+        process->setProcessChannelMode(QProcess::MergedChannels);
+        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_stdoupt_update()));
+    }
+    wstring projectpath = project->getInformation()->getProjectPath();
+    if (projectpath.empty()) return;
+    QString currentpath = QDir::currentPath();
+    QDir dir = QDir::current();
+    if (!dir.cd(QString::fromStdWString(projectpath))) {
+        QMessageBox::critical(this, QString::fromStdWString(L"打开结果目录"), QString::fromStdWString(L"项目路径不合法"));
+        dir.cd(currentpath);
+        return;
+    }
+    process->start("ifcfd_casting_shell --browse output");
+    process->waitForFinished(-1);
+    dir.cd(currentpath);
+    return;
 }
 
 void MainWindow::on_action_clean_triggered() {
-
+    if (!project) return;
+    if (process == NULL) {
+        process = new QProcess(this);
+        process->setEnvironment(QProcess::systemEnvironment());
+        process->setProcessChannelMode(QProcess::MergedChannels);
+        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_stdoupt_update()));
+    }
+    wstring projectpath = project->getInformation()->getProjectPath();
+    if (projectpath.empty()) return;
+    int buttonclicked = QMessageBox::warning(this, QString::fromStdWString(L"清空结果目录"),
+                                             QString::fromStdWString(L"是否清空结果目录？"), QMessageBox::Ok | QMessageBox::No);
+    if (buttonclicked == QMessageBox::No) {
+        return;
+    }
+    QString currentpath = QDir::currentPath();
+    QDir dir = QDir::current();
+    if (!dir.cd(QString::fromStdWString(projectpath))) {
+        QMessageBox::critical(this, QString::fromStdWString(L"打开结果目录"), QString::fromStdWString(L"项目路径不合法"));
+        dir.cd(currentpath);
+        return;
+    }
+    process->start("ifcfd_casting_shell --clean_output");
+    process->waitForFinished(-1);
+    dir.cd(currentpath);
+    return;
 }
 
 void MainWindow::on_action_dir_triggered() {
+    if (!project) return;
+    if (process == NULL) {
+        process = new QProcess(this);
+        process->setEnvironment(QProcess::systemEnvironment());
+        process->setProcessChannelMode(QProcess::MergedChannels);
+        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_stdoupt_update()));
+    }
+    wstring projectpath = project->getInformation()->getProjectPath();
+    if (projectpath.empty()) return;
+    QString currentpath = QDir::currentPath();
+    QDir dir = QDir::current();
+    if (!dir.cd(QString::fromStdWString(projectpath))) {
+        QMessageBox::critical(this, QString::fromStdWString(L"打开项目目录"), QString::fromStdWString(L"项目路径不合法"));
+        dir.cd(currentpath);
+        return;
+    }
 
+    process->start("ifcfd_casting_shell --browse .");
+    process->waitForFinished(-1);
+    dir.cd(currentpath);
+    return;
 }
 
 void MainWindow::on_action_close_triggered() {
@@ -249,6 +312,11 @@ void MainWindow::on_action_simulate_triggered() {
     }
     wstring projectpath = project->getInformation()->getProjectPath();
     if (projectpath.empty()) return;
+    int buttonclicked = QMessageBox::warning(this, QString::fromStdWString(L"运行"),
+                                             QString::fromStdWString(L"是否运行仿真，之前结果将被删除？"), QMessageBox::Ok | QMessageBox::No);
+    if (buttonclicked == QMessageBox::No) {
+        return;
+    }
     QString currentpath = QDir::currentPath();
     QDir dir = QDir::current();
     if (!dir.cd(QString::fromStdWString(projectpath))) {

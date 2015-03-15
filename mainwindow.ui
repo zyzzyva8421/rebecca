@@ -33,7 +33,7 @@
        <locale language="Chinese" country="China"/>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_projectInfomation">
        <property name="sizePolicy">
@@ -132,7 +132,7 @@
               <item>
                <widget class="QLineEdit" name="lineEdit_castName">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -173,7 +173,7 @@
               <item>
                <widget class="QLineEdit" name="lineEdit_creator">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -214,7 +214,7 @@
               <item>
                <widget class="QSpinBox" name="spinBox_castNumber">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -255,7 +255,7 @@
               <item>
                <widget class="QDateTimeEdit" name="dateTimeEdit_createTime">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -330,7 +330,7 @@
               <item>
                <widget class="QLineEdit" name="lineEdit_projectLibrary">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -378,7 +378,7 @@
               <item>
                <widget class="QLineEdit" name="lineEdit_projectPath">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -431,7 +431,7 @@
               <item>
                <widget class="QCheckBox" name="checkBox_basedOnExistingProject">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="text">
                  <string>基于已有项目</string>
@@ -469,7 +469,7 @@
                  <item>
                   <widget class="QLineEdit" name="lineEdit_existingProjectPath">
                    <property name="enabled">
-                    <bool>false</bool>
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>

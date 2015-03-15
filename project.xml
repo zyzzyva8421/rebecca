@@ -2,7 +2,7 @@
 
 <Project>                       <!-- 一个项目的根节点 -->
 
-    <Informatin>                <!-- 项目信息 -->
+    <Information>                <!-- 项目信息 -->
     
         <CastingName       value="XYZ铸件"/>             <!-- 铸件名 -->
         <CastingNumber     value="2"/>                   <!-- 铸件工艺号 -->
@@ -20,7 +20,7 @@
         
         <ProjectComment value="公司2015年XYZ铸件按新工艺设计，进行仿真"/>  <!-- 项目描述 -->
         
-    </Informatin>
+    </Information>
     
     <Casting>                   <!-- 铸件配置 -->
         <CastingMaterialId       value="60 Cu - 40 Zn"/>             <!-- 绑定的材料库材料ID -->
