@@ -17,6 +17,7 @@ public:
     void modifyConfiguration(const wstring &name);
     void addConfiguration(const wstring &name);
     MoldConfiguration *getMoldConfiguration(const wstring& stl);
+    vector<MoldConfiguration*>& getMolds(void) {return molds;}
 
 private:
     vector<MoldConfiguration*> molds;

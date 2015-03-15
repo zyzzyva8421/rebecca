@@ -108,19 +108,6 @@ MainWindow::MainWindow(QWidget *parent) :
     buttonGroup_outputMethod->addButton(ui->radioButton_OutputIntervalStepOn, Output::OutputIntervalStepOn);
     connect(buttonGroup_outputMethod, SIGNAL(buttonClicked(int)), this, SLOT(on_buttonGroup_outputMethod_clicked(int)));
 
-    // action
-    connect(ui->action_project, SIGNAL(triggered()), this, SLOT(on_action_project_triggered()));
-    connect(ui->action_material, SIGNAL(triggered()), this, SLOT(on_action_material_triggered()));
-    connect(ui->action_simulate, SIGNAL(triggered()), this, SLOT(on_action_simulate_triggered()));
-    connect(ui->action_open, SIGNAL(triggered()), this, SLOT(on_action_open_triggered()));
-    connect(ui->action_save, SIGNAL(triggered()), this, SLOT(on_action_save_triggered()));
-    connect(ui->action_close, SIGNAL(triggered()), this, SLOT(on_action_close_triggered()));
-    connect(ui->action_stop, SIGNAL(triggered()), this, SLOT(on_action_stop_triggered()));
-    connect(ui->action_log, SIGNAL(triggered()), this, SLOT(on_action_log_triggered()));
-    connect(ui->action_result, SIGNAL(triggered()), this, SLOT(on_action_result_triggered()));
-    connect(ui->action_clean, SIGNAL(triggered()), this, SLOT(on_action_clean_triggered()));
-    connect(ui->action_dir, SIGNAL(triggered()), this, SLOT(on_action_dir_triggered()));
-
     // initilization
     ui->checkBox_basedOnExistingProject->setChecked(false);
     on_checkBox_basedOnExistingProject_stateChanged(Qt::Unchecked);

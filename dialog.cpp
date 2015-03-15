@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include "project.h"
 #include "information.h"
+#include "mold.h"
 #include <iostream>
 #include <QDir>
 
@@ -134,6 +135,28 @@ void Dialog::on_buttonBox_accepted()
                              << qPrintable(dir.absolutePath()) << std::endl;
                 return;
             }
+        }
+        // copy stl
+        QString originpath = ui->lineEdit_BasedProjectPath->text()+"/geometries";
+        Mold *mold = project->getMold();
+        QString newpath = QString::fromStdWString(project->getInformation()->getProjectPath()+L"/geometries");
+        QDir dir2(newpath);
+        if (!dir2.exists()) {
+            if (!dir2.mkpath(dir.absolutePath())) {
+                std::cerr << "Error: Cannnot open dir "
+                             << qPrintable(dir2.absolutePath()) << std::endl;
+                return;
+            }
+        }
+        for (vector<MoldConfiguration*>::iterator it = mold->getMolds().begin();
+             it != mold->getMolds().end(); it++) {
+            MoldConfiguration *config = (*it);
+            QString originfile = originpath+QString::fromStdWString(config->getName());
+            QString newfile = newpath+QString::fromStdWString(config->getName());
+            if (QFile::exists(newfile)) {
+                QFile::remove(newfile);
+            }
+            QFile::copy(originfile, newfile);
         }
     }
     close();
