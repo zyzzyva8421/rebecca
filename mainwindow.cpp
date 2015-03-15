@@ -238,6 +238,7 @@ void MainWindow::on_action_close_triggered() {
 }
 
 void MainWindow::on_action_simulate_triggered() {
+    if (!project) return;
     ui->dockWidget_log->setVisible(true);
     ui->dockWidget_log->raise();
     if (process == NULL) {
@@ -246,8 +247,18 @@ void MainWindow::on_action_simulate_triggered() {
         process->setProcessChannelMode(QProcess::MergedChannels);
         connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_stdoupt_update()));
     }
-    process->start("/Developer/Applications/Qt/build-testprocesser-Desktop-Debug/testprocesser");
-    process->waitForStarted();
+    wstring projectpath = project->getInformation()->getProjectPath();
+    if (projectpath.empty()) return;
+    QString currentpath = QDir::currentPath();
+    QDir dir = QDir::current();
+    if (!dir.cd(QString::fromStdWString(projectpath))) {
+        QMessageBox::critical(this, QString::fromStdWString(L"运行"), QString::fromStdWString(L"项目路径不合法"));
+        return;
+    }
+    process->start("ifcfd_casting_shell --run");
+    process->waitForFinished(-1);
+    dir.cd(currentpath);
+    return;
 }
 
 void MainWindow::on_stdoupt_update()
