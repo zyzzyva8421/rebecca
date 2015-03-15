@@ -15,5 +15,11 @@
         <file>save-file.png</file>
         <file>casting_materials.xml</file>
         <file>project.xml</file>
+        <file>stop.png</file>
+        <file>close.png</file>
+        <file>project-dir.png</file>
+        <file>log.png</file>
+        <file>result.png</file>
+        <file>clean.png</file>
     </qresource>
 </RCC>

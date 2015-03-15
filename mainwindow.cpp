@@ -111,9 +111,15 @@ MainWindow::MainWindow(QWidget *parent) :
     // action
     connect(ui->action_project, SIGNAL(triggered()), this, SLOT(on_action_project_triggered()));
     connect(ui->action_material, SIGNAL(triggered()), this, SLOT(on_action_material_triggered()));
-    connect(ui->action_simulate, SIGNAL(triggered()), this, SLOT(on_action_log_triggered()));
+    connect(ui->action_simulate, SIGNAL(triggered()), this, SLOT(on_action_simulate_triggered()));
     connect(ui->action_open, SIGNAL(triggered()), this, SLOT(on_action_open_triggered()));
     connect(ui->action_save, SIGNAL(triggered()), this, SLOT(on_action_save_triggered()));
+    connect(ui->action_close, SIGNAL(triggered()), this, SLOT(on_action_close_triggered()));
+    connect(ui->action_stop, SIGNAL(triggered()), this, SLOT(on_action_stop_triggered()));
+    connect(ui->action_log, SIGNAL(triggered()), this, SLOT(on_action_log_triggered()));
+    connect(ui->action_result, SIGNAL(triggered()), this, SLOT(on_action_result_triggered()));
+    connect(ui->action_clean, SIGNAL(triggered()), this, SLOT(on_action_clean_triggered()));
+    connect(ui->action_dir, SIGNAL(triggered()), this, SLOT(on_action_dir_triggered()));
 
     // initilization
     ui->checkBox_basedOnExistingProject->setChecked(false);
@@ -198,6 +204,40 @@ void MainWindow::on_action_project_triggered()
 }
 
 void MainWindow::on_action_log_triggered() {
+    ui->dockWidget_log->setVisible(true);
+    ui->dockWidget_log->raise();
+}
+
+void MainWindow::on_action_result_triggered() {
+
+}
+
+void MainWindow::on_action_clean_triggered() {
+
+}
+
+void MainWindow::on_action_dir_triggered() {
+
+}
+
+void MainWindow::on_action_close_triggered() {
+    if (!project) {
+        return;
+    }
+    int clickedButton = QMessageBox::question(this, QString::fromStdWString(L"关闭项目"), QString::fromStdWString(L"是否关闭当前项目前先保存？"),
+                                              QMessageBox::Save | QMessageBox::Discard | QMessageBox::No, QMessageBox::No);
+    if (clickedButton == QMessageBox::No) {
+        return;
+    } else if (clickedButton == QMessageBox::Save) {
+        on_action_save_triggered();
+    }
+    if (project) {
+        project->clearValue();
+        project->updateGui();
+    }
+}
+
+void MainWindow::on_action_simulate_triggered() {
     ui->dockWidget_log->setVisible(true);
     ui->dockWidget_log->raise();
     if (process == NULL) {
@@ -533,6 +573,13 @@ void MainWindow::on_action_save_triggered()
     QString filename = QString::fromStdWString(projectpath)+"/project.xml";
     if (!project->writeConfigFile(filename)) {
         // TODO: popup an error message
+    }
+}
+
+void MainWindow::on_action_stop_triggered()
+{
+    if (process) {
+        process->kill();
     }
 }
 

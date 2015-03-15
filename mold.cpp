@@ -13,9 +13,15 @@ Mold::~Mold() {
 
 void Mold::clearValue()
 {
+    bool isCleared = false;
     vector<MoldConfiguration*>::iterator it;
     for (it = molds.begin(); it != molds.end(); it++) {
         MoldConfiguration *conf = (*it);
+        if (!isCleared) {
+            conf->clearValue();
+            conf->updateGui();
+            isCleared = true;
+        }
         delete conf;
         conf = NULL;
     }

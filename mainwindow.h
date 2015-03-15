@@ -79,9 +79,15 @@ private slots:
 
     void on_action_project_triggered();
     void on_action_material_triggered();
-    void on_action_log_triggered();
+    void on_action_simulate_triggered();
     void on_action_open_triggered();
     void on_action_save_triggered();
+    void on_action_stop_triggered();
+    void on_action_log_triggered();
+    void on_action_result_triggered();
+    void on_action_clean_triggered();
+    void on_action_dir_triggered();
+    void on_action_close_triggered();
 
     void on_listWidget_addedStlMolds_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void on_treeView_materials_currentRowChanged(QModelIndex current, QModelIndex previous);
