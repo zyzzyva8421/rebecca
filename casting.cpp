@@ -13,8 +13,6 @@ void Casting::clearValue() {
     injectMethodVaryingPressureOnConf.clear();
     castingComment = L"";
     castingMaterialInitialTemperature = 0.0;
-    castingMaterialFluidMeshLevel = 0;
-    castingMaterialAdaptMeshLevel = 0;
     injectMethod = ConstantVelocityOn;
     injectMethodConstantVelocityOnConf = 0.0;
     injectMethodConstantPressureOnConf = 0.0;
@@ -29,12 +27,6 @@ void Casting::writeValue(QXmlStreamWriter &writer)
         writer.writeEndElement();
         writer.writeStartElement("CastingMaterialInitialTemperature");
         writer.writeAttribute("value", QString::number(castingMaterialInitialTemperature));
-        writer.writeEndElement();
-        writer.writeStartElement("CastingMaterialFluidMeshLevel");
-        writer.writeAttribute("value", QString::number(castingMaterialFluidMeshLevel));
-        writer.writeEndElement();
-        writer.writeStartElement("CastingMaterialAdaptMeshLevel");
-        writer.writeAttribute("value", QString::number(castingMaterialAdaptMeshLevel));
         writer.writeEndElement();
         writer.writeStartElement("InjectMethod");
             writer.writeStartElement("ConstantVelocityOn");
@@ -99,10 +91,6 @@ void Casting::loadValue(const QDomElement& element) {
             castingMaterialId = child.toElement().attribute("value").toStdString();
         } else if (tagName == "CastingMaterialInitialTemperature") {
             castingMaterialInitialTemperature = child.toElement().attribute("value").toDouble();
-        } else if (tagName == "CastingMaterialFluidMeshLevel") {
-            castingMaterialFluidMeshLevel = child.toElement().attribute("value").toInt();
-        } else if (tagName == "CastingMaterialAdaptMeshLevel") {
-            castingMaterialAdaptMeshLevel = child.toElement().attribute("value").toInt();
         } else if (tagName == "InjectMethod") {
             child1 = child.toElement().firstChild();
             while (!child1.isNull()) {
@@ -188,12 +176,6 @@ void Casting::updateGui(void) {
     text = QString::number(castingMaterialInitialTemperature);
     ui->lineEdit_initialTemperature->setText(text);
 
-    text = QString::number(castingMaterialFluidMeshLevel);
-    ui->lineEdit_CastingMaterialFluidMeshLevel->setText(text);
-
-    text = QString::number(castingMaterialAdaptMeshLevel);
-    ui->lineEdit_CastingMaterialAdaptMeshLevel->setText(text);
-
     text = QString::number(injectMethodConstantPressureOnConf);
     ui->lineEdit_constantPressure->setText(text);
 
@@ -231,8 +213,6 @@ void Casting::updateValue(void) {
     castingMaterialId = ui->comboBox_material->currentText().toStdString();
     castingComment = ui->plainTextEdit_introduction->toPlainText().toStdWString();
     castingMaterialInitialTemperature = ui->lineEdit_initialTemperature->text().toDouble();
-    castingMaterialFluidMeshLevel = ui->lineEdit_CastingMaterialFluidMeshLevel->text().toInt();
-    castingMaterialAdaptMeshLevel = ui->lineEdit_CastingMaterialAdaptMeshLevel->text().toInt();
     injectMethodConstantPressureOnConf = ui->lineEdit_constantPressure->text().toDouble();
     injectMethodConstantVelocityOnConf = ui->lineEdit_constantVelocity->text().toDouble();
 

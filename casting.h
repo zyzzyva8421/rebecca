@@ -25,8 +25,6 @@ public:
 private:
     string castingMaterialId;
     double castingMaterialInitialTemperature;
-    int castingMaterialFluidMeshLevel;
-    int castingMaterialAdaptMeshLevel;
     InjectMethod injectMethod;
     double injectMethodConstantVelocityOnConf;
     vector< vector<double> > injectMethodVaryingVelocityOnConf;

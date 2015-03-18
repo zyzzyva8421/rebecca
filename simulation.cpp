@@ -13,6 +13,14 @@ void Simulation::clearValue()
     phaseChangeOn = false;
     fluidOn = false;
     fluidOnConf = LaminarOn;
+    gravity = 0.0;
+    fluidMeshLevel = 0;
+    adaptMeshLevel = 0;
+    solidMeshLevel = 0;
+    environmentDensity = 0.0;
+    environmentDynamicViscosity = 0.0;
+    environmentTemperature = 0.0;
+    environmentPressure = 0.0;
     simulationComment = L"";
 }
 
@@ -42,6 +50,30 @@ void Simulation::writeValue(QXmlStreamWriter &writer)
             writer.writeStartElement("LesTurbulenceOn");
             writer.writeAttribute("value", QString::number((fluidOnConf==LesTurbulenceOn)?1:0));
             writer.writeEndElement();
+        writer.writeEndElement();
+        writer.writeStartElement("Gravity");
+        writer.writeAttribute("value", QString::number(gravity));
+        writer.writeEndElement();
+        writer.writeStartElement("FluidMeshLevel");
+        writer.writeAttribute("value", QString::number(fluidMeshLevel));
+        writer.writeEndElement();
+        writer.writeStartElement("AdaptMeshLevel");
+        writer.writeAttribute("value", QString::number(adaptMeshLevel));
+        writer.writeEndElement();
+        writer.writeStartElement("SolidMeshLevel");
+        writer.writeAttribute("value", QString::number(solidMeshLevel));
+        writer.writeEndElement();
+        writer.writeStartElement("EnvironmentDensity");
+        writer.writeAttribute("value", QString::number(environmentDensity));
+        writer.writeEndElement();
+        writer.writeStartElement("EnvironmentDynamicViscosity");
+        writer.writeAttribute("value", QString::number(environmentDynamicViscosity));
+        writer.writeEndElement();
+        writer.writeStartElement("EnvironmentTemperature");
+        writer.writeAttribute("value", QString::number(environmentTemperature));
+        writer.writeEndElement();
+        writer.writeStartElement("EnvironmentPressure");
+        writer.writeAttribute("value", QString::number(environmentPressure));
         writer.writeEndElement();
         writer.writeStartElement("SimulationComment");
         writer.writeAttribute("value", QString::fromStdWString(simulationComment));
@@ -88,6 +120,22 @@ void Simulation::loadValue(const QDomElement& element)
                 }
                 child1 = child1.nextSibling();
             }
+        } else if (tagName == "Gravity") {
+            gravity = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "FluidMeshLevel") {
+            fluidMeshLevel = child.toElement().attribute("value").toInt();
+        } else if (tagName == "AdaptMeshLevel") {
+            adaptMeshLevel = child.toElement().attribute("value").toInt();
+        } else if (tagName == "SolidMeshLevel") {
+            solidMeshLevel = child.toElement().attribute("value").toInt();
+        } else if (tagName == "EnvironmentDensity") {
+            environmentDensity = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "EnvironmentDynamicViscosity") {
+            environmentDynamicViscosity = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "EnvironmentTemperature") {
+            environmentTemperature = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "EnvironmentPressure") {
+            environmentPressure = child.toElement().attribute("value").toDouble();
         } else if (tagName == "SimulationComment") {
             simulationComment = child.toElement().attribute("value").toStdWString();
         }
@@ -126,6 +174,23 @@ void Simulation::updateGui(void)
 
     QString text = QString::fromStdWString(simulationComment);
     ui->plainTextEdit_simulationIntroduction->setPlainText(text);
+
+    text = QString::number(gravity);
+    ui->lineEdit_Gravity->setText(text);
+    text = QString::number(fluidMeshLevel);
+    ui->lineEdit_FluidMeshLevel->setText(text);
+    text = QString::number(adaptMeshLevel);
+    ui->lineEdit_AdaptMeshLevel->setText(text);
+    text = QString::number(solidMeshLevel);
+    ui->lineEdit_SolidMeshLevel->setText(text);
+    text = QString::number(environmentDensity);
+    ui->lineEdit_EnvironmentDensity->setText(text);
+    text = QString::number(environmentDynamicViscosity);
+    ui->lineEdit_EnvironmentDynamicViscosity->setText(text);
+    text = QString::number(environmentTemperature);
+    ui->lineEdit_EnvironmentTemperature->setText(text);
+    text = QString::number(environmentPressure);
+    ui->lineEdit_EnvironmentPressure->setText(text);
 }
 
 void Simulation::updateValue(void)
@@ -141,4 +206,13 @@ void Simulation::updateValue(void)
     fluidOnConf = (FluidOnConf)(group->checkedId());
 
     simulationComment = ui->plainTextEdit_simulationIntroduction->toPlainText().toStdWString();
+    gravity = ui->lineEdit_Gravity->text().toDouble();
+    fluidMeshLevel = ui->lineEdit_FluidMeshLevel->text().toInt();
+    adaptMeshLevel = ui->lineEdit_AdaptMeshLevel->text().toInt();
+    solidMeshLevel = ui->lineEdit_SolidMeshLevel->text().toInt();
+    environmentDensity = ui->lineEdit_EnvironmentDensity->text().toDouble();
+    environmentDynamicViscosity = ui->lineEdit_EnvironmentDynamicViscosity->text().toDouble();
+    environmentTemperature = ui->lineEdit_EnvironmentTemperature->text().toDouble();
+    environmentPressure = ui->lineEdit_EnvironmentPressure->text().toDouble();
+
 }

@@ -21,6 +21,14 @@ private:
     bool heatTransferOn;
     bool phaseChangeOn;
     bool fluidOn;
+    double gravity;
+    int fluidMeshLevel;
+    int adaptMeshLevel;
+    int solidMeshLevel;
+    double environmentDensity;
+    double environmentDynamicViscosity;
+    double environmentTemperature;
+    double environmentPressure;
     FluidOnConf fluidOnConf;
     wstring simulationComment;
 };
