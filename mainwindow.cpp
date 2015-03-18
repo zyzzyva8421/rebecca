@@ -107,6 +107,10 @@ MainWindow::MainWindow(QWidget *parent) :
     buttonGroup_outputMethod->addButton(ui->radioButton_OutputIntervalTimeOn, Output::OutputIntervalTimeOn);
     buttonGroup_outputMethod->addButton(ui->radioButton_OutputIntervalStepOn, Output::OutputIntervalStepOn);
     connect(buttonGroup_outputMethod, SIGNAL(buttonClicked(int)), this, SLOT(on_buttonGroup_outputMethod_clicked(int)));
+    buttonGroup_loggingMethod = new QButtonGroup(this);
+    buttonGroup_loggingMethod->addButton(ui->radioButton_LoggingIntervalTimeOn, Output::LoggingIntervalTimeOn);
+    buttonGroup_loggingMethod->addButton(ui->radioButton_LoggingIntervalStepOn, Output::LoggingIntervalStepOn);
+    connect(buttonGroup_loggingMethod, SIGNAL(buttonClicked(int)), this, SLOT(on_buttonGroup_loggingMethod_clicked(int)));
 
     // initilization
     ui->checkBox_basedOnExistingProject->setChecked(false);
@@ -424,6 +428,22 @@ void MainWindow::on_buttonGroup_outputMethod_clicked(int id)
     }
 }
 
+void MainWindow::on_buttonGroup_loggingMethod_clicked(int id)
+{
+    ui->lineEdit_LoggingIntervalTimeOnConf->setDisabled(true);
+    ui->lineEdit_LoggingIntervalStepOnConf->setDisabled(true);
+    switch (id) {
+    case Output::LoggingIntervalTimeOn: {
+        ui->lineEdit_LoggingIntervalTimeOnConf->setDisabled(false);
+        break;
+    }
+    case Output::LoggingIntervalStepOn: {
+        ui->lineEdit_LoggingIntervalStepOnConf->setDisabled(false);
+        break;
+    }
+    default: break;
+    }
+}
 MainWindow::~MainWindow()
 {
     delete ui;

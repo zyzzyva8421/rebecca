@@ -111,6 +111,8 @@ private slots:
 
     void on_buttonGroup_outputMethod_clicked(int id);
 
+    void on_buttonGroup_loggingMethod_clicked(int id);
+
     void on_toolButton_varyingVelocityOK_clicked();
 
     void on_toolButton_varyingVelocityCancel_clicked();
@@ -164,6 +166,7 @@ private:
     QButtonGroup *buttonGroup_terminationCondition;
     QButtonGroup *buttonGroup_parallelMethod;
     QButtonGroup *buttonGroup_outputMethod;
+    QButtonGroup *buttonGroup_loggingMethod;
     Project *project;
     MaterialGroup *materialgroup;
     QStandardItemModel *materialgroupModel;

@@ -9,6 +9,10 @@ public:
         OutputIntervalTimeOn,
         OutputIntervalStepOn
     };
+    enum LoggingMethod {
+        LoggingIntervalTimeOn,
+        LoggingIntervalStepOn
+    };
     Output(const wstring& name);
     virtual void loadValue(const QDomElement& element);
     virtual void writeValue(QXmlStreamWriter& writer);
@@ -19,6 +23,9 @@ private:
     OutputMethod outputMethod;
     double outputIntervalTimeOnConf;
     int outputIntervalStepOnConf;
+    LoggingMethod loggingMethod;
+    double loggingIntervalTimeOnConf;
+    int loggingIntervalStepOnConf;
     bool loggingCurrentStepOn;
     bool loggingCurrentTimeOn;
     bool loggingCurrentFillingRateOn;

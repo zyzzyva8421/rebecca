@@ -12,6 +12,9 @@ void Output::clearValue()
     outputMethod = OutputIntervalTimeOn;
     outputIntervalTimeOnConf = 0.0;
     outputIntervalStepOnConf = 0;
+    loggingMethod = LoggingIntervalTimeOn;
+    loggingIntervalTimeOnConf = 0.0;
+    loggingIntervalStepOnConf = 0;
     loggingCurrentStepOn = false;
     loggingCurrentTimeOn = false;
     loggingCurrentFillingRateOn = false;
@@ -40,6 +43,24 @@ void Output::writeValue(QXmlStreamWriter &writer)
     writer.writeStartElement("OutputIntervalStepOnConf");
         writer.writeStartElement("Value");
         writer.writeAttribute("value", QString::number(outputIntervalStepOnConf));
+        writer.writeEndElement();
+    writer.writeEndElement();
+    writer.writeStartElement("LoggingMethod");
+        writer.writeStartElement("LoggingIntervalTimeOn");
+        writer.writeAttribute("value", QString::number((loggingMethod==LoggingIntervalTimeOn)?1:0));
+        writer.writeEndElement();
+        writer.writeStartElement("LoggingIntervalStepOn");
+        writer.writeAttribute("value", QString::number((loggingMethod==LoggingIntervalStepOn)?1:0));
+        writer.writeEndElement();
+    writer.writeEndElement();
+    writer.writeStartElement("LoggingIntervalTimeOnConf");
+        writer.writeStartElement("Value");
+        writer.writeAttribute("value", QString::number(loggingIntervalTimeOnConf));
+        writer.writeEndElement();
+    writer.writeEndElement();
+    writer.writeStartElement("LoggingIntervalStepOnConf");
+        writer.writeStartElement("Value");
+        writer.writeAttribute("value", QString::number(loggingIntervalStepOnConf));
         writer.writeEndElement();
     writer.writeEndElement();
     writer.writeStartElement("LoggingCurrentStepOn");
@@ -107,6 +128,42 @@ void Output::loadValue(const QDomElement& element)
                 }
                 child1 = child1.nextSibling();
             }
+        } else if (tagName == "LoggingMethod") {
+                child1 = child.toElement().firstChild();
+                while (!child1.isNull()) {
+                    tagName1 = child1.toElement().tagName().toStdString();
+                    int value = child1.toElement().attribute("value").toInt();
+                    if (value != 0) {
+                        if (tagName1 == "LoggingIntervalTimeOn") {
+                            loggingMethod = LoggingIntervalTimeOn;
+                            break;
+                        } else if (tagName1 == "LoggingIntervalStepOn") {
+                            loggingMethod = LoggingIntervalStepOn;
+                            break;
+                        }
+                    }
+                    child1 = child1.nextSibling();
+                }
+            } else if (tagName == "LoggingIntervalTimeOnConf") {
+                child1 = child.toElement().firstChild();
+                while (!child1.isNull()) {
+                    tagName1 = child1.toElement().tagName().toStdString();
+                    if (tagName1 == "Value") {
+                        loggingIntervalTimeOnConf = child1.toElement().attribute("value").toDouble();
+                        break;
+                    }
+                    child1 = child1.nextSibling();
+                }
+            } else if (tagName == "LoggingIntervalStepOnConf") {
+                child1 = child.toElement().firstChild();
+                while (!child1.isNull()) {
+                    tagName1 = child1.toElement().tagName().toStdString();
+                    if (tagName1 == "Value") {
+                        loggingIntervalStepOnConf = child1.toElement().attribute("value").toInt();
+                        break;
+                    }
+                    child1 = child1.nextSibling();
+                }
         } else if (tagName == "LoggingCurrentStepOn") {
             loggingCurrentStepOn = (child.toElement().attribute("value").toStdString()=="1")?true:false;
         } else if (tagName == "LoggingCurrentTimeOn") {
@@ -147,6 +204,24 @@ void Output::updateGui(void)
 
     text = QString::number(outputIntervalStepOnConf);
     ui->lineEdit_OutputIntervalStepOnConf->setText(text);
+
+    switch (loggingMethod) {
+    case LoggingIntervalTimeOn: {
+        ui->radioButton_LoggingIntervalTimeOn->click();
+        break;
+    }
+    case LoggingIntervalStepOn: {
+        ui->radioButton_LoggingIntervalStepOn->click();
+        break;
+    }
+    default: break;
+    }
+
+    text = QString::number(loggingIntervalTimeOnConf);
+    ui->lineEdit_LoggingIntervalTimeOnConf->setText(text);
+
+    text = QString::number(loggingIntervalStepOnConf);
+    ui->lineEdit_LoggingIntervalStepOnConf->setText(text);
 
     ui->checkBox_LoggingCurrentStepOn->setChecked(loggingCurrentStepOn);
 
