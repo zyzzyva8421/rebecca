@@ -80,8 +80,8 @@ void Output::loadValue(const QDomElement& element)
                     if (tagName1 == "OutputIntervalTimeOn") {
                         outputMethod = OutputIntervalTimeOn;
                         break;
-                    } else if (tagName1 == "OutputIntervalTimeOn") {
-                        outputMethod = OutputIntervalTimeOn;
+                    } else if (tagName1 == "OutputIntervalStepOn") {
+                        outputMethod = OutputIntervalStepOn;
                         break;
                     }
                 }

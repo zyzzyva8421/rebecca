@@ -297,7 +297,7 @@ void Computing::updateValue(void)
     QButtonGroup *group = NULL;
     group = window->get_buttonGroup_timeStepMethod();
     timeStepMethod = (TimeStepMethod)(group->checkedId());
-    timeStepFixedOnConf = ui->lineEdit_timeStepFixedOn->text().toInt();
+    timeStepFixedOnConf = ui->lineEdit_timeStepFixedOn->text().toDouble();
     iterationMaximumRelativeError = ui->lineEdit_IterationMaximumRelativeError->text().toDouble();
     iterationMaximumStepCount = ui->lineEdit_IterationMaximumStepCount->text().toInt();
     iterationMinimumStepCount = ui->lineEdit_IterationMinimumStepCount->text().toInt();
