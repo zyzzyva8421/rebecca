@@ -11,6 +11,7 @@
 #include <QVariant>
 #include <vector>
 #include <utility>
+#include <iostream>
 
 class Project;
 class MaterialGroup;

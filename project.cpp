@@ -23,6 +23,7 @@ Project::Project(const wstring& _name) : Category(_name)
 Project::~Project()
 {
     if (information) delete information;
+    information = NULL;
     if (casting) delete casting;
     casting = NULL;
     if (mold) delete mold;

@@ -118,11 +118,13 @@ void Computing::loadValue(const QDomElement &element)
             }
         } else if (tagName == "TimeStepFixedOnConf") {
             child1 = child.toElement().firstChild();
-            if (!child1.isNull()) {
+            while (!child1.isNull()) {
                 tagName1 = child1.toElement().tagName().toStdString();
                 if (tagName1 == "Value") {
                     timeStepFixedOnConf = child1.toElement().attribute("value").toDouble();
+                    break;
                 }
+                child1 = child1.nextSibling();
             }
         } else if (tagName == "IterationMaximumRelativeError") {
             iterationMaximumRelativeError = child.toElement().attribute("value").toDouble();
@@ -151,27 +153,33 @@ void Computing::loadValue(const QDomElement &element)
             }
         } else if (tagName == "TerminationEndTimeOnConf") {
             child1 = child.toElement().firstChild();
-            if (!child1.isNull()) {
+            while (!child1.isNull()) {
                 tagName1 = child1.toElement().tagName().toStdString();
                 if (tagName1 == "Value") {
                     terminationEndTimeOnConf = child1.toElement().attribute("value").toDouble();
+                    break;
                 }
+                child1 = child1.nextSibling();
             }
         } else if (tagName == "TerminationFillingRateOnConf") {
             child1 = child.toElement().firstChild();
-            if (!child1.isNull()) {
+            while (!child1.isNull()) {
                 tagName1 = child1.toElement().tagName().toStdString();
                 if (tagName1 == "Value") {
                     terminationFillingRateOnConf = child1.toElement().attribute("value").toDouble();
+                    break;
                 }
+                child1 = child1.nextSibling();
             }
         } else if (tagName == "TerminationMaximumStepOnConf") {
             child1 = child.toElement().firstChild();
-            if (!child1.isNull()) {
+            while (!child1.isNull()) {
                 tagName1 = child1.toElement().tagName().toStdString();
                 if (tagName1 == "Value") {
                     terminationMaximumStepOnConf = child1.toElement().attribute("value").toInt();
+                    break;
                 }
+                child1 = child1.nextSibling();
             }
         } else if (tagName == "ParallelMethod") {
             child1 = child.toElement().firstChild();
@@ -191,11 +199,13 @@ void Computing::loadValue(const QDomElement &element)
             }
         } else if (tagName == "ParallelFixedOnConf") {
             child1 = child.toElement().firstChild();
-            if (!child1.isNull()) {
+            while (!child1.isNull()) {
                 tagName1 = child1.toElement().tagName().toStdString();
                 if (tagName1 == "Value") {
                     parallelFixedOnConf = child1.toElement().attribute("value").toInt();
+                    break;
                 }
+                child1 = child1.nextSibling();
             }
         } else if (tagName == "ComputingComment") {
             computingComment = child.toElement().attribute("value").toStdWString();

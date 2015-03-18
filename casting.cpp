@@ -115,11 +115,13 @@ void Casting::loadValue(const QDomElement& element) {
             }
         } else if (tagName == "InjectMethodConstantVelocityOnConf") {
             child1 = child.toElement().firstChild();
-            if (!child1.isNull()) {
+            while (!child1.isNull()) {
                 tagName1 = child1.toElement().tagName().toStdString();
                 if (tagName1 == "Value") {
                     injectMethodConstantVelocityOnConf = child1.toElement().attribute("value").toDouble();
+                    break;
                 }
+                child1 = child1.nextSibling();
             }
         } else if (tagName == "InjectMethodVaryingVelocityOnConf") {
             child1 = child.toElement().firstChild();
@@ -135,11 +137,13 @@ void Casting::loadValue(const QDomElement& element) {
             }
         } else if (tagName == "InjectMethodConstantPressureOnConf") {
             child1 = child.toElement().firstChild();
-            if (!child1.isNull()) {
+            while (!child1.isNull()) {
                 tagName1 = child1.toElement().tagName().toStdString();
                 if (tagName1 == "Value") {
                     injectMethodConstantPressureOnConf = child1.toElement().attribute("value").toDouble();
+                    break;
                 }
+                child1 = child1.nextSibling();
             }
         } else if (tagName == "InjectMethodVaryingPressureOnConf") {
             child1 = child.toElement().firstChild();
@@ -171,7 +175,7 @@ void Casting::updateGui(void) {
     ui->comboBox_material->setCurrentIndex(0);
 
     text = QString::fromStdWString(castingComment);
-    ui->plainTextEdit_projectDescription->setPlainText(text);
+    ui->plainTextEdit_CastingComment->setPlainText(text);
 
     text = QString::number(castingMaterialInitialTemperature);
     ui->lineEdit_initialTemperature->setText(text);
@@ -211,7 +215,7 @@ void Casting::updateValue(void) {
     if (ui == NULL) return;
 
     castingMaterialId = ui->comboBox_material->currentText().toStdString();
-    castingComment = ui->plainTextEdit_introduction->toPlainText().toStdWString();
+    castingComment = ui->plainTextEdit_CastingComment->toPlainText().toStdWString();
     castingMaterialInitialTemperature = ui->lineEdit_initialTemperature->text().toDouble();
     injectMethodConstantPressureOnConf = ui->lineEdit_constantPressure->text().toDouble();
     injectMethodConstantVelocityOnConf = ui->lineEdit_constantVelocity->text().toDouble();

@@ -89,19 +89,23 @@ void Output::loadValue(const QDomElement& element)
             }
         } else if (tagName == "OutputIntervalTimeOnConf") {
             child1 = child.toElement().firstChild();
-            if (!child1.isNull()) {
+            while (!child1.isNull()) {
                 tagName1 = child1.toElement().tagName().toStdString();
                 if (tagName1 == "Value") {
                     outputIntervalTimeOnConf = child1.toElement().attribute("value").toDouble();
+                    break;
                 }
+                child1 = child1.nextSibling();
             }
         } else if (tagName == "OutputIntervalStepOnConf") {
             child1 = child.toElement().firstChild();
-            if (!child1.isNull()) {
+            while (!child1.isNull()) {
                 tagName1 = child1.toElement().tagName().toStdString();
                 if (tagName1 == "Value") {
                     outputIntervalStepOnConf = child1.toElement().attribute("value").toInt();
+                    break;
                 }
+                child1 = child1.nextSibling();
             }
         } else if (tagName == "LoggingCurrentStepOn") {
             loggingCurrentStepOn = (child.toElement().attribute("value").toStdString()=="1")?true:false;
