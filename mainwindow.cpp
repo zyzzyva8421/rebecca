@@ -693,7 +693,9 @@ void MainWindow::on_action_save_triggered()
 void MainWindow::on_action_stop_triggered()
 {
     QProcess *process = dynamic_cast<QProcess*>(sender());
-    if (process && process->parent() == ui->action_simulate) {
+    if (process) {
+        QAction *action = dynamic_cast<QAction*>(process->parent());
+        if (action != ui->action_simulate) return;
         int buttonclicked = QMessageBox::warning(this, QString::fromStdWString(L"终止仿真"),
                                                  QString::fromStdWString(L"是否终止仿真？"), QMessageBox::Ok | QMessageBox::No);
         if (buttonclicked == QMessageBox::No) {
