@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     copymaterial = NULL;
     addstl = NULL;
     currentMaterial = NULL;
+    simulate = NULL;
     isMaterialGroupChanged = false;
     ui->pushButton_saveMaterialGroup->setDisabled(true);
 
@@ -327,6 +328,7 @@ void MainWindow::on_process_started()
         if (action) {
             action->setDisabled(true);
             if (action == ui->action_simulate) {
+                simulate = process;
                 ui->action_stop->setDisabled(false);
             }
         }
@@ -341,6 +343,7 @@ void MainWindow::on_process_finished(int exitCode)
         if (action) {
             action->setDisabled(false);
             if (action == ui->action_simulate) {
+                simulate = NULL;
                 ui->action_stop->setDisabled(true);
             }
         }
@@ -692,7 +695,7 @@ void MainWindow::on_action_save_triggered()
 
 void MainWindow::on_action_stop_triggered()
 {
-    QProcess *process = dynamic_cast<QProcess*>(sender());
+    QProcess *process = simulate;
     if (process) {
         QAction *action = dynamic_cast<QAction*>(process->parent());
         if (action != ui->action_simulate) return;
@@ -702,6 +705,8 @@ void MainWindow::on_action_stop_triggered()
             return;
         }
         process->kill();
+        process->deleteLater();
+        simulate = NULL;
     }
 }
 

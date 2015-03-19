@@ -180,6 +180,7 @@ private:
     Material *currentMaterial;
     CopyMaterial *copymaterial;
     AddStl *addstl;
+    QProcess *simulate;
     bool isMaterialGroupChanged;
 
 };
