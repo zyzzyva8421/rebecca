@@ -217,7 +217,7 @@ void MainWindow::on_action_result_triggered() {
         return;
     }
     process->start("ifcfd_casting_shell --browse output");
-    process->waitForFinished(-1);
+    process->waitForStarted();
     dir.setCurrent(currentpath);
     return;
 }
@@ -245,7 +245,7 @@ void MainWindow::on_action_clean_triggered() {
         return;
     }
     process->start("ifcfd_casting_shell --clean_output");
-    process->waitForFinished(-1);
+    process->waitForStarted();
     dir.setCurrent(currentpath);
     return;
 }
@@ -269,7 +269,7 @@ void MainWindow::on_action_dir_triggered() {
     }
 
     process->start("ifcfd_casting_shell --browse .");
-    process->waitForFinished(-1);
+    process->waitForStarted();
     dir.setCurrent(currentpath);
     return;
 }
@@ -315,7 +315,7 @@ void MainWindow::on_action_simulate_triggered() {
         return;
     }
     process->start("ifcfd_casting_shell --run");
-    process->waitForFinished(-1);
+    process->waitForStarted();
     dir.setCurrent(currentpath);
     return;
 }
