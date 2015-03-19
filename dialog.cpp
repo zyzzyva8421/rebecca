@@ -166,6 +166,9 @@ void Dialog::on_buttonBox_accepted()
         }
         main->getUi()->action_open->setDisabled(true);
         main->getUi()->action_project->setDisabled(true);
+        QString title = QString::fromStdWString(L"墨华高科CFD压铸仿真平台")+" - "
+                        +QString::fromStdWString(project->getInformation()->getProjectPath());
+        setWindowTitle(title);
     }
     close();
 }

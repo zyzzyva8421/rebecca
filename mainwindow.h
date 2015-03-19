@@ -182,6 +182,7 @@ private:
     AddStl *addstl;
     QProcess *simulate;
     bool isMaterialGroupChanged;
+    bool isKilled;
 
 };
 

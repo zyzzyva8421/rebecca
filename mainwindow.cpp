@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     currentMaterial = NULL;
     simulate = NULL;
     isMaterialGroupChanged = false;
+    isKilled = false;
     ui->pushButton_saveMaterialGroup->setDisabled(true);
 
     materialgroup = new MaterialGroup(L"materialgroup");
@@ -283,6 +284,7 @@ void MainWindow::on_action_close_triggered() {
         project->updateGui();
         ui->action_open->setDisabled(false);
         ui->action_project->setDisabled(false);
+        setWindowTitle(QString::fromStdWString(L"墨华高科CFD压铸仿真平台"));
     }
 }
 
@@ -347,6 +349,22 @@ void MainWindow::on_process_finished(int exitCode)
             if (action == ui->action_simulate) {
                 simulate = NULL;
                 ui->action_stop->setDisabled(true);
+                if (!isKilled) {
+                    if (exitCode == 0) {
+                        QMessageBox::information(this, QString::fromStdWString(L"仿真结束"),
+                                                 QString::fromStdWString(L"仿真结束，请打开结果目录分析数据"));
+                    } else {
+                        QMessageBox::information(this, QString::fromStdWString(L"仿真结束"),
+                                                 QString::fromStdWString(L"仿真失败，请检查日志或联系墨华高科"));
+                    }
+                } else {
+                    isKilled = false;
+                }
+            } else {
+                if (exitCode != 0) {
+                    QString text = action->text()+QString::fromStdWString(L"失败");
+                    QMessageBox::information(this, action->text(), text);
+                }
             }
         }
         process->deleteLater();
@@ -675,6 +693,8 @@ void MainWindow::on_action_open_triggered()
         project->updateGui();
         ui->action_open->setDisabled(true);
         ui->action_project->setDisabled(true);
+        QString title = QString::fromStdWString(L"墨华高科CFD压铸仿真平台")+" - "+dir;
+        setWindowTitle(title);
     } else {
         delete _project;
         _project = NULL;
@@ -712,6 +732,7 @@ void MainWindow::on_action_stop_triggered()
         if (buttonclicked == QMessageBox::No) {
             return;
         }
+        isKilled = true;
         process->kill();
         process->deleteLater();
         simulate = NULL;
