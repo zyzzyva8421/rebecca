@@ -154,7 +154,6 @@ void Dialog::on_buttonBox_accepted()
             QString originfile = originpath+"/"+QString::fromStdWString(config->getName());
             QString newfile = newpath+"/"+QString::fromStdWString(config->getName());
             if (QFile::exists(newfile)) {
-                std::wcout << "rm " << newfile.toStdWString() << std::endl;
                 QFile::remove(newfile);
             }
             QFile::copy(originfile, newfile);

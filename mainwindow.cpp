@@ -34,8 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
     copymaterial = NULL;
     addstl = NULL;
     currentMaterial = NULL;
-    process = NULL;
-    currentAction = NULL;
     isMaterialGroupChanged = false;
     ui->pushButton_saveMaterialGroup->setDisabled(true);
 
@@ -206,12 +204,8 @@ void MainWindow::on_action_log_triggered() {
 
 void MainWindow::on_action_result_triggered() {
     if (!project) return;
-    if (process == NULL) {
-        process = new QProcess(this);
-        process->setEnvironment(QProcess::systemEnvironment());
-        process->setProcessChannelMode(QProcess::MergedChannels);
-        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_stdoupt_update()));
-    }
+    QProcess *process = createProcess(ui->action_result);
+    if (!process) return;
     wstring projectpath = project->getInformation()->getProjectPath();
     if (projectpath.empty()) return;
     QString currentpath = QDir::currentPath();
@@ -229,12 +223,8 @@ void MainWindow::on_action_result_triggered() {
 
 void MainWindow::on_action_clean_triggered() {
     if (!project) return;
-    if (process == NULL) {
-        process = new QProcess(this);
-        process->setEnvironment(QProcess::systemEnvironment());
-        process->setProcessChannelMode(QProcess::MergedChannels);
-        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_stdoupt_update()));
-    }
+    QProcess *process = createProcess(ui->action_clean);
+    if (!process) return;
     wstring projectpath = project->getInformation()->getProjectPath();
     if (projectpath.empty()) return;
     int buttonclicked = QMessageBox::warning(this, QString::fromStdWString(L"清空结果目录"),
@@ -249,6 +239,7 @@ void MainWindow::on_action_clean_triggered() {
         dir.setCurrent(currentpath);
         return;
     }
+
     process->start("ifcfd_casting_shell --clean_output");
     process->waitForStarted();
     dir.setCurrent(currentpath);
@@ -257,12 +248,8 @@ void MainWindow::on_action_clean_triggered() {
 
 void MainWindow::on_action_dir_triggered() {
     if (!project) return;
-    if (process == NULL) {
-        process = new QProcess(this);
-        process->setEnvironment(QProcess::systemEnvironment());
-        process->setProcessChannelMode(QProcess::MergedChannels);
-        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_stdoupt_update()));
-    }
+    QProcess *process = createProcess(ui->action_dir);
+    if (!process) return;
     wstring projectpath = project->getInformation()->getProjectPath();
     if (projectpath.empty()) return;
     QString currentpath = QDir::currentPath();
@@ -296,18 +283,23 @@ void MainWindow::on_action_close_triggered() {
     }
 }
 
+QProcess *MainWindow::createProcess(QObject *parent)
+{
+    QProcess *process = new QProcess(parent);
+    process->setEnvironment(QProcess::systemEnvironment());
+    process->setProcessChannelMode(QProcess::MergedChannels);
+    connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_stdoupt_update()));
+    connect(process, SIGNAL(started()), this, SLOT(on_process_started()));
+    connect(process, SIGNAL(finished(int)), this, SLOT(on_process_finished(int)));
+    return process;
+}
+
 void MainWindow::on_action_simulate_triggered() {
     if (!project) return;
     ui->dockWidget_log->setVisible(true);
     ui->dockWidget_log->raise();
-    if (process == NULL) {
-        process = new QProcess(this);
-        process->setEnvironment(QProcess::systemEnvironment());
-        process->setProcessChannelMode(QProcess::MergedChannels);
-        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_stdoupt_update()));
-        connect(process, SIGNAL(started()), this, SLOT(on_process_started()));
-        connect(process, SIGNAL(finished(int)), this, SLOT(on_process_finished(int)));
-    }
+    QProcess *process = createProcess(ui->action_simulate);
+    if (!process) return;
     wstring projectpath = project->getInformation()->getProjectPath();
     if (projectpath.empty()) return;
     int buttonclicked = QMessageBox::warning(this, QString::fromStdWString(L"运行"),
@@ -323,29 +315,36 @@ void MainWindow::on_action_simulate_triggered() {
     }
     process->start("ifcfd_casting_shell --run");
     process->waitForStarted();
-    currentAction = ui->action_simulate;
     dir.setCurrent(currentpath);
     return;
 }
 
 void MainWindow::on_process_started()
 {
-    if (currentAction) {
-        currentAction->setDisabled(true);
-        if (currentAction == ui->action_simulate) {
-            ui->action_stop->setDisabled(false);
+    QProcess *process = dynamic_cast<QProcess*>(sender());
+    if (process) {
+        QAction *action = dynamic_cast<QAction*>(process->parent());
+        if (action) {
+            action->setDisabled(true);
+            if (action == ui->action_simulate) {
+                ui->action_stop->setDisabled(false);
+            }
         }
     }
 }
 
 void MainWindow::on_process_finished(int exitCode)
 {
-    if (currentAction) {
-        currentAction->setDisabled(false);
-        if (currentAction == ui->action_simulate) {
-            ui->action_stop->setDisabled(true);
+    QProcess *process = dynamic_cast<QProcess*>(sender());
+    if (process) {
+        QAction *action = dynamic_cast<QAction*>(process->parent());
+        if (action) {
+            action->setDisabled(false);
+            if (action == ui->action_simulate) {
+                ui->action_stop->setDisabled(true);
+            }
         }
-        currentAction = NULL;
+        process->deleteLater();
     }
 }
 
@@ -693,7 +692,8 @@ void MainWindow::on_action_save_triggered()
 
 void MainWindow::on_action_stop_triggered()
 {
-    if (process) {
+    QProcess *process = dynamic_cast<QProcess*>(sender());
+    if (process && process->parent() == ui->action_simulate) {
         int buttonclicked = QMessageBox::warning(this, QString::fromStdWString(L"终止仿真"),
                                                  QString::fromStdWString(L"是否终止仿真？"), QMessageBox::Ok | QMessageBox::No);
         if (buttonclicked == QMessageBox::No) {

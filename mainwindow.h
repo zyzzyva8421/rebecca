@@ -57,6 +57,7 @@ public:
     void setIsMaterialGroupChanged(bool isChanged) {isMaterialGroupChanged = isChanged;}
     bool getIsMaterialGroupChanged(void) {return isMaterialGroupChanged;}
     Project *getProject(void) {return project;}
+    QProcess *createProcess(QObject *parent = 0);
 
 private slots:
 
@@ -179,8 +180,6 @@ private:
     Material *currentMaterial;
     CopyMaterial *copymaterial;
     AddStl *addstl;
-    QProcess *process;
-    QAction *currentAction;
     bool isMaterialGroupChanged;
 
 };
