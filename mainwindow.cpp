@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     addstl = NULL;
     currentMaterial = NULL;
     process = NULL;
+    currentAction = NULL;
     isMaterialGroupChanged = false;
     ui->pushButton_saveMaterialGroup->setDisabled(true);
 
@@ -128,6 +129,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->radioButton_ParallelAdaptedOn->click();
 
     ui->radioButton_OutputIntervalTimeOn->click();
+
+    ui->radioButton_LoggingIntervalTimeOn->click();
+
+    ui->action_stop->setDisabled(true);
 
     QString materialfile = QDir::homePath()+"/.ifcfd/casting_materials.xml";
     if (materialgroup) {
@@ -300,6 +305,8 @@ void MainWindow::on_action_simulate_triggered() {
         process->setEnvironment(QProcess::systemEnvironment());
         process->setProcessChannelMode(QProcess::MergedChannels);
         connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_stdoupt_update()));
+        connect(process, SIGNAL(started()), this, SLOT(on_process_started()));
+        connect(process, SIGNAL(finished(int)), this, SLOT(on_process_finished(int)));
     }
     wstring projectpath = project->getInformation()->getProjectPath();
     if (projectpath.empty()) return;
@@ -316,8 +323,30 @@ void MainWindow::on_action_simulate_triggered() {
     }
     process->start("ifcfd_casting_shell --run");
     process->waitForStarted();
+    currentAction = ui->action_simulate;
     dir.setCurrent(currentpath);
     return;
+}
+
+void MainWindow::on_process_started()
+{
+    if (currentAction) {
+        currentAction->setDisabled(true);
+        if (currentAction == ui->action_simulate) {
+            ui->action_stop->setDisabled(false);
+        }
+    }
+}
+
+void MainWindow::on_process_finished(int exitCode)
+{
+    if (currentAction) {
+        currentAction->setDisabled(false);
+        if (currentAction == ui->action_simulate) {
+            ui->action_stop->setDisabled(true);
+        }
+        currentAction = NULL;
+    }
 }
 
 void MainWindow::on_stdoupt_update()
@@ -665,6 +694,11 @@ void MainWindow::on_action_save_triggered()
 void MainWindow::on_action_stop_triggered()
 {
     if (process) {
+        int buttonclicked = QMessageBox::warning(this, QString::fromStdWString(L"终止仿真"),
+                                                 QString::fromStdWString(L"是否终止仿真？"), QMessageBox::Ok | QMessageBox::No);
+        if (buttonclicked == QMessageBox::No) {
+            return;
+        }
         process->kill();
     }
 }

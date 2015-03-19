@@ -3673,7 +3673,7 @@
      <item>
       <widget class="QTextEdit" name="textEdit_simuEngine">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="minimumSize">
         <size>
@@ -3683,6 +3683,9 @@
        </property>
        <property name="locale">
         <locale language="Chinese" country="China"/>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

@@ -115,7 +115,7 @@ void AddMaterial::on_buttonBox_accepted()
                         }
                     }
                 } else if (category->getName() == L"material") {
-                    Material *material = (Material*)material;
+                    Material *material = (Material*)category;
                     if (ui->radioButton_group->isChecked()) {
                         // add group in material
                         MaterialGroup *newgroup = new MaterialGroup(L"materialgroup");

@@ -153,6 +153,10 @@ private slots:
 
     void on_pushButton_moldCancel_clicked();
 
+    void on_process_started();
+
+    void on_process_finished(int);
+
 private:
 
     void tableInsertRow(QTableWidget *table, int row_num = 1);
@@ -176,6 +180,7 @@ private:
     CopyMaterial *copymaterial;
     AddStl *addstl;
     QProcess *process;
+    QAction *currentAction;
     bool isMaterialGroupChanged;
 
 };
