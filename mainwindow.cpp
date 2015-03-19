@@ -211,14 +211,14 @@ void MainWindow::on_action_result_triggered() {
     if (projectpath.empty()) return;
     QString currentpath = QDir::currentPath();
     QDir dir = QDir::current();
-    if (!dir.cd(QString::fromStdWString(projectpath))) {
+    if (!dir.setCurrent(QString::fromStdWString(projectpath))) {
         QMessageBox::critical(this, QString::fromStdWString(L"打开结果目录"), QString::fromStdWString(L"项目路径不合法"));
-        dir.cd(currentpath);
+        dir.setCurrent(currentpath);
         return;
     }
     process->start("ifcfd_casting_shell --browse output");
     process->waitForFinished(-1);
-    dir.cd(currentpath);
+    dir.setCurrent(currentpath);
     return;
 }
 
@@ -239,14 +239,14 @@ void MainWindow::on_action_clean_triggered() {
     }
     QString currentpath = QDir::currentPath();
     QDir dir = QDir::current();
-    if (!dir.cd(QString::fromStdWString(projectpath))) {
+    if (!dir.setCurrent(QString::fromStdWString(projectpath))) {
         QMessageBox::critical(this, QString::fromStdWString(L"打开结果目录"), QString::fromStdWString(L"项目路径不合法"));
-        dir.cd(currentpath);
+        dir.setCurrent(currentpath);
         return;
     }
     process->start("ifcfd_casting_shell --clean_output");
     process->waitForFinished(-1);
-    dir.cd(currentpath);
+    dir.setCurrent(currentpath);
     return;
 }
 
@@ -262,15 +262,15 @@ void MainWindow::on_action_dir_triggered() {
     if (projectpath.empty()) return;
     QString currentpath = QDir::currentPath();
     QDir dir = QDir::current();
-    if (!dir.cd(QString::fromStdWString(projectpath))) {
+    if (!dir.setCurrent(QString::fromStdWString(projectpath))) {
         QMessageBox::critical(this, QString::fromStdWString(L"打开项目目录"), QString::fromStdWString(L"项目路径不合法"));
-        dir.cd(currentpath);
+        dir.setCurrent(currentpath);
         return;
     }
 
     process->start("ifcfd_casting_shell --browse .");
     process->waitForFinished(-1);
-    dir.cd(currentpath);
+    dir.setCurrent(currentpath);
     return;
 }
 
@@ -310,13 +310,13 @@ void MainWindow::on_action_simulate_triggered() {
     }
     QString currentpath = QDir::currentPath();
     QDir dir = QDir::current();
-    if (!dir.cd(QString::fromStdWString(projectpath))) {
+    if (!dir.setCurrent(QString::fromStdWString(projectpath))) {
         QMessageBox::critical(this, QString::fromStdWString(L"运行"), QString::fromStdWString(L"项目路径不合法"));
         return;
     }
     process->start("ifcfd_casting_shell --run");
     process->waitForFinished(-1);
-    dir.cd(currentpath);
+    dir.setCurrent(currentpath);
     return;
 }
 

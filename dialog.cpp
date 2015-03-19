@@ -142,7 +142,7 @@ void Dialog::on_buttonBox_accepted()
         QString newpath = QString::fromStdWString(project->getInformation()->getProjectPath()+L"/geometries");
         QDir dir2(newpath);
         if (!dir2.exists()) {
-            if (!dir2.mkpath(dir.absolutePath())) {
+            if (!dir2.mkpath(dir2.absolutePath())) {
                 std::cerr << "Error: Cannnot open dir "
                              << qPrintable(dir2.absolutePath()) << std::endl;
                 return;
@@ -151,9 +151,10 @@ void Dialog::on_buttonBox_accepted()
         for (vector<MoldConfiguration*>::iterator it = mold->getMolds().begin();
              it != mold->getMolds().end(); it++) {
             MoldConfiguration *config = (*it);
-            QString originfile = originpath+QString::fromStdWString(config->getName());
-            QString newfile = newpath+QString::fromStdWString(config->getName());
+            QString originfile = originpath+"/"+QString::fromStdWString(config->getName());
+            QString newfile = newpath+"/"+QString::fromStdWString(config->getName());
             if (QFile::exists(newfile)) {
+                std::wcout << "rm " << newfile.toStdWString() << std::endl;
                 QFile::remove(newfile);
             }
             QFile::copy(originfile, newfile);
