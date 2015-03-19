@@ -357,7 +357,7 @@ void MainWindow::on_stdoupt_update()
 {
     QProcess *p = dynamic_cast<QProcess*>(sender());
     if (p) {
-        ui->textEdit_simuEngine->append(p->readAllStandardOutput());
+        ui->textEdit_simuEngine->textCursor().insertText(p->readAllStandardOutput());
     }
 }
 
