@@ -281,6 +281,8 @@ void MainWindow::on_action_close_triggered() {
     if (project) {
         project->clearValue();
         project->updateGui();
+        ui->action_open->setDisabled(false);
+        ui->action_project->setDisabled(false);
     }
 }
 
@@ -661,12 +663,18 @@ void MainWindow::on_action_open_triggered()
     if (dir.isEmpty()) return;
     Project *_project = new Project(L"Project");
     QString filename = dir+"/project.xml";
+    if (!QFile::exists(filename)) {
+        QMessageBox::critical(this, QString::fromStdWString(L"打开项目"), QString::fromStdWString(L"目录不是项目目录"));
+        return;
+    }
     if (_project->loadConfigFile(filename)) {
         if (project) {
             delete project;
         }
         project = _project;
         project->updateGui();
+        ui->action_open->setDisabled(true);
+        ui->action_project->setDisabled(true);
     } else {
         delete _project;
         _project = NULL;

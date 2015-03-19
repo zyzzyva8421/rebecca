@@ -1,9 +1,11 @@
 #include "dialog.h"
 #include "ui_dialog.h"
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 #include "project.h"
 #include "information.h"
 #include "mold.h"
+#include <QMessageBox>
 #include <iostream>
 #include <QDir>
 
@@ -51,6 +53,10 @@ void Dialog::on_pushButton_BasedProjectPath_clicked()
 {
     wstring title = L"项目路径";
     QString dir = MainWindow::openDirDialog(this, QString::fromStdWString(title), "./");
+    if (!QFile::exists(dir+"/project.xml")) {
+        QMessageBox::critical(this, QString::fromStdWString(L"基于已有项目"), QString::fromStdWString(L"目录不是项目目录"));
+        return;
+    }
     ui->lineEdit_BasedProjectPath->setText(dir);
 }
 
@@ -158,6 +164,8 @@ void Dialog::on_buttonBox_accepted()
             }
             QFile::copy(originfile, newfile);
         }
+        main->getUi()->action_open->setDisabled(true);
+        main->getUi()->action_project->setDisabled(true);
     }
     close();
 }
