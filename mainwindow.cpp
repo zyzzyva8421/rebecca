@@ -345,7 +345,7 @@ void MainWindow::on_process_started()
         QAction *action = dynamic_cast<QAction*>(process->parent());
         if (action) {
             QTextCursor cursor = ui->textEdit_simuEngine->textCursor();
-            cursor.insertText(QString(50, '*'));
+            cursor.insertText(QString(100, '*')+QString("\n"));
             cursor.movePosition(QTextCursor::End);
             ui->textEdit_simuEngine->setTextCursor(cursor);
             action->setDisabled(true);
