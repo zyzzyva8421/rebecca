@@ -344,6 +344,10 @@ void MainWindow::on_process_started()
     if (process) {
         QAction *action = dynamic_cast<QAction*>(process->parent());
         if (action) {
+            QTextCursor cursor = ui->textEdit_simuEngine->textCursor();
+            cursor.insertText(QString(50, '*'));
+            cursor.movePosition(QTextCursor::End);
+            ui->textEdit_simuEngine->setTextCursor(cursor);
             action->setDisabled(true);
             if (action == ui->action_simulate) {
                 simulate = process;
@@ -984,5 +988,42 @@ void MainWindow::on_pushButton_moldCancel_clicked()
         if (config) {
             config->updateGui();
         }
+    }
+}
+
+void MainWindow::on_pushButton_previewMold_clicked()
+{
+    if (!project) return;
+    QProcess *process = createProcess(ui->action_clean);
+    if (!process) return;
+    wstring projectpath = project->getInformation()->getProjectPath();
+    if (projectpath.empty()) return;
+    QString currentpath = QDir::currentPath();
+    QDir dir = QDir::current();
+    if (!dir.setCurrent(QString::fromStdWString(projectpath))) {
+        QMessageBox::critical(this, QString::fromStdWString(L"打开结果目录"), QString::fromStdWString(L"项目路径不合法"));
+        dir.setCurrent(currentpath);
+        return;
+    }
+    wstring mold = ui->listWidget_addedStlMolds->currentItem()->text().toStdWString();
+    QString file = QString::fromStdWString(projectpath)+"/geometries/"+QString::fromStdWString(mold);
+    if (!QFile(file).exists()) {
+        QMessageBox::critical(this, QString::fromStdWString(L"预览"), QString::fromStdWString(L"Stl文件不存在"));
+        dir.setCurrent(currentpath);
+        return;
+    }
+    QString cmd = "ifcfd_casting_shell --view_stl "+QString::fromStdWString(mold);
+    process->start(cmd);
+    process->waitForStarted();
+    dir.setCurrent(currentpath);
+    return;
+}
+
+void MainWindow::on_pushButton_defaultGroup_clicked()
+{
+    QString materialfile = QDir::homePath()+"/.ifcfd/casting_default_materials.xml";
+    if (materialgroup) {
+        materialgroup->loadMaterialFile(materialfile);
+        materialgroup->updateGui();
     }
 }

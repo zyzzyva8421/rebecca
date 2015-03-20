@@ -159,6 +159,10 @@ private slots:
 
     void on_process_finished(int);
 
+    void on_pushButton_previewMold_clicked();
+
+    void on_pushButton_defaultGroup_clicked();
+
 private:
 
     void tableInsertRow(QTableWidget *table, int row_num = 1);

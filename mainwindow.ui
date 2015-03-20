@@ -33,7 +33,7 @@
        <locale language="Chinese" country="China"/>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>2</number>
       </property>
       <property name="documentMode">
        <bool>false</bool>
@@ -1827,7 +1827,7 @@
               <item>
                <widget class="QPushButton" name="pushButton_previewMold">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="text">
                  <string>预览...</string>
@@ -3692,7 +3692,7 @@
   <widget class="QDockWidget" name="dockWidget_material">
    <property name="minimumSize">
     <size>
-     <width>919</width>
+     <width>1008</width>
      <height>356</height>
     </size>
    </property>
@@ -3722,6 +3722,13 @@
            <widget class="QLabel" name="label_86">
             <property name="text">
              <string>材料分类</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_defaultGroup">
+            <property name="text">
+             <string>默认材料库</string>
             </property>
            </widget>
           </item>
