@@ -298,6 +298,7 @@ void MainWindow::on_action_close_triggered() {
         ui->action_open->setDisabled(false);
         ui->action_project->setDisabled(false);
         setWindowTitle(QString::fromStdWString(L"墨华高科CFD压铸仿真平台"));
+        ui->textEdit_simuEngine->clear();
     }
 }
 
@@ -388,7 +389,10 @@ void MainWindow::on_stdoupt_update()
 {
     QProcess *p = dynamic_cast<QProcess*>(sender());
     if (p) {
-        ui->textEdit_simuEngine->textCursor().insertText(p->readAllStandardOutput());
+        QTextCursor cursor = ui->textEdit_simuEngine->textCursor();
+        cursor.insertText(p->readAllStandardOutput());
+        cursor.movePosition(QTextCursor::End);
+        ui->textEdit_simuEngine->setTextCursor(cursor);
     }
 }
 
