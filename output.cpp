@@ -19,7 +19,6 @@ void Output::clearValue()
     loggingCurrentTimeOn = false;
     loggingCurrentFillingRateOn = false;
     loggingCurrentTemperatureOn = false;
-    loggingFrequency = 0;
     outputComment = L"";
 }
 
@@ -74,9 +73,6 @@ void Output::writeValue(QXmlStreamWriter &writer)
     writer.writeEndElement();
     writer.writeStartElement("LoggingCurrentTemperatureOn");
     writer.writeAttribute("value", QString::number((loggingCurrentTemperatureOn)?1:0));
-    writer.writeEndElement();
-    writer.writeStartElement("LoggingFrequency");
-    writer.writeAttribute("value", QString::number(loggingFrequency));
     writer.writeEndElement();
     writer.writeStartElement("OutputComment");
     writer.writeAttribute("value", QString::fromStdWString(outputComment));
@@ -172,8 +168,6 @@ void Output::loadValue(const QDomElement& element)
             loggingCurrentFillingRateOn = (child.toElement().attribute("value").toStdString()=="1")?true:false;
         } else if (tagName == "LoggingCurrentTemperatureOn") {
             loggingCurrentTemperatureOn = (child.toElement().attribute("value").toStdString()=="1")?true:false;
-        } else if (tagName == "LoggingFrequency") {
-            loggingFrequency = child.toElement().attribute("value").toInt();
         } else if (tagName == "OutputComment") {
             outputComment = child.toElement().attribute("value").toStdWString();
         }
@@ -231,9 +225,6 @@ void Output::updateGui(void)
 
     ui->checkBox_LoggingCurrentTemperatureOn->setChecked(loggingCurrentTemperatureOn);
 
-    text = QString::number(loggingFrequency);
-    ui->lineEdit_LoggingFrequency->setText(text);
-
     text = QString::fromStdWString(outputComment);
     ui->plainTextEdit_OutputComment->setPlainText(text);
 }
@@ -248,10 +239,13 @@ void Output::updateValue(void)
     outputMethod = (OutputMethod)(group->checkedId());
     outputIntervalTimeOnConf = ui->lineEdit_OutputIntervalTimeOnConf->text().toDouble();
     outputIntervalStepOnConf = ui->lineEdit_OutputIntervalStepOnConf->text().toInt();
+    group = window->get_buttonGroup_loggingMethod();
+    loggingMethod = (LoggingMethod)(group->checkedId());
+    loggingIntervalTimeOnConf = ui->lineEdit_LoggingIntervalTimeOnConf->text().toDouble();
+    loggingIntervalStepOnConf = ui->lineEdit_LoggingIntervalStepOnConf->text().toInt();
     loggingCurrentStepOn = ui->checkBox_LoggingCurrentStepOn->isChecked();
     loggingCurrentTimeOn = ui->checkBox_LoggingCurrentTimeOn->isChecked();
     loggingCurrentFillingRateOn = ui->checkBox_LoggingCurrentFillingRateOn->isChecked();
     loggingCurrentTemperatureOn = ui->checkBox_LoggingCurrentTemperatureOn->isChecked();
-    loggingFrequency = ui->lineEdit_LoggingFrequency->text().toInt();
     outputComment = ui->plainTextEdit_OutputComment->toPlainText().toStdWString();
 }

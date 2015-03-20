@@ -4,6 +4,7 @@
 #include <QModelIndex>
 #include <QMessageBox>
 #include <QProcess>
+#include <QFont>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
@@ -134,6 +135,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->action_stop->setDisabled(true);
 
+    ui->textEdit_simuEngine->setTextBackgroundColor(QColor("black"));
+    ui->textEdit_simuEngine->setTextColor(QColor("white"));
+    QFont font;
+    font.setFamily("Courier");
+    font.setStyleHint(QFont::Monospace);
+    font.setFixedPitch(true);
+    ui->textEdit_simuEngine->setFont(font);
     QString materialfile = QDir::homePath()+"/.ifcfd/casting_materials.xml";
     if (materialgroup) {
         materialgroup->loadMaterialFile(materialfile);
@@ -148,6 +156,11 @@ void MainWindow::setProject(Project *_project) {
     if (project) delete project;
     project = _project;
     project->updateGui();
+    if (ui->checkBox_basedOnExistingProject->isChecked()) {
+        ui->lineEdit_amender->setDisabled(false);
+    } else {
+        ui->lineEdit_amender->setDisabled(true);
+    }
 }
 
 void MainWindow::UpdateTable(const vector< vector<double> >&data, QTableWidget *table)
@@ -691,6 +704,7 @@ void MainWindow::on_action_open_triggered()
         }
         project = _project;
         project->updateGui();
+        ui->dateTimeEdit_amendTime->setDateTime(QDateTime::currentDateTime());
         ui->action_open->setDisabled(true);
         ui->action_project->setDisabled(true);
         QString title = QString::fromStdWString(L"墨华高科CFD压铸仿真平台")+" - "+dir;
@@ -716,6 +730,7 @@ void MainWindow::on_action_save_triggered()
         }
     }
     QString filename = QString::fromStdWString(projectpath)+"/project.xml";
+    ui->dateTimeEdit_amendTime->setDateTime(QDateTime::currentDateTime());
     if (!project->writeConfigFile(filename)) {
         // TODO: popup an error message
     }
@@ -830,7 +845,7 @@ void MainWindow::on_pushButton_reloadMold_clicked()
                 return;
             }
         }
-        QString newfile = path+QString::fromStdWString(mold);
+        QString newfile = path+"/"+QString::fromStdWString(mold);
         if (QFile::exists(newfile)) {
             QFile::remove(newfile);
         }

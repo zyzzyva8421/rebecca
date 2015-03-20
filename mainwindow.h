@@ -48,6 +48,7 @@ public:
     QButtonGroup *get_buttonGroup_terminationCondition(void) {return buttonGroup_terminationCondition;}
     QButtonGroup *get_buttonGroup_parallelMethod(void) {return buttonGroup_parallelMethod;}
     QButtonGroup *get_buttonGroup_outputMethod(void) {return buttonGroup_outputMethod;}
+    QButtonGroup *get_buttonGroup_loggingMethod(void) {return buttonGroup_loggingMethod;}
     QStandardItemModel *getMaterialGroupModel(void) {return materialgroupModel;}
     MaterialGroup *getMaterialGroup(void) {return materialgroup;}
 

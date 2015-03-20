@@ -415,7 +415,6 @@ void Material::updateModel(QStandardItemModel *model)
     QVariant v = QVariant::fromValue((void *) this);
     parent->setData(v);
     model->appendRow(parent);
-    parent->setSelectable(false);
 }
 
 void MaterialGroup::updateModel(QStandardItem *item)
@@ -426,6 +425,7 @@ void MaterialGroup::updateModel(QStandardItem *item)
     QVariant v = QVariant::fromValue((void *) this);
     parent->setData(v);
     item->appendRow(parent);
+
     for (vector<MaterialGroup*>::iterator it = groups.begin(); it != groups.end(); it++) {
         MaterialGroup *child = (*it);
         if (child) {

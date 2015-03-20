@@ -30,7 +30,6 @@ private:
     bool loggingCurrentTimeOn;
     bool loggingCurrentFillingRateOn;
     bool loggingCurrentTemperatureOn;
-    int loggingFrequency;
     wstring outputComment;
 };
 
