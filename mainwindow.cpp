@@ -135,7 +135,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->action_stop->setDisabled(true);
 
-    ui->textEdit_simuEngine->setTextBackgroundColor(QColor("black"));
+    ui->textEdit_simuEngine->setStyleSheet("QTextEdit { background: black }");
     ui->textEdit_simuEngine->setTextColor(QColor("white"));
     QFont font;
     font.setFamily("Courier");
