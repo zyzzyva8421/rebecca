@@ -163,6 +163,13 @@ private slots:
 
     void on_pushButton_defaultGroup_clicked();
 
+    void on_lineEdit_textChanged_positive_double();
+
+    void on_lineEdit_textChanged_positive_integer();
+
+    void on_lineEdit_textChanged_ge2_integer();
+
+    void on_lineEdit_textChanged_f0t1_double();
 private:
 
     void tableInsertRow(QTableWidget *table, int row_num = 1);

@@ -147,8 +147,128 @@ MainWindow::MainWindow(QWidget *parent) :
         materialgroup->loadMaterialFile(materialfile);
         materialgroup->updateGui();
     }
-
     // TODO: set input mask
+    QDoubleValidator *isdouble = new QDoubleValidator(this);
+    QIntValidator *isint = new QIntValidator(this);
+    ui->lineEdit_constantPressure->setValidator(isdouble);
+    ui->lineEdit_constantVelocity->setValidator(isdouble);
+    ui->lineEdit_initialTemperature->setValidator(isdouble);
+    ui->lineEdit_moldMaterialInitialTemperature->setValidator(isdouble);
+    ui->lineEdit_moldHeatExchangeCoefficient->setValidator(isdouble);
+    ui->lineEdit_MoldAdjustCoordinateX->setValidator(isdouble);
+    ui->lineEdit_MoldAdjustCoordinateY->setValidator(isdouble);
+    ui->lineEdit_MoldAdjustCoordinateZ->setValidator(isdouble);
+    ui->lineEdit_MoldAdjustScale->setValidator(isdouble);
+    connect(ui->lineEdit_MoldAdjustScale, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_FluidMeshLevel->setValidator(isint);
+    connect(ui->lineEdit_FluidMeshLevel, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_integer()));
+    ui->lineEdit_SolidMeshLevel->setValidator(isint);
+    connect(ui->lineEdit_SolidMeshLevel, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_integer()));
+    ui->lineEdit_AdaptMeshLevel->setValidator(isint);
+    connect(ui->lineEdit_AdaptMeshLevel, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_integer()));
+    ui->lineEdit_EnvironmentDensity->setValidator(isdouble);
+    connect(ui->lineEdit_EnvironmentDensity, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_EnvironmentDynamicViscosity->setValidator(isdouble);
+    connect(ui->lineEdit_EnvironmentDynamicViscosity, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_EnvironmentPressure->setValidator(isdouble);
+    ui->lineEdit_EnvironmentTemperature->setValidator(isdouble);
+    ui->lineEdit_Gravity->setValidator(isdouble);
+    ui->lineEdit_timeStepFixedOn->setValidator(isdouble);
+    connect(ui->lineEdit_timeStepFixedOn, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_IterationMaximumRelativeError->setValidator(isdouble);
+    connect(ui->lineEdit_IterationMaximumRelativeError, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_IterationMaximumStepCount->setValidator(isint);
+    connect(ui->lineEdit_IterationMaximumStepCount, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_integer()));
+    ui->lineEdit_IterationMinimumStepCount->setValidator(isint);
+    connect(ui->lineEdit_IterationMinimumStepCount, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_integer()));
+    ui->lineEdit_TerminationEndTimeOnConf->setValidator(isdouble);
+    connect(ui->lineEdit_TerminationEndTimeOnConf, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_TerminationFillingRateOnConf->setValidator(isdouble);
+    connect(ui->lineEdit_TerminationFillingRateOnConf, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_f0t1_double()));
+    ui->lineEdit_TerminationMaximumStepOnConf->setValidator(isint);
+    connect(ui->lineEdit_TerminationMaximumStepOnConf, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_integer()));
+    ui->lineEdit_OutputIntervalStepOnConf->setValidator(isint);
+    connect(ui->lineEdit_OutputIntervalStepOnConf, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_integer()));
+    ui->lineEdit_OutputIntervalTimeOnConf->setValidator(isdouble);
+    connect(ui->lineEdit_OutputIntervalTimeOnConf, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_LoggingIntervalTimeOnConf->setValidator(isdouble);
+    connect(ui->lineEdit_LoggingIntervalTimeOnConf, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_LoggingIntervalStepOnConf->setValidator(isint);
+    connect(ui->lineEdit_LoggingIntervalStepOnConf, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_integer()));
+    ui->lineEdit_ParallelFixedOnConf->setValidator(isint);
+    connect(ui->lineEdit_ParallelFixedOnConf, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_ge2_integer()));
+
+
+    ui->lineEdit_SolidDensity->setValidator(isdouble);
+    ui->lineEdit_SolidificationDragCoefficent->setValidator(isdouble);
+    ui->lineEdit_SolidLiquidusTemperature->setValidator(isdouble);
+    ui->lineEdit_SolidSolidusTemperature->setValidator(isdouble);
+    ui->lineEdit_SolidSpecificHeat->setValidator(isdouble);
+    ui->lineEdit_SolidThermalConductivity->setValidator(isdouble);
+    ui->lineEdit_SolidThermalExpansionCoefficient->setValidator(isdouble);
+    ui->lineEdit_FluidCoherencyPoint->setValidator(isdouble);
+    ui->lineEdit_FluidContactAngleForWallAdhesion->setValidator(isdouble);
+    ui->lineEdit_FluidCriticalPoint->setValidator(isdouble);
+    ui->lineEdit_FluidDensity->setValidator(isdouble);
+    ui->lineEdit_FluidDynamicViscosity->setValidator(isdouble);
+    ui->lineEdit_FluidSpecificHeat->setValidator(isdouble);
+    ui->lineEdit_FluidSurfaceTensionCoefficent->setValidator(isdouble);
+    ui->lineEdit_FluidThermalConductivity->setValidator(isdouble);
+    ui->lineEdit_FluidThermalExpansionCoefficent->setValidator(isdouble);
+
+}
+
+void MainWindow::on_lineEdit_textChanged_positive_double()
+{
+    QLineEdit *edit = dynamic_cast<QLineEdit*>(sender());
+    if (edit) {
+        double value = edit->text().toDouble();
+        if (value <= 0 ) {
+            QMessageBox::critical(this, QString::fromStdWString(L"非法输入"), QString::fromStdWString(L"必须为正浮点数"));
+            edit->clear();
+            return;
+        }
+    }
+}
+
+void MainWindow::on_lineEdit_textChanged_f0t1_double()
+{
+    QLineEdit *edit = dynamic_cast<QLineEdit*>(sender());
+    if (edit) {
+        double value = edit->text().toDouble();
+        if (value < 0 || value > 1) {
+            QMessageBox::critical(this, QString::fromStdWString(L"非法输入"), QString::fromStdWString(L"必须为0到1之间的浮点数"));
+            edit->clear();
+            return;
+        }
+    }
+}
+
+void MainWindow::on_lineEdit_textChanged_ge2_integer()
+{
+    QLineEdit *edit = dynamic_cast<QLineEdit*>(sender());
+    if (edit) {
+        double value = edit->text().toInt();
+        if (value < 2 ) {
+            QMessageBox::critical(this, QString::fromStdWString(L"非法输入"), QString::fromStdWString(L"必须为大于等于2的整数"));
+            edit->clear();
+            return;
+        }
+    }
+}
+
+void MainWindow::on_lineEdit_textChanged_positive_integer()
+{
+    QLineEdit *edit = dynamic_cast<QLineEdit*>(sender());
+    if (edit) {
+        double value = edit->text().toInt();
+        if (value <=0 ) {
+            QMessageBox::critical(this, QString::fromStdWString(L"非法输入"), QString::fromStdWString(L"必须为正整数"));
+            edit->clear();
+            edit->setFocus();
+            return;
+        }
+    }
 }
 
 void MainWindow::setProject(Project *_project) {
@@ -1022,8 +1142,13 @@ void MainWindow::on_pushButton_previewMold_clicked()
 void MainWindow::on_pushButton_defaultGroup_clicked()
 {
     QString materialfile = QDir::homePath()+"/.ifcfd/casting_default_materials.xml";
+    QString originalfile = QDir::homePath()+"/.ifcfd/casting_materials.xml";
+    if (QFile::exists(originalfile)) {
+        QFile::remove(originalfile);
+    }
+    QFile::copy(materialfile, originalfile);
     if (materialgroup) {
-        materialgroup->loadMaterialFile(materialfile);
+        materialgroup->loadMaterialFile(originalfile);
         materialgroup->updateGui();
     }
 }
