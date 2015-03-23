@@ -1148,6 +1148,7 @@ void MainWindow::on_pushButton_defaultGroup_clicked()
     }
     QFile::copy(materialfile, originalfile);
     if (materialgroup) {
+        materialgroup->clearValue();
         materialgroup->loadMaterialFile(originalfile);
         materialgroup->updateGui();
     }
