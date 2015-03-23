@@ -48,7 +48,7 @@ void AddStl::on_buttonBox_accepted()
                 return;
             }
         }
-        QString newstl = path+newfile;
+        QString newstl = path+"/"+newfile;
         if (QFile::exists(newstl)) {
             QFile::remove(newstl);
         }

@@ -470,6 +470,7 @@ void MaterialGroup::updateGui(void)
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
     QStandardItemModel *model = MainWindow::CurrentWindow->getMaterialGroupModel();
+    model->clear();
     updateModel(model);
 }
 
