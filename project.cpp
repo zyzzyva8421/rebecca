@@ -123,7 +123,6 @@ Project::loadValue(const QDomElement &element)
 {
     QDomNode child = element.firstChild();
     while (!child.isNull()) {
-        Category *category = NULL;
         string tagName = child.toElement().tagName().toStdString();
         if (tagName == "Information") {
             information->loadValue(child.toElement());

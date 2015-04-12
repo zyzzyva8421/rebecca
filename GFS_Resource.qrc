@@ -19,5 +19,8 @@
         <file>log.png</file>
         <file>result.png</file>
         <file>clean.png</file>
+        <file>video.png</file>
+        <file>image.png</file>
+        <file>curve.png</file>
     </qresource>
 </RCC>

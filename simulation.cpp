@@ -9,11 +9,11 @@ Simulation::Simulation(const wstring& _name) : Category(_name)
 
 void Simulation::clearValue()
 {
-    heatTransferOn = false;
-    phaseChangeOn = false;
     fluidOn = false;
     fluidOnConf = LaminarOn;
-    gravity = 0.0;
+    gravityX = 0.0;
+    gravityY = 0.0;
+    gravityZ = 0.0;
     fluidMeshLevel = 0;
     adaptMeshLevel = 0;
     solidMeshLevel = 0;
@@ -21,6 +21,8 @@ void Simulation::clearValue()
     environmentDynamicViscosity = 0.0;
     environmentTemperature = 0.0;
     environmentPressure = 0.0;
+    environmentThermalConductivity = 0.0;
+    environmentSpecificHeat = 0.0;
     simulationComment = L"";
 }
 
@@ -28,12 +30,6 @@ void Simulation::writeValue(QXmlStreamWriter &writer)
 {
     updateValue();
     writer.writeStartElement("Simulation");
-        writer.writeStartElement("HeatTransferOn");
-        writer.writeAttribute("value", QString::number((heatTransferOn)?1:0));
-        writer.writeEndElement();
-        writer.writeStartElement("PhaseChangeOn");
-        writer.writeAttribute("value", QString::number((phaseChangeOn)?1:0));
-        writer.writeEndElement();
         writer.writeStartElement("FluidOn");
         writer.writeAttribute("value", QString::number((fluidOn)?1:0));
         writer.writeEndElement();
@@ -52,7 +48,9 @@ void Simulation::writeValue(QXmlStreamWriter &writer)
             writer.writeEndElement();
         writer.writeEndElement();
         writer.writeStartElement("Gravity");
-        writer.writeAttribute("value", QString::number(gravity));
+        writer.writeAttribute("x", QString::number(gravityX));
+        writer.writeAttribute("y", QString::number(gravityY));
+        writer.writeAttribute("z", QString::number(gravityZ));
         writer.writeEndElement();
         writer.writeStartElement("FluidMeshLevel");
         writer.writeAttribute("value", QString::number(fluidMeshLevel));
@@ -75,6 +73,12 @@ void Simulation::writeValue(QXmlStreamWriter &writer)
         writer.writeStartElement("EnvironmentPressure");
         writer.writeAttribute("value", QString::number(environmentPressure));
         writer.writeEndElement();
+        writer.writeStartElement("EnvironmentThermalConductivity");
+        writer.writeAttribute("value", QString::number(environmentThermalConductivity));
+        writer.writeEndElement();
+        writer.writeStartElement("EnvironmentSpecificHeat");
+        writer.writeAttribute("value", QString::number(environmentSpecificHeat));
+        writer.writeEndElement();
         writer.writeStartElement("SimulationComment");
         writer.writeAttribute("value", QString::fromStdWString(simulationComment));
         writer.writeEndElement();
@@ -89,13 +93,7 @@ void Simulation::loadValue(const QDomElement& element)
     string tagName1;
     while (!child.isNull()) {
         tagName = child.toElement().tagName().toStdString();
-        if (tagName == "HeatTransferOn") {
-            string v = child.toElement().attribute("value").toStdString();
-            heatTransferOn = (v == "1")?true:false;
-        } else if (tagName == "PhaseChangeOn") {
-            string v = child.toElement().attribute("value").toStdString();
-            phaseChangeOn = (v == "1")?true:false;
-        } else if (tagName == "FluidOn") {
+        if (tagName == "FluidOn") {
             string v = child.toElement().attribute("value").toStdString();
             fluidOn = (v == "1")?true:false;
         } else if (tagName == "FluidOnConf") {
@@ -121,7 +119,9 @@ void Simulation::loadValue(const QDomElement& element)
                 child1 = child1.nextSibling();
             }
         } else if (tagName == "Gravity") {
-            gravity = child.toElement().attribute("value").toDouble();
+            gravityX = child.toElement().attribute("x").toDouble();
+            gravityY = child.toElement().attribute("y").toDouble();
+            gravityZ = child.toElement().attribute("z").toDouble();
         } else if (tagName == "FluidMeshLevel") {
             fluidMeshLevel = child.toElement().attribute("value").toInt();
         } else if (tagName == "AdaptMeshLevel") {
@@ -136,6 +136,10 @@ void Simulation::loadValue(const QDomElement& element)
             environmentTemperature = child.toElement().attribute("value").toDouble();
         } else if (tagName == "EnvironmentPressure") {
             environmentPressure = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "EnvironmentThermalConductivity") {
+            environmentThermalConductivity = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "EnvironmentSpecificHeat") {
+            environmentSpecificHeat = child.toElement().attribute("value").toDouble();
         } else if (tagName == "SimulationComment") {
             simulationComment = child.toElement().attribute("value").toStdWString();
         }
@@ -148,8 +152,6 @@ void Simulation::updateGui(void)
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
 
-    ui->checkBox_heatTransferModel->setChecked(heatTransferOn);
-    ui->checkBox_phaseChangeModel->setChecked(phaseChangeOn);
     ui->checkBox_fluidModel->setChecked(fluidOn);
 
     switch (fluidOnConf) {
@@ -175,8 +177,12 @@ void Simulation::updateGui(void)
     QString text = QString::fromStdWString(simulationComment);
     ui->plainTextEdit_simulationIntroduction->setPlainText(text);
 
-    text = QString::number(gravity);
-    ui->lineEdit_Gravity->setText(text);
+    text = QString::number(gravityX);
+    ui->lineEdit_GravityX->setText(text);
+    text = QString::number(gravityY);
+    ui->lineEdit_GravityY->setText(text);
+    text = QString::number(gravityZ);
+    ui->lineEdit_GravityZ->setText(text);
     text = QString::number(fluidMeshLevel);
     ui->lineEdit_FluidMeshLevel->setText(text);
     text = QString::number(adaptMeshLevel);
@@ -191,6 +197,10 @@ void Simulation::updateGui(void)
     ui->lineEdit_EnvironmentTemperature->setText(text);
     text = QString::number(environmentPressure);
     ui->lineEdit_EnvironmentPressure->setText(text);
+    text = QString::number(environmentThermalConductivity);
+    ui->lineEdit_EnvironmentThermalConductivity->setText(text);
+    text = QString::number(environmentSpecificHeat);
+    ui->lineEdit_EnvironmentSpecificHeat->setText(text);
 }
 
 void Simulation::updateValue(void)
@@ -198,15 +208,15 @@ void Simulation::updateValue(void)
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
 
-    heatTransferOn = (ui->checkBox_heatTransferModel->isChecked())?true:false;
-    phaseChangeOn = (ui->checkBox_phaseChangeModel->isChecked())?true:false;
     fluidOn = (ui->checkBox_fluidModel)?true:false;
 
     QButtonGroup *group = MainWindow::CurrentWindow->get_buttonGroup_fluidModel();
     fluidOnConf = (FluidOnConf)(group->checkedId());
 
     simulationComment = ui->plainTextEdit_simulationIntroduction->toPlainText().toStdWString();
-    gravity = ui->lineEdit_Gravity->text().toDouble();
+    gravityX = ui->lineEdit_GravityX->text().toDouble();
+    gravityY = ui->lineEdit_GravityY->text().toDouble();
+    gravityZ = ui->lineEdit_GravityZ->text().toDouble();
     fluidMeshLevel = ui->lineEdit_FluidMeshLevel->text().toInt();
     adaptMeshLevel = ui->lineEdit_AdaptMeshLevel->text().toInt();
     solidMeshLevel = ui->lineEdit_SolidMeshLevel->text().toInt();
@@ -214,5 +224,7 @@ void Simulation::updateValue(void)
     environmentDynamicViscosity = ui->lineEdit_EnvironmentDynamicViscosity->text().toDouble();
     environmentTemperature = ui->lineEdit_EnvironmentTemperature->text().toDouble();
     environmentPressure = ui->lineEdit_EnvironmentPressure->text().toDouble();
+    environmentThermalConductivity = ui->lineEdit_EnvironmentThermalConductivity->text().toDouble();
+    environmentSpecificHeat = ui->lineEdit_EnvironmentSpecificHeat->text().toDouble();
 
 }

@@ -8,8 +8,12 @@ Entrance::Entrance(const wstring& _name) : Category(_name)
 }
 
 void Entrance::clearValue() {
-    outletCoordinates.clear();
-    inletCoordinates.clear();
+    boundaryRight = None;
+    boundaryLeft = None;
+    boundaryTop = None;
+    boundaryBottom = None;
+    boundaryFront = None;
+    boundaryBack = None;
     entranceComment = L"";
 }
 
@@ -17,31 +21,23 @@ void Entrance::writeValue(QXmlStreamWriter &writer)
 {
     updateValue();
     writer.writeStartElement("Entrance");
-        writer.writeStartElement("OutletCoordinates");
-        for (vector< vector<double> >::iterator it = outletCoordinates.begin();
-             it != outletCoordinates.end(); it++) {
-            double x = (*it).at(0);
-            double y = (*it).at(1);
-            double z = (*it).at(2);
-            writer.writeStartElement("Value");
-            writer.writeAttribute("x", QString::number(x));
-            writer.writeAttribute("y", QString::number(y));
-            writer.writeAttribute("z", QString::number(z));
-            writer.writeEndElement();
-        }
+        writer.writeStartElement("BoundaryRight");
+        writer.writeAttribute("value", QString::number(boundaryRight));
         writer.writeEndElement();
-        writer.writeStartElement("InletCoordinates");
-        for (vector< vector<double> >::iterator it = inletCoordinates.begin();
-             it != inletCoordinates.end(); it++) {
-            double x = (*it).at(0);
-            double y = (*it).at(1);
-            double z = (*it).at(2);
-            writer.writeStartElement("Value");
-            writer.writeAttribute("x", QString::number(x));
-            writer.writeAttribute("y", QString::number(y));
-            writer.writeAttribute("z", QString::number(z));
-            writer.writeEndElement();
-        }
+        writer.writeStartElement("BoundaryLeft");
+        writer.writeAttribute("value", QString::number(boundaryLeft));
+        writer.writeEndElement();
+        writer.writeStartElement("BoundaryTop");
+        writer.writeAttribute("value", QString::number(boundaryTop));
+        writer.writeEndElement();
+        writer.writeStartElement("BoundaryBottom");
+        writer.writeAttribute("value", QString::number(boundaryBottom));
+        writer.writeEndElement();
+        writer.writeStartElement("BoundaryFront");
+        writer.writeAttribute("value", QString::number(boundaryFront));
+        writer.writeEndElement();
+        writer.writeStartElement("BoundaryBack");
+        writer.writeAttribute("value", QString::number(boundaryBack));
         writer.writeEndElement();
         writer.writeStartElement("EntranceComment");
         writer.writeAttribute("value", QString::fromStdWString(entranceComment));
@@ -51,28 +47,21 @@ void Entrance::writeValue(QXmlStreamWriter &writer)
 
 void Entrance::loadValue(const QDomElement& element) {
     QDomNode child = element.firstChild();
-    QDomNode child1;
     string tagName;
-    string tagName1;
     while (!child.isNull()) {
         tagName = child.toElement().tagName().toStdString();
-        if (tagName == "OutletCoordinates" || tagName == "InletCoordinates") {
-            child1 = child.toElement().firstChild();
-            while (!child1.isNull()) {
-                tagName1 = child1.toElement().tagName().toStdString();
-                if (tagName1 == "Value") {
-                    vector<double> p;
-                    p.push_back(child1.toElement().attribute("x").toDouble());
-                    p.push_back(child1.toElement().attribute("y").toDouble());
-                    p.push_back(child1.toElement().attribute("z").toDouble());
-                    if (tagName == "OutletCoordinates") {
-                        outletCoordinates.push_back(p);
-                    } else if (tagName == "InletCoordinates") {
-                        inletCoordinates.push_back(p);
-                    }
-                }
-                child1 = child1.nextSibling();
-            }
+        if (tagName == "BoundaryRight") {
+            boundaryRight = (Type)(child.toElement().attribute("value").toInt());
+        } else if (tagName == "BoundaryLeft") {
+            boundaryLeft = (Type)(child.toElement().attribute("value").toInt());
+        } else if (tagName == "BoundaryTop") {
+            boundaryTop = (Type)(child.toElement().attribute("value").toInt());
+        } else if (tagName == "BoundaryBottom") {
+            boundaryBottom = (Type)(child.toElement().attribute("value").toInt());
+        } else if (tagName == "BoundaryFront") {
+            boundaryFront = (Type)(child.toElement().attribute("value").toInt());
+        } else if (tagName == "BoundaryBack") {
+            boundaryBack = (Type)(child.toElement().attribute("value").toInt());
         } else if (tagName == "EntranceComment") {
             entranceComment = child.toElement().attribute("value").toStdWString();
         }
@@ -83,8 +72,96 @@ void Entrance::loadValue(const QDomElement& element) {
 void Entrance::updateGui(void) {
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
-    MainWindow::UpdateTable(outletCoordinates, ui->tableWidget_outletCoordinates);
-    MainWindow::UpdateTable(inletCoordinates, ui->tableWidget_inletCoordinates);
+    switch (boundaryRight) {
+    case None: {
+        ui->radioButton_BoundaryRight0->click();
+        break;
+    }
+    case Inlet: {
+        ui->radioButton_BoundaryRight1->click();
+        break;
+    }
+    case Outlet: {
+        ui->radioButton_BoundaryRight2->click();
+        break;
+    }
+    default: break;
+    }
+    switch (boundaryLeft) {
+    case None: {
+        ui->radioButton_BoundaryLeft0->click();
+        break;
+    }
+    case Inlet: {
+        ui->radioButton_BoundaryLeft1->click();
+        break;
+    }
+    case Outlet: {
+        ui->radioButton_BoundaryLeft2->click();
+        break;
+    }
+    default: break;
+    }
+    switch (boundaryTop) {
+    case None: {
+        ui->radioButton_BoundaryTop0->click();
+        break;
+    }
+    case Inlet: {
+        ui->radioButton_BoundaryTop1->click();
+        break;
+    }
+    case Outlet: {
+        ui->radioButton_BoundaryTop2->click();
+        break;
+    }
+    default: break;
+    }
+    switch (boundaryBottom) {
+    case None: {
+        ui->radioButton_BoundaryBottom0->click();
+        break;
+    }
+    case Inlet: {
+        ui->radioButton_BoundaryBottom1->click();
+        break;
+    }
+    case Outlet: {
+        ui->radioButton_BoundaryBottom2->click();
+        break;
+    }
+    default: break;
+    }
+    switch (boundaryFront) {
+    case None: {
+        ui->radioButton_BoundaryFront0->click();
+        break;
+    }
+    case Inlet: {
+        ui->radioButton_BoundaryFront1->click();
+        break;
+    }
+    case Outlet: {
+        ui->radioButton_BoundaryFront2->click();
+        break;
+    }
+    default: break;
+    }
+    switch (boundaryBack) {
+    case None: {
+        ui->radioButton_BoundaryBack0->click();
+        break;
+    }
+    case Inlet: {
+        ui->radioButton_BoundaryBack1->click();
+        break;
+    }
+    case Outlet: {
+        ui->radioButton_BoundaryBack2->click();
+        break;
+    }
+    default: break;
+    }
 
     QString text = QString::fromStdWString(entranceComment);
     ui->plainTextEdit_inoutIntroduction->setPlainText(text);
@@ -94,8 +171,18 @@ void Entrance::updateValue(void) {
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
 
-    MainWindow::UpdateData(ui->tableWidget_outletCoordinates, outletCoordinates);
-    MainWindow::UpdateData(ui->tableWidget_inletCoordinates, inletCoordinates);
+    QButtonGroup *group = MainWindow::CurrentWindow->get_buttonGroup_BoundaryRight();
+    boundaryRight = (Type)(group->checkedId());
+    group = MainWindow::CurrentWindow->get_buttonGroup_BoundaryLeft();
+    boundaryLeft = (Type)(group->checkedId());
+    group = MainWindow::CurrentWindow->get_buttonGroup_BoundaryTop();
+    boundaryTop = (Type)(group->checkedId());
+    group = MainWindow::CurrentWindow->get_buttonGroup_BoundaryBottom();
+    boundaryBottom = (Type)(group->checkedId());
+    group = MainWindow::CurrentWindow->get_buttonGroup_BoundaryFront();
+    boundaryFront = (Type)(group->checkedId());
+    group = MainWindow::CurrentWindow->get_buttonGroup_BoundaryBack();
+    boundaryBack = (Type)(group->checkedId());
 
     entranceComment = ui->plainTextEdit_inoutIntroduction->toPlainText().toStdWString();
 }

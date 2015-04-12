@@ -8,8 +8,7 @@ Computing::Computing(const wstring& _name) : Category(_name)
 }
 
 void Computing::clearValue() {
-    timeStepMethod = TimeStepAdaptedOn;
-    timeStepFixedOnConf = 0.0;
+    maxAdaptedTimeStep = 0.0;
     iterationMaximumRelativeError = 0.0;
     iterationMaximumStepCount = 0;
     iterationMinimumStepCount = 0;
@@ -26,17 +25,9 @@ void Computing::writeValue(QXmlStreamWriter &writer)
 {
     updateValue();
     writer.writeStartElement("Computing");
-        writer.writeStartElement("TimeStepMethod");
-            writer.writeStartElement("TimeStepAdaptedOn");
-            writer.writeAttribute("value", QString::number((timeStepMethod==TimeStepAdaptedOn)?1:0));
-            writer.writeEndElement();
-            writer.writeStartElement("TimeStepFixedOn");
-            writer.writeAttribute("value", QString::number((timeStepMethod==TimeStepFixedOn)?1:0));
-            writer.writeEndElement();
-        writer.writeEndElement();
-        writer.writeStartElement("TimeStepFixedOnConf");
+        writer.writeStartElement("MaxAdaptedTimeStep");
             writer.writeStartElement("Value");
-            writer.writeAttribute("value", QString::number(timeStepFixedOnConf));
+            writer.writeAttribute("value", QString::number(maxAdaptedTimeStep));
             writer.writeEndElement();
         writer.writeEndElement();
         writer.writeStartElement("IterationMaximumRelativeError");
@@ -51,9 +42,6 @@ void Computing::writeValue(QXmlStreamWriter &writer)
         writer.writeStartElement("TerminationCondition");
             writer.writeStartElement("TerminationEndTimeOn");
             writer.writeAttribute("value", QString::number((terminationCondition==TerminationEndTimeOn)?1:0));
-            writer.writeEndElement();
-            writer.writeStartElement("TerminationFillingRateOn");
-            writer.writeAttribute("value", QString::number((terminationCondition==TerminationFillingRateOn)?1:0));
             writer.writeEndElement();
             writer.writeStartElement("TerminationMaximumStepOn");
             writer.writeAttribute("value", QString::number((terminationCondition==TerminationMaximumStepOn)?1:0));
@@ -100,32 +88,8 @@ void Computing::loadValue(const QDomElement &element)
     string tagName1;
     while (!child.isNull()) {
         tagName = child.toElement().tagName().toStdString();
-        if (tagName == "TimeStepMethod") {
-            child1 = child.toElement().firstChild();
-            while (!child1.isNull()) {
-                tagName1 = child1.toElement().tagName().toStdString();
-                int value = child1.toElement().attribute("value").toInt();
-                if (value != 0) {
-                    if (tagName1 == "TimeStepAdaptedOn") {
-                        timeStepMethod = TimeStepAdaptedOn;
-                        break;
-                    } else if (tagName1 == "TimeStepFixedOn") {
-                        timeStepMethod = TimeStepFixedOn;
-                        break;
-                    }
-                }
-                child1 = child1.nextSibling();
-            }
-        } else if (tagName == "TimeStepFixedOnConf") {
-            child1 = child.toElement().firstChild();
-            while (!child1.isNull()) {
-                tagName1 = child1.toElement().tagName().toStdString();
-                if (tagName1 == "Value") {
-                    timeStepFixedOnConf = child1.toElement().attribute("value").toDouble();
-                    break;
-                }
-                child1 = child1.nextSibling();
-            }
+        if (tagName == "MaxAdaptedTimeStep") {
+            maxAdaptedTimeStep = child.toElement().attribute("value").toDouble();
         } else if (tagName == "IterationMaximumRelativeError") {
             iterationMaximumRelativeError = child.toElement().attribute("value").toDouble();
         } else if (tagName == "IterationMaximumStepCount") {
@@ -140,9 +104,6 @@ void Computing::loadValue(const QDomElement &element)
                 if (value != 0) {
                     if (tagName1 == "TerminationEndTimeOn") {
                         terminationCondition = TerminationEndTimeOn;
-                        break;
-                    } else if (tagName1 == "TerminationFillingRateOn") {
-                        terminationCondition = TerminationFillingRateOn;
                         break;
                     } else if (tagName1 == "TerminationMaximumStepOn") {
                         terminationCondition = TerminationMaximumStepOn;
@@ -220,20 +181,8 @@ void Computing::updateGui(void)
     Ui::MainWindow *ui = (Ui::MainWindow*)getUi();
     if (ui == NULL) return;
 
-    switch (timeStepMethod) {
-    case TimeStepAdaptedOn: {
-        ui->radioButton_timeStepAdaptedOn->click();
-        break;
-    }
-    case TimeStepFixedOn: {
-        ui->radioButton_timeStepFixedOn->click();
-        break;
-    }
-    default: break;
-    }
-
-    text = QString::number(timeStepFixedOnConf);
-    ui->lineEdit_timeStepFixedOn->setText(text);
+    text = QString::number(maxAdaptedTimeStep);
+    ui->lineEdit_MaxAdaptedTimeStep->setText(text);
 
     text = QString::number(iterationMaximumRelativeError);
     ui->lineEdit_IterationMaximumRelativeError->setText(text);
@@ -249,10 +198,6 @@ void Computing::updateGui(void)
         ui->radioButton_TerminationEndTimeOn->click();
         break;
     }
-    case TerminationFillingRateOn: {
-        ui->radioButton_TerminationFillingRateOn->click();
-        break;
-    }
     case TerminationMaximumStepOn: {
         ui->radioButton_TerminationMaximumStepOn->click();
         break;
@@ -262,9 +207,6 @@ void Computing::updateGui(void)
 
     text = QString::number(terminationEndTimeOnConf);
     ui->lineEdit_TerminationEndTimeOnConf->setText(text);
-
-    text = QString::number(terminationFillingRateOnConf);
-    ui->lineEdit_TerminationFillingRateOnConf->setText(text);
 
     text = QString::number(terminationMaximumStepOnConf);
     ui->lineEdit_TerminationMaximumStepOnConf->setText(text);
@@ -295,16 +237,13 @@ void Computing::updateValue(void)
 
     MainWindow *window = MainWindow::CurrentWindow;
     QButtonGroup *group = NULL;
-    group = window->get_buttonGroup_timeStepMethod();
-    timeStepMethod = (TimeStepMethod)(group->checkedId());
-    timeStepFixedOnConf = ui->lineEdit_timeStepFixedOn->text().toDouble();
+    maxAdaptedTimeStep = ui->lineEdit_MaxAdaptedTimeStep->text().toDouble();
     iterationMaximumRelativeError = ui->lineEdit_IterationMaximumRelativeError->text().toDouble();
     iterationMaximumStepCount = ui->lineEdit_IterationMaximumStepCount->text().toInt();
     iterationMinimumStepCount = ui->lineEdit_IterationMinimumStepCount->text().toInt();
     group = window->get_buttonGroup_terminationCondition();
     terminationCondition = (TerminationCondition)(group->checkedId());
     terminationEndTimeOnConf = ui->lineEdit_TerminationEndTimeOnConf->text().toDouble();
-    terminationFillingRateOnConf = ui->lineEdit_TerminationFillingRateOnConf->text().toDouble();
     terminationMaximumStepOnConf = ui->lineEdit_TerminationMaximumStepOnConf->text().toInt();
     group = window->get_buttonGroup_parallelMethod();
     parallelMethod = (ParallelMethod)(group->checkedId());

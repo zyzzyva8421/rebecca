@@ -5,13 +5,8 @@
 class Computing : public Category
 {
 public:
-    enum TimeStepMethod {
-        TimeStepAdaptedOn,
-        TimeStepFixedOn
-    };
     enum TerminationCondition {
         TerminationEndTimeOn,
-        TerminationFillingRateOn,
         TerminationMaximumStepOn
     };
     enum ParallelMethod {
@@ -25,8 +20,7 @@ public:
     virtual void updateValue(void);
     virtual void clearValue(void);
 private:
-    TimeStepMethod timeStepMethod;
-    double timeStepFixedOnConf;
+    double maxAdaptedTimeStep;
     double iterationMaximumRelativeError;
     int iterationMaximumStepCount;
     int iterationMinimumStepCount;

@@ -42,9 +42,13 @@ public:
     static QString openDirDialog(QWidget *parent, const QString &caption, const QString &dir);
 
     QButtonGroup *get_buttonGroup_injectionMethod(void) {return buttonGroup_injectionMethod;}
-    QButtonGroup *get_buttonGroup_moldSurfaceRoughness(void) {return buttonGroup_moldSurfaceRoughness;}
+    QButtonGroup *get_buttonGroup_BoundaryRight(void) {return buttonGroup_BoundaryRight;}
+    QButtonGroup *get_buttonGroup_BoundaryLeft(void) {return buttonGroup_BoundaryLeft;}
+    QButtonGroup *get_buttonGroup_BoundaryTop(void) {return buttonGroup_BoundaryTop;}
+    QButtonGroup *get_buttonGroup_BoundaryBottom(void) {return buttonGroup_BoundaryBottom;}
+    QButtonGroup *get_buttonGroup_BoundaryFront(void) {return buttonGroup_BoundaryFront;}
+    QButtonGroup *get_buttonGroup_BoundaryBack(void) {return buttonGroup_BoundaryBack;}
     QButtonGroup *get_buttonGroup_fluidModel(void) {return buttonGroup_fluidModel;}
-    QButtonGroup *get_buttonGroup_timeStepMethod(void) {return buttonGroup_timeStepMethod;}
     QButtonGroup *get_buttonGroup_terminationCondition(void) {return buttonGroup_terminationCondition;}
     QButtonGroup *get_buttonGroup_parallelMethod(void) {return buttonGroup_parallelMethod;}
     QButtonGroup *get_buttonGroup_outputMethod(void) {return buttonGroup_outputMethod;}
@@ -91,21 +95,14 @@ private slots:
     void on_action_clean_triggered();
     void on_action_dir_triggered();
     void on_action_close_triggered();
+    void on_action_curve_triggered();
+    void on_action_image_triggered();
+    void on_action_video_triggered();
 
     void on_listWidget_addedStlMolds_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void on_treeView_materials_currentRowChanged(QModelIndex current, QModelIndex previous);
 
-    void on_toolButton_outletAdd_clicked();
-
-    void on_toolButton_outletDelete_clicked();
-
-    void on_toolButton_inletAdd_clicked();
-
-    void on_toolButton_inletDelete_clicked();
-
     void on_checkBox_fluidModel_stateChanged(int arg1);
-
-    void on_buttonGroup_timeStepMethod_clicked(int id);
 
     void on_buttonGroup_terminationCondition_clicked(int id);
 
@@ -122,14 +119,6 @@ private slots:
     void on_toolButton_varyingPressureOK_clicked();
 
     void on_toolButton_varyingPressCancel_clicked();
-
-    void on_toolButton_outletOK_clicked();
-
-    void on_toolButton_outletCancel_clicked();
-
-    void on_toolButton_inletOK_clicked();
-
-    void on_toolButton_inletCancel_clicked();
 
     void on_pushButton_addMold_clicked();
 
@@ -177,9 +166,13 @@ private:
 
     Ui::MainWindow *ui;
     QButtonGroup *buttonGroup_injectionMethod;
-    QButtonGroup *buttonGroup_moldSurfaceRoughness;
+    QButtonGroup *buttonGroup_BoundaryRight;
+    QButtonGroup *buttonGroup_BoundaryLeft;
+    QButtonGroup *buttonGroup_BoundaryTop;
+    QButtonGroup *buttonGroup_BoundaryBottom;
+    QButtonGroup *buttonGroup_BoundaryFront;
+    QButtonGroup *buttonGroup_BoundaryBack;
     QButtonGroup *buttonGroup_fluidModel;
-    QButtonGroup *buttonGroup_timeStepMethod;
     QButtonGroup *buttonGroup_terminationCondition;
     QButtonGroup *buttonGroup_parallelMethod;
     QButtonGroup *buttonGroup_outputMethod;

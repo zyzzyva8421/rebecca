@@ -25,11 +25,8 @@ private:
 
 class MoldConfiguration : public Category {
 public:
-    enum MoldSurfaceRoughness {
-        NoSlipOn,
-        FreeSlipOn
-    };
     enum MoldFunction {
+        MoldOn,
         CoverOn,
         MovingOn,
         SprueOn,
@@ -47,11 +44,15 @@ private:
     string moldMaterialId;
     double moldMaterialInitialTemperature;
     double moldHeatExchangeCoefficient;
+    bool moldFlipOn;
     double moldAdjustCoordinateX;
     double moldAdjustCoordinateY;
     double moldAdjustCoordinateZ;
     double moldAdjustScale;
-    MoldSurfaceRoughness moldSurfaceRoughness;
+    double moldRotateCoordinateX;
+    double moldRotateCoordinateY;
+    double moldRotateCoordinateZ;
+    double moldDomainLength;
     MoldFunction moldFunction;
     wstring moldComment;
 };

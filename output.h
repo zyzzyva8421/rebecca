@@ -26,10 +26,6 @@ private:
     LoggingMethod loggingMethod;
     double loggingIntervalTimeOnConf;
     int loggingIntervalStepOnConf;
-    bool loggingCurrentStepOn;
-    bool loggingCurrentTimeOn;
-    bool loggingCurrentFillingRateOn;
-    bool loggingCurrentTemperatureOn;
     wstring outputComment;
 };
 

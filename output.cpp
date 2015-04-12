@@ -15,10 +15,6 @@ void Output::clearValue()
     loggingMethod = LoggingIntervalTimeOn;
     loggingIntervalTimeOnConf = 0.0;
     loggingIntervalStepOnConf = 0;
-    loggingCurrentStepOn = false;
-    loggingCurrentTimeOn = false;
-    loggingCurrentFillingRateOn = false;
-    loggingCurrentTemperatureOn = false;
     outputComment = L"";
 }
 
@@ -61,18 +57,6 @@ void Output::writeValue(QXmlStreamWriter &writer)
         writer.writeStartElement("Value");
         writer.writeAttribute("value", QString::number(loggingIntervalStepOnConf));
         writer.writeEndElement();
-    writer.writeEndElement();
-    writer.writeStartElement("LoggingCurrentStepOn");
-    writer.writeAttribute("value", QString::number((loggingCurrentStepOn)?1:0));
-    writer.writeEndElement();
-    writer.writeStartElement("LoggingCurrentTimeOn");
-    writer.writeAttribute("value", QString::number((loggingCurrentTimeOn)?1:0));
-    writer.writeEndElement();
-    writer.writeStartElement("LoggingCurrentFillingRateOn");
-    writer.writeAttribute("value", QString::number((loggingCurrentFillingRateOn)?1:0));
-    writer.writeEndElement();
-    writer.writeStartElement("LoggingCurrentTemperatureOn");
-    writer.writeAttribute("value", QString::number((loggingCurrentTemperatureOn)?1:0));
     writer.writeEndElement();
     writer.writeStartElement("OutputComment");
     writer.writeAttribute("value", QString::fromStdWString(outputComment));
@@ -160,14 +144,6 @@ void Output::loadValue(const QDomElement& element)
                     }
                     child1 = child1.nextSibling();
                 }
-        } else if (tagName == "LoggingCurrentStepOn") {
-            loggingCurrentStepOn = (child.toElement().attribute("value").toStdString()=="1")?true:false;
-        } else if (tagName == "LoggingCurrentTimeOn") {
-            loggingCurrentTimeOn = (child.toElement().attribute("value").toStdString()=="1")?true:false;
-        } else if (tagName == "LoggingCurrentFillingRateOn") {
-            loggingCurrentFillingRateOn = (child.toElement().attribute("value").toStdString()=="1")?true:false;
-        } else if (tagName == "LoggingCurrentTemperatureOn") {
-            loggingCurrentTemperatureOn = (child.toElement().attribute("value").toStdString()=="1")?true:false;
         } else if (tagName == "OutputComment") {
             outputComment = child.toElement().attribute("value").toStdWString();
         }
@@ -217,14 +193,6 @@ void Output::updateGui(void)
     text = QString::number(loggingIntervalStepOnConf);
     ui->lineEdit_LoggingIntervalStepOnConf->setText(text);
 
-    ui->checkBox_LoggingCurrentStepOn->setChecked(loggingCurrentStepOn);
-
-    ui->checkBox_LoggingCurrentTimeOn->setChecked(loggingCurrentTimeOn);
-
-    ui->checkBox_LoggingCurrentFillingRateOn->setChecked(loggingCurrentFillingRateOn);
-
-    ui->checkBox_LoggingCurrentTemperatureOn->setChecked(loggingCurrentTemperatureOn);
-
     text = QString::fromStdWString(outputComment);
     ui->plainTextEdit_OutputComment->setPlainText(text);
 }
@@ -243,9 +211,5 @@ void Output::updateValue(void)
     loggingMethod = (LoggingMethod)(group->checkedId());
     loggingIntervalTimeOnConf = ui->lineEdit_LoggingIntervalTimeOnConf->text().toDouble();
     loggingIntervalStepOnConf = ui->lineEdit_LoggingIntervalStepOnConf->text().toInt();
-    loggingCurrentStepOn = ui->checkBox_LoggingCurrentStepOn->isChecked();
-    loggingCurrentTimeOn = ui->checkBox_LoggingCurrentTimeOn->isChecked();
-    loggingCurrentFillingRateOn = ui->checkBox_LoggingCurrentFillingRateOn->isChecked();
-    loggingCurrentTemperatureOn = ui->checkBox_LoggingCurrentTemperatureOn->isChecked();
     outputComment = ui->plainTextEdit_OutputComment->toPlainText().toStdWString();
 }

@@ -139,7 +139,6 @@ void MoldConfiguration::clearValue()
     moldAdjustCoordinateZ = 0.0;
     moldAdjustScale = 0.0;
     moldHeatExchangeCoefficient = 0.0;
-    moldSurfaceRoughness = NoSlipOn;
     moldFunction = CoverOn;
     moldComment = L"";
 }
@@ -157,6 +156,9 @@ void MoldConfiguration::writeValue(QXmlStreamWriter &writer)
         writer.writeStartElement("MoldHeatExchangeCoefficient");
         writer.writeAttribute("value", QString::number(moldHeatExchangeCoefficient));
         writer.writeEndElement();
+        writer.writeStartElement("MoldFlipOn");
+        writer.writeAttribute("value", QString::number((moldFlipOn)?1:0));
+        writer.writeEndElement();
         writer.writeStartElement("MoldAdjustCoordinateX");
         writer.writeAttribute("value", QString::number(moldAdjustCoordinateX));
         writer.writeEndElement();
@@ -169,15 +171,22 @@ void MoldConfiguration::writeValue(QXmlStreamWriter &writer)
         writer.writeStartElement("MoldAdjustScale");
         writer.writeAttribute("value", QString::number(moldAdjustScale));
         writer.writeEndElement();
-        writer.writeStartElement("MoldSurfaceRoughness");
-            writer.writeStartElement("NoSlipOn");
-            writer.writeAttribute("value", QString::number((moldSurfaceRoughness==NoSlipOn)?1:0));
-            writer.writeEndElement();
-            writer.writeStartElement("FreeSlipOn");
-            writer.writeAttribute("value", QString::number((moldSurfaceRoughness==FreeSlipOn)?1:0));
-            writer.writeEndElement();
+        writer.writeStartElement("MoldRotateCoordinateX");
+        writer.writeAttribute("value", QString::number(moldRotateCoordinateX));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldRotateCoordinateY");
+        writer.writeAttribute("value", QString::number(moldRotateCoordinateY));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldRotateCoordinateZ");
+        writer.writeAttribute("value", QString::number(moldRotateCoordinateZ));
+        writer.writeEndElement();
+        writer.writeStartElement("MoldDomainLength");
+        writer.writeAttribute("value", QString::number(moldDomainLength));
         writer.writeEndElement();
         writer.writeStartElement("MoldFunction");
+            writer.writeStartElement("MoldOn");
+            writer.writeAttribute("value", QString::number((moldFunction==MoldOn)?1:0));
+            writer.writeEndElement();
             writer.writeStartElement("CoverOn");
             writer.writeAttribute("value", QString::number((moldFunction==CoverOn)?1:0));
             writer.writeEndElement();
@@ -216,6 +225,8 @@ void MoldConfiguration::loadValue(const QDomElement& element)
             moldMaterialInitialTemperature = child.toElement().attribute("value").toDouble();
         } else if (tagName == "MoldHeatExchangeCoefficient") {
             moldHeatExchangeCoefficient = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "MoldFlipOn") {
+            moldFlipOn = child.toElement().attribute("value").toInt()?true:false;
         } else if (tagName == "MoldAdjustCoordinateX") {
             moldAdjustCoordinateX = child.toElement().attribute("value").toDouble();
         } else if (tagName == "MoldAdjustCoordinateY") {
@@ -224,29 +235,24 @@ void MoldConfiguration::loadValue(const QDomElement& element)
             moldAdjustCoordinateZ = child.toElement().attribute("value").toDouble();
         } else if (tagName == "MoldAdjustScale") {
             moldAdjustScale = child.toElement().attribute("value").toDouble();
-        } else if (tagName == "MoldSurfaceRoughness") {
-            child1 = child.toElement().firstChild();
-            while (!child1.isNull()) {
-                tagName1 = child1.toElement().tagName().toStdString();
-                int value = child1.toElement().attribute("value").toInt();
-                if (value != 0) {
-                    if (tagName1 == "NoSlipOn") {
-                        moldSurfaceRoughness = NoSlipOn;
-                        break;
-                    } else if (tagName1 == "FreeSlipOn") {
-                        moldSurfaceRoughness = FreeSlipOn;
-                        break;
-                    }
-                }
-                child1 = child1.nextSibling();
-            }
+        } else if (tagName == "MoldRotateCoordinateX") {
+            moldRotateCoordinateX = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "MoldRotateCoordinateY") {
+            moldRotateCoordinateY = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "MoldRotateCoordinateZ") {
+            moldRotateCoordinateZ = child.toElement().attribute("value").toDouble();
+        } else if (tagName == "MoldDomainLength") {
+            moldDomainLength = child.toElement().attribute("value").toDouble();
         } else if (tagName == "MoldFunction") {
             child1 = child.toElement().firstChild();
             while (!child1.isNull()) {
                 tagName1 = child1.toElement().tagName().toStdString();
                 int value = child1.toElement().attribute("value").toInt();
                 if (value != 0) {
-                    if (tagName1 == "CoverOn") {
+                    if (tagName1 == "MoldOn") {
+                        moldFunction = MoldOn;
+                        break;
+                    } else if (tagName1 == "CoverOn") {
                         moldFunction = CoverOn;
                         break;
                     } else if (tagName1 == "MovingOn") {
@@ -287,6 +293,8 @@ void MoldConfiguration::updateGui(void)
     text = QString::number(moldHeatExchangeCoefficient);
     ui->lineEdit_moldHeatExchangeCoefficient->setText(text);
 
+    ui->checkBox_MoldFlipOn->setChecked(moldFlipOn);
+
     text = QString::number(moldAdjustCoordinateX);
     ui->lineEdit_MoldAdjustCoordinateX->setText(text);
     text = QString::number(moldAdjustCoordinateY);
@@ -295,17 +303,14 @@ void MoldConfiguration::updateGui(void)
     ui->lineEdit_MoldAdjustCoordinateZ->setText(text);
     text = QString::number(moldAdjustScale);
     ui->lineEdit_MoldAdjustScale->setText(text);
-    switch (moldSurfaceRoughness) {
-    case NoSlipOn: {
-        ui->radioButton_noSlipOn->click();
-        break;
-    }
-    case FreeSlipOn: {
-        ui->radioButton_freeSlipOn->click();
-        break;
-    }
-    default: break;
-    }
+    text = QString::number(moldRotateCoordinateX);
+    ui->lineEdit_MoldRotateCoordinateX->setText(text);
+    text = QString::number(moldRotateCoordinateY);
+    ui->lineEdit_MoldRotateCoordinateY->setText(text);
+    text = QString::number(moldRotateCoordinateZ);
+    ui->lineEdit_MoldRotateCoordinateZ->setText(text);
+    text = QString::number(moldDomainLength);
+    ui->lineEdit_MoldDomainLength->setText(text);
 
     ui->comboBox_moldFunction->setCurrentIndex(moldFunction);
 
@@ -323,13 +328,18 @@ void MoldConfiguration::updateValue(void)
     moldMaterialInitialTemperature = ui->lineEdit_moldMaterialInitialTemperature->text().toDouble();
 
     moldHeatExchangeCoefficient = ui->lineEdit_moldHeatExchangeCoefficient->text().toDouble();
+
+    moldFlipOn = ui->checkBox_MoldFlipOn->isChecked();
+
     moldAdjustCoordinateX = ui->lineEdit_MoldAdjustCoordinateX->text().toDouble();
     moldAdjustCoordinateY = ui->lineEdit_MoldAdjustCoordinateY->text().toDouble();
     moldAdjustCoordinateZ = ui->lineEdit_MoldAdjustCoordinateZ->text().toDouble();
     moldAdjustScale = ui->lineEdit_MoldAdjustScale->text().toDouble();
 
-    QButtonGroup *group = MainWindow::CurrentWindow->get_buttonGroup_moldSurfaceRoughness();
-    moldSurfaceRoughness = (MoldSurfaceRoughness)(group->checkedId());
+    moldRotateCoordinateX = ui->lineEdit_MoldRotateCoordinateX->text().toDouble();
+    moldRotateCoordinateY = ui->lineEdit_MoldRotateCoordinateY->text().toDouble();
+    moldRotateCoordinateZ = ui->lineEdit_MoldRotateCoordinateZ->text().toDouble();
+    moldDomainLength = ui->lineEdit_MoldDomainLength->text().toDouble();
 
     moldFunction = (MoldFunction)(ui->comboBox_moldFunction->currentIndex());
 

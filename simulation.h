@@ -18,10 +18,10 @@ public:
     virtual void updateValue(void);
     virtual void clearValue();
 private:
-    bool heatTransferOn;
-    bool phaseChangeOn;
     bool fluidOn;
-    double gravity;
+    double gravityX;
+    double gravityY;
+    double gravityZ;
     int fluidMeshLevel;
     int adaptMeshLevel;
     int solidMeshLevel;
@@ -29,6 +29,8 @@ private:
     double environmentDynamicViscosity;
     double environmentTemperature;
     double environmentPressure;
+    double environmentThermalConductivity;
+    double environmentSpecificHeat;
     FluidOnConf fluidOnConf;
     wstring simulationComment;
 };

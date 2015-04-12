@@ -76,9 +76,37 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(buttonGroup_injectionMethod, SIGNAL(buttonClicked(int)), this, SLOT(on_buttonGroup_injectionMethod_clicked(int)));
 
     // Mold
-    buttonGroup_moldSurfaceRoughness = new QButtonGroup(this);
-    buttonGroup_moldSurfaceRoughness->addButton(ui->radioButton_noSlipOn, MoldConfiguration::NoSlipOn);
-    buttonGroup_moldSurfaceRoughness->addButton(ui->radioButton_freeSlipOn, MoldConfiguration::FreeSlipOn);
+
+    // Entrance
+    buttonGroup_BoundaryRight = new QButtonGroup(this);
+    buttonGroup_BoundaryRight->addButton(ui->radioButton_BoundaryRight0, Entrance::None);
+    buttonGroup_BoundaryRight->addButton(ui->radioButton_BoundaryRight1, Entrance::Inlet);
+    buttonGroup_BoundaryRight->addButton(ui->radioButton_BoundaryRight2, Entrance::Outlet);
+
+    buttonGroup_BoundaryLeft = new QButtonGroup(this);
+    buttonGroup_BoundaryLeft->addButton(ui->radioButton_BoundaryLeft0, Entrance::None);
+    buttonGroup_BoundaryLeft->addButton(ui->radioButton_BoundaryLeft1, Entrance::Inlet);
+    buttonGroup_BoundaryLeft->addButton(ui->radioButton_BoundaryLeft2, Entrance::Outlet);
+
+    buttonGroup_BoundaryTop = new QButtonGroup(this);
+    buttonGroup_BoundaryTop->addButton(ui->radioButton_BoundaryTop0, Entrance::None);
+    buttonGroup_BoundaryTop->addButton(ui->radioButton_BoundaryTop1, Entrance::Inlet);
+    buttonGroup_BoundaryTop->addButton(ui->radioButton_BoundaryTop2, Entrance::Outlet);
+
+    buttonGroup_BoundaryBottom = new QButtonGroup(this);
+    buttonGroup_BoundaryBottom->addButton(ui->radioButton_BoundaryBottom0, Entrance::None);
+    buttonGroup_BoundaryBottom->addButton(ui->radioButton_BoundaryBottom1, Entrance::Inlet);
+    buttonGroup_BoundaryBottom->addButton(ui->radioButton_BoundaryBottom2, Entrance::Outlet);
+
+    buttonGroup_BoundaryFront = new QButtonGroup(this);
+    buttonGroup_BoundaryFront->addButton(ui->radioButton_BoundaryFront0, Entrance::None);
+    buttonGroup_BoundaryFront->addButton(ui->radioButton_BoundaryFront1, Entrance::Inlet);
+    buttonGroup_BoundaryFront->addButton(ui->radioButton_BoundaryFront2, Entrance::Outlet);
+
+    buttonGroup_BoundaryBack = new QButtonGroup(this);
+    buttonGroup_BoundaryBack->addButton(ui->radioButton_BoundaryBack0, Entrance::None);
+    buttonGroup_BoundaryBack->addButton(ui->radioButton_BoundaryBack1, Entrance::Inlet);
+    buttonGroup_BoundaryBack->addButton(ui->radioButton_BoundaryBack2, Entrance::Outlet);
 
     // Simulation
     buttonGroup_fluidModel = new QButtonGroup(this);
@@ -88,14 +116,8 @@ MainWindow::MainWindow(QWidget *parent) :
     buttonGroup_fluidModel->addButton(ui->radioButton_LESModel, Simulation::LesTurbulenceOn);
 
     // Computing
-    buttonGroup_timeStepMethod = new QButtonGroup(this);
-    buttonGroup_timeStepMethod->addButton(ui->radioButton_timeStepAdaptedOn, Computing::TimeStepAdaptedOn);
-    buttonGroup_timeStepMethod->addButton(ui->radioButton_timeStepFixedOn, Computing::TimeStepFixedOn);
-    connect(buttonGroup_timeStepMethod, SIGNAL(buttonClicked(int)), this, SLOT(on_buttonGroup_timeStepMethod_clicked(int)));
-
     buttonGroup_terminationCondition = new QButtonGroup(this);
     buttonGroup_terminationCondition->addButton(ui->radioButton_TerminationEndTimeOn, Computing::TerminationEndTimeOn);
-    buttonGroup_terminationCondition->addButton(ui->radioButton_TerminationFillingRateOn, Computing::TerminationFillingRateOn);
     buttonGroup_terminationCondition->addButton(ui->radioButton_TerminationMaximumStepOn, Computing::TerminationMaximumStepOn);
     connect(buttonGroup_terminationCondition, SIGNAL(buttonClicked(int)), this, SLOT(on_buttonGroup_terminationCondition_clicked(int)));
 
@@ -121,9 +143,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->checkBox_fluidModel->setChecked(false);
     on_checkBox_fluidModel_stateChanged(Qt::Unchecked);
 
-    ui->radioButton_constantVelocity->click();
+    ui->radioButton_BoundaryRight0->click();
+    ui->radioButton_BoundaryLeft0->click();
+    ui->radioButton_BoundaryTop0->click();
+    ui->radioButton_BoundaryBottom0->click();
+    ui->radioButton_BoundaryFront0->click();
+    ui->radioButton_BoundaryBack0->click();
 
-    ui->radioButton_timeStepAdaptedOn->click();
+    ui->radioButton_constantVelocity->click();
 
     ui->radioButton_TerminationEndTimeOn->click();
 
@@ -159,6 +186,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEdit_MoldAdjustCoordinateY->setValidator(isdouble);
     ui->lineEdit_MoldAdjustCoordinateZ->setValidator(isdouble);
     ui->lineEdit_MoldAdjustScale->setValidator(isdouble);
+    ui->lineEdit_MoldRotateCoordinateX->setValidator(isdouble);
+    ui->lineEdit_MoldRotateCoordinateY->setValidator(isdouble);
+    ui->lineEdit_MoldRotateCoordinateZ->setValidator(isdouble);
+    ui->lineEdit_MoldDomainLength->setValidator(isdouble);
+    connect(ui->lineEdit_MoldDomainLength, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_MoldAdjustScale->setValidator(isdouble);
     connect(ui->lineEdit_MoldAdjustScale, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
     ui->lineEdit_FluidMeshLevel->setValidator(isint);
     connect(ui->lineEdit_FluidMeshLevel, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_integer()));
@@ -172,9 +205,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->lineEdit_EnvironmentDynamicViscosity, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
     ui->lineEdit_EnvironmentPressure->setValidator(isdouble);
     ui->lineEdit_EnvironmentTemperature->setValidator(isdouble);
-    ui->lineEdit_Gravity->setValidator(isdouble);
-    ui->lineEdit_timeStepFixedOn->setValidator(isdouble);
-    connect(ui->lineEdit_timeStepFixedOn, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_EnvironmentThermalConductivity->setValidator(isdouble);
+    connect(ui->lineEdit_EnvironmentThermalConductivity, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_EnvironmentSpecificHeat->setValidator(isdouble);
+    connect(ui->lineEdit_EnvironmentSpecificHeat, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
+    ui->lineEdit_GravityX->setValidator(isdouble);
+    ui->lineEdit_GravityY->setValidator(isdouble);
+    ui->lineEdit_GravityZ->setValidator(isdouble);
+    ui->lineEdit_MaxAdaptedTimeStep->setValidator(isdouble);
+    connect(ui->lineEdit_MaxAdaptedTimeStep, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
     ui->lineEdit_IterationMaximumRelativeError->setValidator(isdouble);
     connect(ui->lineEdit_IterationMaximumRelativeError, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
     ui->lineEdit_IterationMaximumStepCount->setValidator(isint);
@@ -183,8 +222,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->lineEdit_IterationMinimumStepCount, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_integer()));
     ui->lineEdit_TerminationEndTimeOnConf->setValidator(isdouble);
     connect(ui->lineEdit_TerminationEndTimeOnConf, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_double()));
-    ui->lineEdit_TerminationFillingRateOnConf->setValidator(isdouble);
-    connect(ui->lineEdit_TerminationFillingRateOnConf, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_f0t1_double()));
     ui->lineEdit_TerminationMaximumStepOnConf->setValidator(isint);
     connect(ui->lineEdit_TerminationMaximumStepOnConf, SIGNAL(editingFinished()), this, SLOT(on_lineEdit_textChanged_positive_integer()));
     ui->lineEdit_OutputIntervalStepOnConf->setValidator(isint);
@@ -351,6 +388,63 @@ void MainWindow::on_action_result_triggered() {
         return;
     }
     process->start("ifcfd_casting_shell --browse output");
+    process->waitForStarted();
+    dir.setCurrent(currentpath);
+    return;
+}
+
+void MainWindow::on_action_curve_triggered() {
+    if (!project) return;
+    QProcess *process = createProcess(ui->action_result);
+    if (!process) return;
+    wstring projectpath = project->getInformation()->getProjectPath();
+    if (projectpath.empty()) return;
+    QString currentpath = QDir::currentPath();
+    QDir dir = QDir::current();
+    if (!dir.setCurrent(QString::fromStdWString(projectpath))) {
+        QMessageBox::critical(this, QString::fromStdWString(L"查看填充率曲线"), QString::fromStdWString(L"项目路径不合法"));
+        dir.setCurrent(currentpath);
+        return;
+    }
+    process->start("ifcfd_casting_shell --view_filling_rate_curve");
+    process->waitForStarted();
+    dir.setCurrent(currentpath);
+    return;
+}
+
+void MainWindow::on_action_image_triggered() {
+    if (!project) return;
+    QProcess *process = createProcess(ui->action_result);
+    if (!process) return;
+    wstring projectpath = project->getInformation()->getProjectPath();
+    if (projectpath.empty()) return;
+    QString currentpath = QDir::currentPath();
+    QDir dir = QDir::current();
+    if (!dir.setCurrent(QString::fromStdWString(projectpath))) {
+        QMessageBox::critical(this, QString::fromStdWString(L"查看填充率图像"), QString::fromStdWString(L"项目路径不合法"));
+        dir.setCurrent(currentpath);
+        return;
+    }
+    process->start("ifcfd_casting_shell --view_filling_rate_image");
+    process->waitForStarted();
+    dir.setCurrent(currentpath);
+    return;
+}
+
+void MainWindow::on_action_video_triggered() {
+    if (!project) return;
+    QProcess *process = createProcess(ui->action_result);
+    if (!process) return;
+    wstring projectpath = project->getInformation()->getProjectPath();
+    if (projectpath.empty()) return;
+    QString currentpath = QDir::currentPath();
+    QDir dir = QDir::current();
+    if (!dir.setCurrent(QString::fromStdWString(projectpath))) {
+        QMessageBox::critical(this, QString::fromStdWString(L"查看填充率视频"), QString::fromStdWString(L"项目路径不合法"));
+        dir.setCurrent(currentpath);
+        return;
+    }
+    process->start("ifcfd_casting_shell --view_filling_rate_video");
     process->waitForStarted();
     dir.setCurrent(currentpath);
     return;
@@ -526,29 +620,12 @@ void MainWindow::on_action_material_triggered()
     ui->dockWidget_material->raise();
 }
 
-void MainWindow::on_buttonGroup_timeStepMethod_clicked(int id)
-{
-    ui->lineEdit_timeStepFixedOn->setDisabled(true);
-    switch (id) {
-    case Computing::TimeStepFixedOn: {
-        ui->lineEdit_timeStepFixedOn->setDisabled(false);
-        break;
-    }
-    default: break;
-    }
-}
-
 void MainWindow::on_buttonGroup_terminationCondition_clicked(int id) {
     ui->lineEdit_TerminationEndTimeOnConf->setDisabled(true);
-    ui->lineEdit_TerminationFillingRateOnConf->setDisabled(true);
     ui->lineEdit_TerminationMaximumStepOnConf->setDisabled(true);
     switch (id) {
     case Computing::TerminationEndTimeOn: {
         ui->lineEdit_TerminationEndTimeOnConf->setDisabled(false);
-        break;
-    }
-    case Computing::TerminationFillingRateOn: {
-        ui->lineEdit_TerminationFillingRateOnConf->setDisabled(false);
         break;
     }
     case Computing::TerminationMaximumStepOn: {
@@ -786,26 +863,6 @@ void MainWindow::on_treeView_materials_currentRowChanged(QModelIndex current, QM
     }
 }
 
-void MainWindow::on_toolButton_outletAdd_clicked()
-{
-    tableInsertRow(ui->tableWidget_outletCoordinates);
-}
-
-void MainWindow::on_toolButton_outletDelete_clicked()
-{
-    tableDeleteRow(ui->tableWidget_outletCoordinates);
-}
-
-void MainWindow::on_toolButton_inletAdd_clicked()
-{
-    tableInsertRow(ui->tableWidget_inletCoordinates);
-}
-
-void MainWindow::on_toolButton_inletDelete_clicked()
-{
-    tableDeleteRow(ui->tableWidget_inletCoordinates);
-}
-
 void MainWindow::on_checkBox_fluidModel_stateChanged(int arg1)
 {
     if (arg1 == 0) {
@@ -913,40 +970,6 @@ void MainWindow::on_toolButton_varyingPressCancel_clicked()
     if (project) {
         UpdateTable(project->getCasting()->getInjectMethodVaryingPressureOnConf(),
                     ui->tableWidget_varyingPressure);
-    }
-}
-
-void MainWindow::on_toolButton_outletOK_clicked()
-{
-    if (project) {
-        UpdateData(ui->tableWidget_outletCoordinates,
-                   project->getEntrance()->getOutletCoordinates());
-    }
-}
-
-void MainWindow::on_toolButton_outletCancel_clicked()
-{
-    if (project) {
-        UpdateTable(project->getEntrance()->getOutletCoordinates(),
-                    ui->tableWidget_outletCoordinates);
-    }
-}
-
-void MainWindow::on_toolButton_inletOK_clicked()
-{
-    if (project) {
-        ui->tableWidget_inletCoordinates->setCurrentItem(NULL);
-        UpdateData(ui->tableWidget_inletCoordinates,
-                   project->getEntrance()->getInletCoordinates());
-    }
-}
-
-void MainWindow::on_toolButton_inletCancel_clicked()
-{
-    if (project) {
-        ui->tableWidget_outletCoordinates->setCurrentItem(NULL);
-        UpdateTable(project->getEntrance()->getInletCoordinates(),
-                    ui->tableWidget_inletCoordinates);
     }
 }
 
