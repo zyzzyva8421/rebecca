@@ -14,7 +14,6 @@ void Computing::clearValue() {
     iterationMinimumStepCount = 0;
     terminationCondition = TerminationEndTimeOn;
     terminationEndTimeOnConf = 0.0;
-    terminationFillingRateOnConf = 0.0;
     terminationMaximumStepOnConf = 0;
     parallelMethod = ParallelAdaptedOn;
     parallelFixedOnConf = 0;
@@ -26,9 +25,7 @@ void Computing::writeValue(QXmlStreamWriter &writer)
     updateValue();
     writer.writeStartElement("Computing");
         writer.writeStartElement("MaxAdaptedTimeStep");
-            writer.writeStartElement("Value");
-            writer.writeAttribute("value", QString::number(maxAdaptedTimeStep));
-            writer.writeEndElement();
+        writer.writeAttribute("value", QString::number(maxAdaptedTimeStep));
         writer.writeEndElement();
         writer.writeStartElement("IterationMaximumRelativeError");
         writer.writeAttribute("value", QString::number(iterationMaximumRelativeError));
@@ -50,11 +47,6 @@ void Computing::writeValue(QXmlStreamWriter &writer)
         writer.writeStartElement("TerminationEndTimeOnConf");
             writer.writeStartElement("Value");
             writer.writeAttribute("value", QString::number(terminationEndTimeOnConf));
-            writer.writeEndElement();
-        writer.writeEndElement();
-        writer.writeStartElement("TerminationFillingRateOnConf");
-            writer.writeStartElement("Value");
-            writer.writeAttribute("value", QString::number(terminationFillingRateOnConf));
             writer.writeEndElement();
         writer.writeEndElement();
         writer.writeStartElement("TerminationMaximumStepOnConf");
@@ -118,16 +110,6 @@ void Computing::loadValue(const QDomElement &element)
                 tagName1 = child1.toElement().tagName().toStdString();
                 if (tagName1 == "Value") {
                     terminationEndTimeOnConf = child1.toElement().attribute("value").toDouble();
-                    break;
-                }
-                child1 = child1.nextSibling();
-            }
-        } else if (tagName == "TerminationFillingRateOnConf") {
-            child1 = child.toElement().firstChild();
-            while (!child1.isNull()) {
-                tagName1 = child1.toElement().tagName().toStdString();
-                if (tagName1 == "Value") {
-                    terminationFillingRateOnConf = child1.toElement().attribute("value").toDouble();
                     break;
                 }
                 child1 = child1.nextSibling();

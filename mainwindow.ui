@@ -33,7 +33,7 @@
        <locale language="Chinese" country="China"/>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>2</number>
       </property>
       <property name="documentMode">
        <bool>false</bool>
@@ -1440,6 +1440,11 @@
                     </item>
                     <item>
                      <widget class="QComboBox" name="comboBox_moldFunction">
+                      <item>
+                       <property name="text">
+                        <string>模具</string>
+                       </property>
+                      </item>
                       <item>
                        <property name="text">
                         <string>定模</string>

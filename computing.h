@@ -26,7 +26,6 @@ private:
     int iterationMinimumStepCount;
     TerminationCondition terminationCondition;
     double terminationEndTimeOnConf;
-    double terminationFillingRateOnConf;
     int terminationMaximumStepOnConf;
     ParallelMethod parallelMethod;
     int parallelFixedOnConf;
